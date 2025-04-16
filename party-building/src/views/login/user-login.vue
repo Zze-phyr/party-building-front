@@ -1,7 +1,7 @@
-<script setup></script>
-
 <template>
-  <RouterView />
+  <div>登录</div>
 </template>
+
+<script setup></script>
 
 <style scoped></style>
