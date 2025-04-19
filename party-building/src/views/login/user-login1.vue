@@ -28,7 +28,7 @@
             </el-input>
           </el-form-item>
           <el-form-item class="btn-box">
-            <el-button class="btn" @click="submitPhoneLogin(registerFormRef)">确认注册</el-button>
+            <el-button class="btn" @click="submitPhoneLogin(phoneLoginFormRef)">确认登录</el-button>
           </el-form-item>
           <el-form-item>
             <el-link class="link" type="info">暂无帐号，立即注册</el-link>
@@ -126,7 +126,7 @@ const submitPhoneLogin = async (formEl) => {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .bg-container {
   background-color: #d24529;
   position: fixed;

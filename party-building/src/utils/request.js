@@ -1,7 +1,9 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
-const baseURL = ''
+import { useUserStore } from '@/stores/user'
+
+const baseURL = 'http://172.20.10.4:8080'
 
 const instance = axios.create({
   //基础地址
@@ -12,11 +14,12 @@ const instance = axios.create({
 
 // 请求拦截器
 instance.interceptors.request.use(
+  //config相关配置信息
   (config) => {
     // token
-    const token = localStorage.getItem('party_token')
-    if (token) {
-      config.headers.Authorization = token
+    const userStore = useUserStore()
+    if (userStore.token) {
+      config.headers['Authorization'] = `Bearer ${userStore.token}`
     }
     return config
   },
@@ -25,6 +28,7 @@ instance.interceptors.request.use(
 
 // 响应拦截器
 instance.interceptors.response.use(
+  //res相关数据信息
   (res) => {
     if (res.data.code === 1) {
       return res
@@ -44,10 +48,10 @@ instance.interceptors.response.use(
     // 错误的特殊情况 => 401 权限不足 或 token 过期 => 拦截到登录
     if (err.response?.status === 401) {
       router.push('/login1')
+    } else {
+      // 错误的默认情况 => 只要给提示
+      ElMessage.error(err.response?.data?.message || '服务异常')
     }
-
-    // 错误的默认情况 => 只要给提示
-    ElMessage.error(err.response.data.message || '服务异常')
     return Promise.reject(err)
   },
 )

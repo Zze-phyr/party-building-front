@@ -75,7 +75,7 @@ const submitNumberLogin = async (formEl) => {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .bg-container {
   background-color: #d24529;
   position: fixed;
