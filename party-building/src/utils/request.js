@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/index'
 
 const baseURL = 'http://172.20.10.4:8080'
 
@@ -14,12 +14,12 @@ const instance = axios.create({
 
 // 请求拦截器
 instance.interceptors.request.use(
-  //config相关配置信息
   (config) => {
-    // token
+    // 添加token
     const userStore = useUserStore()
+    //要等Pinia实例尚被挂载到 Vue 应用之后使用 Pinia Store，所以必须在拦截器里面定义
     if (userStore.token) {
-      config.headers['Authorization'] = `Bearer ${userStore.token}`
+      config.headers['token'] = userStore.token
     }
     return config
   },
@@ -36,22 +36,20 @@ instance.interceptors.response.use(
     //对接口异常，需要给用户提示
     if (res.data.code === 0) {
       ElMessage.warning(res.data.message)
-    }
-    //token过期
-    if (res.data.code === -1) {
-      localStorage.removeItem('party_token')
-      window.location.href = window.location.origin
+      return Promise.reject(res.data) // 阻止后续链式调用
     }
   },
   (err) => {
     //处理401错误
-    // 错误的特殊情况 => 401 权限不足 或 token 过期 => 拦截到登录
-    if (err.response?.status === 401) {
-      router.push('/login1')
+    if (err.response.status === 401) {
+      const userStore = useUserStore()
+      userStore.logout()
+      router.push({ name: 'Login' })
+      ElMessage.warning('身份验证失败，请重新登录')
     } else {
-      // 错误的默认情况 => 只要给提示
-      ElMessage.error(err.response?.data?.message || '服务异常')
+      ElMessage.error(err.response?.data?.message || '网络请求失败')
     }
+
     return Promise.reject(err)
   },
 )

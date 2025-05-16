@@ -1,57 +1,54 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-// 创建了一个名为'user'的store
-export const useUserStore = defineStore('user', () => {
-  // 状态
+export const useUserStore = defineStore(
+  'user', //该 store 的唯一标识
+  () => {
+    // 用户信息
+    const token = ref('')
+    const permission = ref('Common')
+    const status = ref('')
+    const userId = ref('')
 
-  // 从localStorage中获取token
-  const token = ref(localStorage.getItem('token') || '')
-  // 标记路由是否已经加载
-  const hasRoutes = ref(false)
-  // 存储用户的角色信息
-  const roles = ref([])
+    // 操作
+    //设置 token
+    const login = (newToken, newPermission, newUserId, newStatus) => {
+      token.value = newToken
+      permission.value = newPermission
+      userId.value = newUserId
+      status.value = newStatus
+    }
 
-  // 操作
+    //用户注销或 token 过期时，需要重置所有与认证相关的状态
+    const logout = () => {
+      token.value = ''
+      permission.value = ''
+      userId.value = ''
+      status.value = ''
+    }
 
-  // 接收新token，更新本地状态并存入localStorage
-  const setToken = (newToken) => {
-    token.value = newToken
-    localStorage.setItem('token', newToken)
-  }
+    // const login = (userToken, userRole) => {
+    //   token.value = userToken
+    //   role.value = userRole
+    //   localStorage.setItem('token', userToken)
+    //   localStorage.setItem('role', userRole)
+    // }
 
-  // 清除token和localStorage中的值
-  const resetToken = () => {
-    token.value = ''
-    localStorage.removeItem('token')
-    hasRoutes.value = false
-  }
+    // const logout = () => {
+    //   token.value = ''
+    //   role.value = 'user'
+    //   localStorage.clear()
+    // }
 
-  // 路由加载完成后设置为true
-  const setHasRoutes = (value) => {
-    hasRoutes.value = value
-  }
-
-  // // 模拟获取用户信息（实际需要对接API）
-  // const getUserInfo = async () => {
-  //   // 这里模拟API请求，实际开发需要替换为真实接口
-  //   return new Promise(resolve => {
-  //     setTimeout(() => {
-  //       // 模拟返回用户角色（根据你的路由配置，角色应该是1-4的数字）
-  //       const role = 4 // 这里可以根据实际登录用户返回
-  //       roles.value = [role]
-  //       resolve({ role })
-  //     }, 500)
-  //   })
-  // }
-
-  return {
-    token,
-    hasRoutes,
-    roles,
-    setToken,
-    resetToken,
-    setHasRoutes,
-    // getUserInfo
-  }
-})
+    return {
+      token,
+      permission,
+      login,
+      logout,
+    }
+  },
+  {
+    // 配置项，启用数据持久化功能
+    persist: true, // 启用持久化
+  },
+)

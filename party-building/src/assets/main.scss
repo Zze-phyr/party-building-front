@@ -4,4 +4,11 @@ body {
 
 * {
   box-sizing: border-box;
+  // 统一字体
+  font-family: Arial, sans-serif;
+  // 去掉router-link下划线
+  a.router-link-active,
+  a.router-link-exact-active {
+    text-decoration: none;
+  }
 }

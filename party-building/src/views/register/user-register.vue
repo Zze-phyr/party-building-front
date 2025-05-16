@@ -13,9 +13,14 @@
           ref="registerFormRef"
           :rules="rules"
         >
-          <h2>用户注册</h2>
+          <div class="title">
+            <div class="img-container">
+              <img class="img" src="../../assets/images/common/party-emblem-1.png" alt="" />
+            </div>
+            <div class="text">学生党建平台</div>
+          </div>
           <el-form-item label="学号" prop="studentId">
-            <el-input v-model="registerForm.studentId" placeholder="请输入您的学号" />
+            <el-input v-model="registerForm.studentId" placeholder="学号将默认为您的账号" />
           </el-form-item>
           <el-form-item label="身份证号" prop="idCard">
             <el-input v-model="registerForm.idCard" placeholder="请输入您的身份证号" />
@@ -51,7 +56,9 @@
             <el-button class="btn" @click="submitRegister(registerFormRef)">确认注册</el-button>
           </el-form-item>
           <el-form-item>
-            <el-link class="link" type="info">已有帐号，选择登录</el-link>
+            <el-link :underline="false" href="/login" class="link" type="info"
+              >已有帐号，选择登录</el-link
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -118,16 +125,12 @@ const validateRepassword = (rule, value, callback) => {
 let isDisabled = ref(true)
 // 自定义手机号验证函数
 const validatePhone = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('请填写电话号码'))
+  const reg = /^1[3-9]\d{9}$/
+  if (reg.test(value)) {
+    isDisabled.value = false
+    callback()
   } else {
-    const reg = /^1[3-9]\d{9}$/
-    if (reg.test(value)) {
-      isDisabled.value = false
-      callback()
-    } else {
-      callback(new Error('请输入有效的电话号码'))
-    }
+    callback(new Error('请输入有效的电话号码'))
   }
 }
 
@@ -141,7 +144,10 @@ const rules = reactive({
     { required: true, message: '请填写身份证号', trigger: 'blur' },
     { validator: validateIdCard, trigger: 'blur' },
   ],
-  phone: [{ validator: validatePhone, trigger: 'blur' }],
+  phone: [
+    { required: true, message: '请填写电话号码', trigger: 'blur' },
+    { validator: validatePhone, trigger: 'blur' },
+  ],
   verify: [{ required: true, message: '请填写验证码', trigger: 'blur' }],
   password: [
     { required: true, message: '请填写密码', trigger: 'blur' },
@@ -177,7 +183,7 @@ const countdownChange = () => {
   let interval = setInterval(() => {
     if (countdown.time <= 0) {
       countdown.time = 60
-      countdown.validText = `获取验证码`
+      countdown.validText = '获取验证码'
       flag = false
       clearInterval(interval)
     } else {
@@ -198,23 +204,24 @@ const countdownChange = () => {
 const submitRegister = async (formEl) => {
   if (!formEl) return
   //手动触发校验
-  await formEl.validate((valid, fields) => {
-    if (valid) {
-      userRegister(registerForm).then(({ data }) => {
-        if (data.code === 1) {
-          ElMessage.success('注册成功，请登录')
-        }
-      })
+  try {
+    await formEl.validate()
+    const { data } = await userRegister(registerForm)
+    if (data.code === 1) {
+      ElMessage.success('注册成功，请登录')
     } else {
-      console.log('error submit!', fields)
+      ElMessage.error(data.msg)
     }
-  })
+  } catch (error) {
+    console.log(error)
+    ElMessage.error('注册失败，请重试')
+  }
 }
 </script>
 
 <style lang="less" scoped>
 .bg-container {
-  background-color: #d24529;
+  background: url(../../assets/images/common/login-background.png) no-repeat 0 0 / 100% fixed;
   position: fixed;
   top: 0;
   left: 0;
@@ -224,24 +231,62 @@ const submitRegister = async (formEl) => {
     .form {
       position: absolute;
       top: 50%;
-      left: 60%;
-      margin-top: -283px;
+      left: 50%;
+      margin-top: -260px;
+      margin-left: -200px;
       width: 400px;
-      height: 586px;
-      padding: 10px 20px;
+      height: 520px;
+      padding: 18px 50px;
       background-color: #fff;
       border-radius: 10px;
-      h2 {
-        text-align: center;
+      .title {
+        display: flex;
+        justify-content: center;
+        height: 50px;
+        margin-bottom: 8px;
+        .img-container {
+          width: 50px;
+          height: 50px;
+          margin-right: 5px;
+          .img {
+            width: 100%;
+            height: 100%;
+          }
+        }
+        .text {
+          font-size: 40px;
+          font-weight: bold;
+          font-family: Arial, sans-serif;
+          color: #d24529;
+          line-height: 50px;
+        }
+      }
+      .el-form-item {
+        margin-bottom: 12px;
+        :deep(.el-form-item__label) {
+          margin-bottom: 0 !important;
+          color: #000;
+        }
       }
       .btn-box {
         margin: 0;
         .btn {
           margin: 0 auto 12px;
+          padding: 15px 40px;
+          background-color: #d24529;
+          border-color: #000;
+          color: white;
+        }
+        .btn:hover {
+          box-shadow: inset 3px 4px 5px rgba(0, 0, 0, 0.3); /* 内阴影效果，水平偏移0、垂直偏移0、模糊半径5px、颜色为黑色透明度0.3，可按需调整参数 */
         }
       }
       .link {
         margin: 0 auto;
+        font-size: 12px;
+      }
+      .link:hover {
+        color: #d24529;
       }
     }
   }

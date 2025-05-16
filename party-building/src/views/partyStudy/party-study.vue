@@ -1,4 +1,4 @@
-<template>1</template>
+<template>党建学习</template>
 
 <script setup></script>
 
