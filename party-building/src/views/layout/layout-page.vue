@@ -5,24 +5,27 @@
       <el-header class="nav-container">
         <el-menu
           :ellipsis="false"
-          :default-active="activeIndex2"
+          :default-active="activeIndex"
           class="nav"
           mode="horizontal"
           background-color="#BC0000"
           text-color="#fff"
           active-text-color="#ffd04b"
-          @select="handleSelect"
         >
           <!-- 校徽 -->
           <div class="img-box">
-            <img class="img" src="../../assets/images/common/hnust-logo.png" alt="" />
+            <img class="img" src="../../assets/images/common/hnust-logo.png" alt="校徽" />
           </div>
           <!-- 菜单选择 -->
-          <el-menu-item index="1" @click="skipPage('/layout/index')">首页</el-menu-item>
+          <template v-for="route in dynamicRoutes" :key="route.name">
+            <el-menu-item :index="route.name" @click="skipPage(`/layout/${route.path}`)">
+              {{ route.meta.title }}
+            </el-menu-item>
+          </template>
+          <!-- <el-menu-item index="1" @click="skipPage('/layout/index')">首页</el-menu-item>
           <el-menu-item index="2" @click="skipPage('/layout/partyProgress')">入党进度</el-menu-item>
-          <el-menu-item index="3">支部风采</el-menu-item>
-          <el-menu-item index="4">我的组织</el-menu-item>
-          <el-menu-item index="5">党建学习</el-menu-item>
+          <el-menu-item index="3">我的组织</el-menu-item>
+          <el-menu-item index="4">党建学习</el-menu-item> -->
           <!-- 个人 -->
           <div class="self-box">
             <div
@@ -31,9 +34,9 @@
               @mouseenter="handleMouseEnter"
               @mouseleave="handleMouseLeave"
             >
-              <img class="img" :src="currentIcon" alt="" />
+              <img class="img" :src="currentIcon" alt="个人图标" />
             </div>
-            <div class="text">张三</div>
+            <div class="text">{{ userStore.userId }}</div>
           </div>
         </el-menu>
       </el-header>
@@ -47,9 +50,27 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useUserStore } from '@/stores'
+
+//动态路由
+const router = useRouter()
+const userStore = useUserStore()
+
+let dynamicRoutes = userStore.getDynamicRoutes
+
+dynamicRoutes = dynamicRoutes.filter((route) => !route.meta?.hidden)
+
+// 当前激活菜单
+const activeIndex = computed(() => {
+  return router.currentRoute.value.name?.toString() || ''
+})
+
+const skipPage = (path) => {
+  router.push(path)
+}
 
 // 定义默认图片和 hover 图片路径
 const normalIcon = new URL('../../assets/images/common/nav-icon.png', import.meta.url).href
@@ -64,17 +85,6 @@ const handleMouseEnter = () => {
 }
 const handleMouseLeave = () => {
   currentIcon.value = normalIcon
-}
-
-const activeIndex2 = ref('1')
-const handleSelect = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-
-const router = useRouter()
-
-const skipPage = (path) => {
-  router.push(path)
 }
 </script>
 
@@ -97,13 +107,13 @@ const skipPage = (path) => {
       }
     }
     :deep(.el-sub-menu__title) {
-      font-size: 16px !important;
+      font-size: 20px !important;
     }
     :deep(.el-menu-item) {
-      font-size: 16px !important;
+      font-size: 20px !important;
     }
     .el-sub-menu .el-sub-menu__icon-arrow {
-      font-size: 16px;
+      font-size: 20px;
       margin-top: -8px;
     }
     .self-box {
@@ -120,7 +130,7 @@ const skipPage = (path) => {
         }
       }
       .text {
-        font-size: 14px;
+        font-size: 16px;
         color: white;
         line-height: 70px;
       }

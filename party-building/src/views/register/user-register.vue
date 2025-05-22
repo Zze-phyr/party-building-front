@@ -267,6 +267,9 @@ const submitRegister = async (formEl) => {
           margin-bottom: 0 !important;
           color: #000;
         }
+        :deep(.el-input) {
+          --el-input-focus-border-color: #999;
+        }
       }
       .btn-box {
         margin: 0;

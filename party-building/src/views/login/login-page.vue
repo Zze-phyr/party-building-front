@@ -299,6 +299,11 @@ const switchLoginWay = () => {
     //登录表单
     .form-box {
       margin: 20px 0;
+      .el-form-item {
+        :deep(.el-input) {
+          --el-input-focus-border-color: #999;
+        }
+      }
       .login-way {
         margin: 5px 0;
         color: #888;
