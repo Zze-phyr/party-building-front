@@ -2,17 +2,63 @@
   <div class="bg-container"></div>
   <div class="party-progress-container">
     <div class="step-container">
-      <el-steps direction="vertical" :active="2">
-        <el-step title="申请入党" />
-        <el-step title="入党积极分子的确定和培养教育" />
-        <el-step title="发展对象的确定和考察" />
-        <el-step title="预备党员的接收" />
-        <el-step title="预备党员的教育考察和转正" />
-      </el-steps>
+      <!-- 预备党员的教育考察和转正 -->
+      <div class="step-item">
+        <div
+          class="step-dot"
+          :class="{ 'dot-finished': status === '5' }"
+          @click="checkFive()"
+        ></div>
+        <div class="step-connector" :class="{ finished: status === '5' }"></div>
+        <div class="step-content" :class="{ finished: status === '5' }">
+          预备党员的教育考察和转正
+        </div>
+      </div>
+      <!-- 预备党员的接收 -->
+      <div class="step-item">
+        <div
+          class="step-dot"
+          :class="{ 'dot-finished': status === '5' }"
+          @click="checkFour()"
+        ></div>
+        <div class="step-connector" :class="{ finished: status === '4' || status === '5' }"></div>
+        <div class="step-content" :class="{ finished: status === '5' }">预备党员的接收</div>
+      </div>
+      <!-- 发展对象的确定和考察 -->
+      <div class="step-item">
+        <div
+          class="step-dot"
+          :class="{ 'dot-finished': status === '4' || status === '5' }"
+          @click="checkThree()"
+        ></div>
+        <div class="step-connector" :class="{ finished: status !== '1' && status !== '2' }"></div>
+        <div class="step-content" :class="{ finished: status === '4' || status === '5' }">
+          发展对象的确定和考察
+        </div>
+      </div>
+      <!-- 入党积极分子的确定和培养教育 -->
+      <div class="step-item">
+        <div
+          class="step-dot"
+          :class="{ 'dot-finished': status !== '1' && status !== '2' }"
+          @click="checkTwo()"
+        ></div>
+        <div class="step-connector" :class="{ finished: status !== '1' }"></div>
+        <div class="step-content" :class="{ finished: status !== '1' && status !== '2' }">
+          入党积极分子的确定和培养教育
+        </div>
+      </div>
+      <!-- 申请入党 -->
+      <div class="step-item">
+        <div class="step-dot dot-finished" @click="checkOne()"></div>
+        <div class="step-content" :class="{ finished: status !== '1' }">申请入党</div>
+      </div>
+      <!-- 温馨提示 -->
+      <div class="tips">Tips:可点击圆点查看历史上传记录</div>
     </div>
     <div class="task-container">
-      <applyParty v-if="checkState === 'one'" />
-      <partyActivist v-else-if="checkState === 'two'" />
+      <applyParty v-if="checkState === '1'" />
+      <partyActivist v-else-if="checkState === '2'" />
       <developCandidate v-else-if="checkState === '3'" />
       <probationMember v-else-if="checkState === '4'" />
       <fullPartyMember v-else-if="checkState === '5'" />
@@ -34,13 +80,25 @@ const status = userStore.getStatus
 const checkState = ref(status)
 
 //点击查看过往入党流程
-// const checkOne = () => {
-//   checkState.value = 'one'
-// }
+const checkOne = () => {
+  checkState.value = '1'
+}
 
-// const checkTwo = () => {
-//   if (status !== 'one') checkState.value = 'two'
-// }
+const checkTwo = () => {
+  if (status !== '1') checkState.value = '2'
+}
+
+const checkThree = () => {
+  if (status !== '1' && status !== '2') checkState.value = '3'
+}
+
+const checkFour = () => {
+  if (status === '4' || status === '5') checkState.value = '4'
+}
+
+const checkFive = () => {
+  if (status === '5') checkState.value = '5'
+}
 
 console.log(status)
 </script>
@@ -62,33 +120,62 @@ console.log(status)
   .step-container {
     margin-right: 3%;
     width: 22%;
+    min-width: 280px; // 设置最小宽度
+    max-width: 320px;
     height: 640px;
     background-color: rgba(255, 255, 255, 0.9);
     padding: 20px 35px;
     border-radius: 8px;
-    //步骤条已完成
-    ::v-deep .el-step__head.is-finish {
-      color: #bc0000;
+    .step-item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .step-dot {
+        width: 20px;
+        height: 20px;
+        background-color: #fff;
+        border-radius: 50%;
+        border: 2px solid #efb1b9d7;
+      }
+      .step-connector {
+        width: 2px;
+        height: 115px;
+        background-color: #efb1b9d7;
+      }
+      .step-content {
+        position: absolute;
+        padding: 5px;
+        width: 90px;
+        background-color: #efb1b9;
+        border-radius: 5px;
+        color: #fff;
+        text-align: center;
+      }
+      &:nth-child(odd) .step-content {
+        left: -8px;
+      }
+      &:nth-child(even) .step-content {
+        right: -10px;
+      }
+      .finished {
+        background-color: #bc0000;
+      }
+      .dot-finished {
+        background-color: #bc0000;
+        border-color: #bc0000;
+        transition: all 0.3s ease-in-out;
+      }
+      .dot-finished:hover {
+        width: 25px;
+        height: 25px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      }
     }
-    ::v-deep .el-step__line-inner {
-      border-width: 1.5px !important;
-    }
-    ::v-deep .el-step__head.is-finish.el-step__icon.is-text {
-      border: 2.5px solid;
-    }
-    ::v-deep .el-step__title.is-finish {
-      color: #bc0000;
-    }
-    // 步骤条正在完成
-    ::v-deep .el-step__head.is-process {
-      color: #ffb900;
-    }
-    ::v-deep .el-step__head.is-process.el-step__icon.is-text {
-      border: 2.5px solid;
-    }
-    ::v-deep .el-step__title.is-process {
-      color: #ffb900;
-      font-weight: normal;
+    .tips {
+      font-size: 12px;
+      margin-top: 25px;
+      text-align: center;
     }
   }
   .task-container {

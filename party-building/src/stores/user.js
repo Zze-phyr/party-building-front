@@ -7,7 +7,7 @@ export const useUserStore = defineStore(
     // 用户信息
     const token = ref('111')
     const permission = ref('Common')
-    const status = ref('one')
+    const status = ref('1')
     const userId = ref('张三')
     const hasAddedRoutes = ref(false) // 是否动态添加路由
     const dynamicRoutes = ref([]) // 存储动态路由信息
@@ -59,8 +59,8 @@ export const useUserStore = defineStore(
       getDynamicRoutes,
     }
   },
-  {
-    // 配置项，启用数据持久化功能
-    persist: true, // 启用持久化
-  },
+  // {
+  //   // 配置项，启用数据持久化功能
+  //   persist: true, // 启用持久化
+  // },
 )
