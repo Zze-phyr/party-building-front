@@ -119,8 +119,6 @@ const onSubmit = async () => {
 .apply-party-box {
   .content-box {
     width: 100%;
-    // height: 310px;
-    // background-color: #fdfdfd;
     background-color: #fff;
     border-radius: 8px;
     overflow: hidden;
@@ -130,7 +128,7 @@ const onSubmit = async () => {
       font-size: 18px;
       line-height: 40px;
       // background-color: #f5f5f5;
-      // background-color: #fdfdfd;
+      background-color: #fbfbfb;
     }
   }
   // 入党申请书上传
