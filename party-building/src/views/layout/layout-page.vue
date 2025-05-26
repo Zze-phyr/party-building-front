@@ -22,10 +22,6 @@
               {{ route.meta.title }}
             </el-menu-item>
           </template>
-          <!-- <el-menu-item index="1" @click="skipPage('/layout/index')">首页</el-menu-item>
-          <el-menu-item index="2" @click="skipPage('/layout/partyProgress')">入党进度</el-menu-item>
-          <el-menu-item index="3">我的组织</el-menu-item>
-          <el-menu-item index="4">党建学习</el-menu-item> -->
           <!-- 个人 -->
           <div class="self-box">
             <div
@@ -36,7 +32,7 @@
             >
               <img class="img" :src="currentIcon" alt="个人图标" />
             </div>
-            <div class="text">{{ userStore.userId }}</div>
+            <div class="text">{{ userStore.name }}</div>
           </div>
         </el-menu>
       </el-header>

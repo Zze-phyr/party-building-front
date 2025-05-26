@@ -7,18 +7,20 @@ export const useUserStore = defineStore(
     // 用户信息
     const token = ref('111')
     const permission = ref('Common')
-    const status = ref('1')
-    const userId = ref('张三')
+    const status = ref('3')
+    const userId = ref('')
+    const name = ref('张三')
     const hasAddedRoutes = ref(false) // 是否动态添加路由
     const dynamicRoutes = ref([]) // 存储动态路由信息
 
     // 操作
     //设置 token
-    const login = (newToken, newPermission, newUserId, newStatus) => {
+    const login = (newToken, newPermission, newUserId, newStatus, newName) => {
       token.value = newToken
       permission.value = newPermission
       userId.value = newUserId
       status.value = newStatus
+      name.value = newName
       hasAddedRoutes.value = false // 重置路由状态
     }
 
@@ -50,6 +52,7 @@ export const useUserStore = defineStore(
       permission,
       status,
       userId,
+      name,
       hasAddedRoutes,
       dynamicRoutes,
       login,

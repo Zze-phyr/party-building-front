@@ -19,3 +19,8 @@ export const userNumberLogin = (data) => {
 export const userVerification = (params) => {
   return request.get('/phoneVerify', { params })
 }
+
+//文件上传
+export const fileUpload = (data) => {
+  return request.post('/public/file/upload', data)
+}

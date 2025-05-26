@@ -196,7 +196,7 @@ const submitPhoneLogin = async (formEl) => {
     const { data } = await userPhoneLogin(phoneLoginForm)
     if (data.code === 1) {
       ElMessage.success('登录成功！')
-      userStore.login(data.token, data.permission, data.userId, data.status)
+      userStore.login(data.token, data.permission, data.userId, data.status, data.name)
       router.push('/layout')
     } else {
       ElMessage.error(data.msg)
@@ -232,7 +232,7 @@ const submitNumberLogin = async (formEl) => {
     const { data } = await userNumberLogin(numberLoginForm)
     if (data.code === 1) {
       ElMessage.success('登录成功！')
-      userStore.login(data.token, data.permission, data.userId, data.status)
+      userStore.login(data.token, data.permission, data.userId, data.status, data.name)
       router.push('/layout')
     } else {
       ElMessage.error(data.msg)
