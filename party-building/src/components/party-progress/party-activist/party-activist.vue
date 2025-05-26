@@ -178,7 +178,6 @@ const handleChange = (value) => {
       height: 40px;
       font-size: 18px;
       line-height: 40px;
-      // background-color: #f5f5f5;
       background-color: #fbfbfb;
     }
   }
