@@ -105,7 +105,7 @@ console.log(status)
 
 <style lang="less" scoped>
 .bg-container {
-  background: url(../../assets/images/common/party-progress-bg.jpg) no-repeat 0 0 / 100% fixed;
+  background: url(../../assets/images/common/person-center-bg.png) no-repeat 0 0 / 100% fixed;
   background-size: cover; //图片比例与屏幕不匹配
   position: fixed;
   top: 0;

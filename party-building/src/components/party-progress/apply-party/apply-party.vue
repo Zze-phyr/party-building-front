@@ -8,11 +8,13 @@
         <!-- 文件上传 -->
         <el-upload
           class="upload"
+          v-model:file-list="fileList"
           drag
           action="#"
           :http-request="uploadFile"
           :limit="1"
           :on-exceed="uploadExceed"
+          :on-remove="fileRemove"
           accept=".pdf"
           :before-upload="beforeUpload"
         >
@@ -27,11 +29,12 @@
             type="date"
             placeholder="请确认与入党申请书填写时间一致"
             :disabled-date="disabledDate"
+            value-format="YYYY-MM-DD"
           />
         </div>
         <!-- 确认提交 -->
         <div class="btn-box">
-          <el-button @click="onSubmit()">确认提交 </el-button>
+          <el-button :loading="loading" @click="onSubmit()">确认提交 </el-button>
         </div>
       </div>
     </div>
@@ -45,7 +48,7 @@
 
 <script setup>
 import { UploadFilled } from '@element-plus/icons-vue'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import { useUserStore } from '@/stores'
 import { ElMessage } from 'element-plus'
 import { fileUpload } from '@/api/user'
@@ -57,6 +60,10 @@ const form = reactive({
   file: '',
 })
 
+const fileList = ref([])
+
+const loading = ref(false)
+
 // 禁用今天之后的日期
 const disabledDate = (time) => {
   return time.getTime() > Date.now()
@@ -66,8 +73,8 @@ const uploadFile = (params) => {
   form.file = params.file
 }
 
+// 触发超出限制事件
 const uploadExceed = () => {
-  console.log('触发超出限制事件')
   ElMessage.error('最多上传1个文件')
 }
 
@@ -87,17 +94,24 @@ const beforeUpload = (file) => {
   return true
 }
 
+//文件变化
+
+const fileRemove = () => {
+  form.file = ''
+}
+
 const onSubmit = async () => {
-  if (form.attachTime === '') {
+  if (!form.attachTime) {
     ElMessage.error('请填写申请入党日期')
     return
   }
-  if (form.file === '') {
+  if (!form.file) {
     ElMessage.error('请上传文件')
     return
   }
+  loading.value = true
   let formdata = new FormData()
-  formdata.append('fileType', 'JOIN_PARTY_APPLICATION')
+  formdata.append('fileType', 'JoinPartyApplication')
   formdata.append('creatorId', userStore.userId)
   formdata.append('userId', userStore.userId)
   formdata.append('attachTime', form.attachTime)
@@ -105,12 +119,15 @@ const onSubmit = async () => {
   try {
     const { data } = await fileUpload(formdata)
     if (data.code === 1) {
-      ElMessage.success('文件上传成功成功！')
+      ElMessage.success('文件上传成功！')
     } else {
       ElMessage.error(data.msg)
     }
-  } catch {
+  } catch (err) {
+    console.log(err)
     ElMessage.error('文件上传失败，请重试')
+  } finally {
+    loading.value = false
   }
 }
 </script>
@@ -129,6 +146,7 @@ const onSubmit = async () => {
       line-height: 40px;
       // background-color: #f5f5f5;
       background-color: #fbfbfb;
+      // color: #bc0000;
     }
   }
   // 入党申请书上传

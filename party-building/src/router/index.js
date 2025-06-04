@@ -53,7 +53,7 @@ const dynamicRoutes = [
     path: 'index',
     component: () => import('@/views/indexPage/index-page.vue'),
     meta: {
-      roles: ['Admin', 'Common'],
+      roles: ['Admin', 'Applicant', 'Student'],
       title: '首页',
     },
   },
@@ -62,7 +62,7 @@ const dynamicRoutes = [
     path: 'partyProgress',
     component: () => import('@/views/partyProgress/party-progress.vue'),
     meta: {
-      roles: ['Admin', 'Common'],
+      roles: ['Admin', 'Applicant', 'Student'],
       title: '入党进度',
     },
   },
@@ -71,7 +71,7 @@ const dynamicRoutes = [
     path: 'myOrg',
     component: () => import('@/views/myOrganization/my-organization.vue'),
     meta: {
-      roles: ['Common'],
+      roles: ['Applicant', 'Student'],
       title: '我的组织',
     },
   },
@@ -80,7 +80,7 @@ const dynamicRoutes = [
     path: 'partyStudy',
     component: () => import('@/views/partyStudy/party-study.vue'),
     meta: {
-      roles: ['Common'],
+      roles: ['Applicant', 'Student'],
       title: '党建学习',
     },
   },
@@ -89,7 +89,7 @@ const dynamicRoutes = [
     path: 'personalCenter',
     component: () => import('@/views/personalCenter/personal-center.vue'),
     meta: {
-      roles: ['Common'],
+      roles: ['Applicant', 'Student'],
       title: '个人中心',
       hidden: true,
     },
@@ -129,17 +129,12 @@ router.beforeEach((to, from, next) => {
       // 存储动态路由信息用于生成菜单
       userStore.setDynamicRoutes(allowedRoutes)
       userStore.hasAddedRoutes = true
-      console.log(11)
-      console.log(userStore.getDynamicRoutes)
-      // 处理可能存在的重复导航
-      next(to.fullPath)
+      return next({ ...to, replace: true })
     } catch (error) {
       console.error('路由加载失败:', error)
       next('/404')
     }
   } else {
-    console.log(22)
-
     next()
   }
 })

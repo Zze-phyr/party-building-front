@@ -63,7 +63,7 @@
             :rules="numberLoginRules"
           >
             <el-form-item label="账号" prop="number">
-              <el-input v-model="numberLoginForm.phone" placeholder="请输入您的学号/工号" />
+              <el-input v-model="numberLoginForm.number" placeholder="请输入您的学号/工号" />
             </el-form-item>
             <el-form-item class="password" label="密码" prop="password">
               <el-input
@@ -145,6 +145,7 @@ const countdownChange = async () => {
   if (flag) return
   try {
     const { data } = await userVerification({ phone: phoneLoginForm.phone })
+    console.log(data)
     if (data.code === 1) {
       ElMessage.success('短信成功发送')
       startCountdown()
@@ -196,7 +197,13 @@ const submitPhoneLogin = async (formEl) => {
     const { data } = await userPhoneLogin(phoneLoginForm)
     if (data.code === 1) {
       ElMessage.success('登录成功！')
-      userStore.login(data.token, data.permission, data.userId, data.status, data.name)
+      userStore.login(
+        data.data.token,
+        data.data.permission,
+        data.data.userId,
+        data.data.status,
+        data.data.name,
+      )
       router.push('/layout')
     } else {
       ElMessage.error(data.msg)
@@ -232,7 +239,13 @@ const submitNumberLogin = async (formEl) => {
     const { data } = await userNumberLogin(numberLoginForm)
     if (data.code === 1) {
       ElMessage.success('登录成功！')
-      userStore.login(data.token, data.permission, data.userId, data.status, data.name)
+      userStore.login(
+        data.data.token,
+        data.data.permission,
+        data.data.userId,
+        data.data.status,
+        data.data.name,
+      )
       router.push('/layout')
     } else {
       ElMessage.error(data.msg)

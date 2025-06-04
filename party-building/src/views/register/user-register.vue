@@ -19,8 +19,8 @@
             </div>
             <div class="text">学生党建平台</div>
           </div>
-          <el-form-item label="学号" prop="studentId">
-            <el-input v-model="registerForm.studentId" placeholder="学号将默认为您的账号" />
+          <el-form-item label="学号" prop="number">
+            <el-input v-model="registerForm.number" placeholder="学号将默认为您的账号" />
           </el-form-item>
           <el-form-item label="身份证号" prop="idCard">
             <el-input v-model="registerForm.idCard" placeholder="请输入您的身份证号" />
@@ -75,7 +75,7 @@ import { ElMessage } from 'element-plus'
 const registerFormRef = ref(null)
 
 const registerForm = reactive({
-  studentId: '',
+  number: '',
   idCard: '',
   phone: '',
   verify: '',
@@ -136,7 +136,7 @@ const validatePhone = (rule, value, callback) => {
 
 //表单校验
 const rules = reactive({
-  studentId: [
+  number: [
     { required: true, message: '请填写学号', trigger: 'blur' },
     { min: 10, max: 11, message: '请输入有效的学号', trigger: 'blur' },
   ],

@@ -8,13 +8,13 @@
         <div class="content">
           <div class="load-box">
             <div class="img-box">
-              <img class="img" src="../../../assets/images/partyProgress/PDF-pic.png" alt="" />
+              <img class="img" src="../../../assets/images/partyProgress/pdf.png" alt="" />
             </div>
             <div class="load">点击下载自传填写要求</div>
           </div>
           <div class="load-box">
             <div class="img-box">
-              <img class="img" src="../../../assets/images/partyProgress/PDF-pic.png" alt="" />
+              <img class="img" src="../../../assets/images/partyProgress/pdf.png" alt="" />
             </div>
             <div class="load">点击上传我的自传（需上传PDF扫描版）</div>
           </div>
@@ -43,7 +43,7 @@
         </div>
         <div class="load-box">
           <div class="img-box">
-            <img class="img" src="../../../assets/images/partyProgress/PDF-pic.png" alt="" />
+            <img class="img" src="../../../assets/images/partyProgress/pdf.png" alt="" />
           </div>
           <div class="load">点击上传我的入党志愿书（需上传PDF扫描版）</div>
         </div>

@@ -1,15 +1,15 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-import router from '@/router'
+// import router from '@/router'
 import { useUserStore } from '@/stores/index'
 
-const baseURL = 'http://172.20.10.4:8080'
+// const baseURL = 'http://172.20.10.4:8080'
 
 const instance = axios.create({
   //基础地址
-  baseURL,
+  baseURL: '/api',
   //超时时间
-  timeout: 10000,
+  timeout: 60000,
 })
 
 // 请求拦截器
@@ -41,18 +41,20 @@ instance.interceptors.response.use(
   },
   (err) => {
     //处理401错误
-    if (err.response.status === 401) {
-      const userStore = useUserStore()
-      userStore.logout()
-      router.push({ name: 'Login' })
-      ElMessage.warning('身份验证失败，请重新登录')
-    } else {
-      ElMessage.error(err.response?.data?.message || '网络请求失败')
-    }
+    console.log(err)
+    // console.log(err.data.msg)
+
+    // if (err.response.status === 401) {
+    //   const userStore = useUserStore()
+    //   userStore.logout()
+    //   router.push({ name: 'Login' })
+    //   ElMessage.warning('身份验证失败，请重新登录')
+    // } else {
+    //   ElMessage.error(err.response?.data?.message || '网络请求失败')
+    // }
 
     return Promise.reject(err)
   },
 )
 
 export default instance
-export { baseURL }
