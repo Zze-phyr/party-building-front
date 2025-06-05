@@ -276,12 +276,15 @@ const switchLoginWay = () => {
 
 <style lang="less" scoped>
 .bg-container {
-  background: url(../../assets/images/common/login-background.png) no-repeat 0 0 / 100% fixed;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  background-image: url(../../assets/images/common/login-background.png);
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
   .form-container {
     position: absolute;
     top: 50%;
@@ -373,4 +376,15 @@ const switchLoginWay = () => {
     }
   }
 }
+// .el-message {
+//   min-width: 380px;
+//   top: 20px;
+//   left: 50%;
+//   transform: translateX(-50%);
+//   background-color: #fff;
+//   border-radius: 4px;
+//   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+//   /* 确保 z-index 足够高 */
+//   z-index: 9999 !important;
+// }
 </style>

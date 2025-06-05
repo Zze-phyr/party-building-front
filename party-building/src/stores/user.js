@@ -5,11 +5,11 @@ export const useUserStore = defineStore(
   'user', //该 store 的唯一标识
   () => {
     // 用户信息
-    const token = ref('')
-    const permission = ref('')
-    const status = ref('')
+    const token = ref('111')
+    const permission = ref('Applicant')
+    const status = ref('1')
     const userId = ref(null)
-    const name = ref('')
+    const name = ref('张三')
     const hasAddedRoutes = ref(false) // 是否动态添加路由
     const dynamicRoutes = ref([]) // 存储动态路由信息
 

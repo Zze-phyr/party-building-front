@@ -221,12 +221,15 @@ const submitRegister = async (formEl) => {
 
 <style lang="less" scoped>
 .bg-container {
-  background: url(../../assets/images/common/login-background.png) no-repeat 0 0 / 100% fixed;
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  background-image: url(../../assets/images/common/login-background.png);
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
   .register-container {
     .form {
       position: absolute;
