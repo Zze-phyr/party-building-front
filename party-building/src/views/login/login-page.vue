@@ -14,7 +14,6 @@
       <div v-if="loginWay" class="phone-login-container form-box">
         <el-form
           class="form"
-          style="max-width: 600px"
           label-width="auto"
           label-position="top"
           size="normal"
@@ -54,7 +53,6 @@
         <div class="form-box">
           <el-form
             class="form"
-            style="max-width: 600px"
             label-width="auto"
             label-position="top"
             size="normal"
@@ -197,13 +195,7 @@ const submitPhoneLogin = async (formEl) => {
     const { data } = await userPhoneLogin(phoneLoginForm)
     if (data.code === 1) {
       ElMessage.success('登录成功！')
-      userStore.login(
-        data.data.token,
-        data.data.permission,
-        data.data.userId,
-        data.data.status,
-        data.data.name,
-      )
+      userStore.login(data.data.token, data.data.permission, data.data.userId, data.data.name)
       router.push('/layout')
     } else {
       ElMessage.error(data.msg)
@@ -239,13 +231,7 @@ const submitNumberLogin = async (formEl) => {
     const { data } = await userNumberLogin(numberLoginForm)
     if (data.code === 1) {
       ElMessage.success('登录成功！')
-      userStore.login(
-        data.data.token,
-        data.data.permission,
-        data.data.userId,
-        data.data.status,
-        data.data.name,
-      )
+      userStore.login(data.data.token, data.data.permission, data.data.userId, data.data.name)
       router.push('/layout')
     } else {
       ElMessage.error(data.msg)
@@ -289,19 +275,16 @@ const switchLoginWay = () => {
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -175px;
-    margin-left: -185px;
-    width: 370px;
-    height: 350px;
-    padding: 10px 20px;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px 0;
     background-color: #fff;
     border-radius: 10px;
     // 角色选择
     .roule-choice {
       display: flex;
+      align-items: center;
       margin: 10px 0;
       height: 30px;
-      line-height: 30px;
       font-weight: bold;
       font-size: 20px;
       text-align: center;
@@ -376,15 +359,4 @@ const switchLoginWay = () => {
     }
   }
 }
-// .el-message {
-//   min-width: 380px;
-//   top: 20px;
-//   left: 50%;
-//   transform: translateX(-50%);
-//   background-color: #fff;
-//   border-radius: 4px;
-//   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-//   /* 确保 z-index 足够高 */
-//   z-index: 9999 !important;
-// }
 </style>

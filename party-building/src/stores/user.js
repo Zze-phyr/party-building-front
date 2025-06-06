@@ -6,8 +6,7 @@ export const useUserStore = defineStore(
   () => {
     // 用户信息
     const token = ref('111')
-    const permission = ref('Applicant')
-    const status = ref('1')
+    const permission = ref(['Common', 'Applicant', 'DevelopmentOver'])
     const userId = ref(null)
     const name = ref('张三')
     const hasAddedRoutes = ref(false) // 是否动态添加路由
@@ -15,11 +14,10 @@ export const useUserStore = defineStore(
 
     // 操作
     //设置 token
-    const login = (newToken, newPermission, newUserId, newStatus, newName) => {
+    const login = (newToken, newPermission, newUserId, newName) => {
       token.value = newToken
       permission.value = newPermission
       userId.value = newUserId
-      status.value = newStatus
       name.value = newName
       hasAddedRoutes.value = false // 重置路由状态
     }
@@ -27,17 +25,16 @@ export const useUserStore = defineStore(
     //用户注销或 token 过期时，需要重置所有与认证相关的状态
     const logout = () => {
       token.value = ''
-      permission.value = ''
-      userId.value = ''
-      status.value = ''
+      permission.value = []
+      userId.value = null
       hasAddedRoutes.value = false
       dynamicRoutes.value = []
       window.location.reload() // 强制刷新重置路由
     }
 
-    //获取status,计算属性默认只读
-    const getStatus = computed(() => {
-      return status.value
+    //响应式获取permission
+    const getPermission = computed(() => {
+      return permission.value
     })
 
     const setDynamicRoutes = (routes) => {
@@ -50,16 +47,15 @@ export const useUserStore = defineStore(
     return {
       token,
       permission,
-      status,
       userId,
       name,
       hasAddedRoutes,
       dynamicRoutes,
       login,
       logout,
-      getStatus,
       setDynamicRoutes,
       getDynamicRoutes,
+      getPermission,
     }
   },
   // {

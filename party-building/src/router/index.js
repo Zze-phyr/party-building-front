@@ -53,7 +53,7 @@ const dynamicRoutes = [
     path: 'index',
     component: () => import('@/views/indexPage/index-page.vue'),
     meta: {
-      roles: ['Admin', 'Applicant', 'Student'],
+      roles: ['Admin', 'Common'],
       title: '首页',
     },
   },
@@ -62,7 +62,7 @@ const dynamicRoutes = [
     path: 'partyProgress',
     component: () => import('@/views/partyProgress/party-progress.vue'),
     meta: {
-      roles: ['Admin', 'Applicant', 'Student'],
+      roles: ['Admin', 'Common'],
       title: '入党进度',
     },
   },
@@ -71,7 +71,7 @@ const dynamicRoutes = [
     path: 'myOrg',
     component: () => import('@/views/myOrganization/my-organization.vue'),
     meta: {
-      roles: ['Applicant', 'Student'],
+      roles: ['Common'],
       title: '我的组织',
     },
   },
@@ -80,7 +80,7 @@ const dynamicRoutes = [
     path: 'partyStudy',
     component: () => import('@/views/partyStudy/party-study.vue'),
     meta: {
-      roles: ['Applicant', 'Student'],
+      roles: ['Common'],
       title: '党建学习',
     },
   },
@@ -89,7 +89,7 @@ const dynamicRoutes = [
     path: 'personalCenter',
     component: () => import('@/views/personalCenter/personal-center.vue'),
     meta: {
-      roles: ['Applicant', 'Student'],
+      roles: ['Common'],
       title: '个人中心',
       hidden: true,
     },
@@ -115,7 +115,8 @@ router.beforeEach((to, from, next) => {
   if (!userStore.hasAddedRoutes) {
     try {
       // 根据角色过滤动态路由
-      const userRole = userStore.permission
+      const userRole = userStore.getPermission[0]
+      console.log('用户权限:', userRole)
       const allowedRoutes = dynamicRoutes.filter((route) => route.meta.roles.includes(userRole))
       // 添加动态路由
       allowedRoutes.forEach((route) => {
@@ -132,6 +133,10 @@ router.beforeEach((to, from, next) => {
       return next({ ...to, replace: true })
     } catch (error) {
       console.error('路由加载失败:', error)
+      // localStorage.setItem(
+      //   'user',
+      //   '{"token":"111","permission":["Common", "Applicant", "DevelopmentOver"],"userId":123,"name":"张三","hasAddedRoutes":false,"dynamicRoutes":[]}',
+      // )
       next('/404')
     }
   } else {
