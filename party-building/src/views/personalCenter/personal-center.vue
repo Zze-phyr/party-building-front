@@ -1,7 +1,9 @@
 <template>
   <div class="bg-container"></div>
   <div class="person-center-box">
+    <!-- 信息盒子 -->
     <div class="info-box">
+      <!-- 小卡片 -->
       <div class="card small-card">
         <div class="title">个人信息</div>
         <div class="avatar-container">
@@ -25,7 +27,7 @@
         <div class="info-item">
           <img src="../../assets/images/icons/id.png" alt="" class="icon" />
           <span class="label">身份证号</span>
-          <span class="value">{{ userStore.userInfo.idcard }}</span>
+          <span class="value">{{ userStore.userInfo.idCard }}</span>
         </div>
         <div class="info-item">
           <img src="../../assets/images/icons/branch.png" alt="" class="icon" />
@@ -38,9 +40,10 @@
           <span class="value">支部委员</span>
         </div> -->
         <div class="btn-box">
-          <button class="btn">修改信息</button>
+          <button class="btn" @click="openUserInfoDialog()">修改信息</button>
         </div>
       </div>
+      <!-- 大卡片 -->
       <div class="card big-card">
         <div class="tabs">
           <div
@@ -60,6 +63,10 @@
         </div>
       </div>
     </div>
+    <!-- 修改信息对话框 -->
+    <div class="dialog-box">
+      <userInfoDialog v-model="dialogVisible"></userInfoDialog>
+    </div>
   </div>
 </template>
 
@@ -68,20 +75,21 @@ import { ref, onMounted } from 'vue'
 import emailInfo from '@/components/email-info/email-info.vue'
 import systemSet from '@/components/system-set/system-set.vue'
 import userData from '@/components/user-data/user-data.vue'
+import userInfoDialog from '@/components/user-info-dialog/user-info-dialog.vue'
 import { getCommonUserDetail } from '@/api/user'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores'
 
 const userStore = useUserStore()
 
+const tabs = ['用户信息', '邮箱信息', '系统设置']
+const activeTab = ref('用户信息')
+
 // 组件挂载后
 onMounted(async () => {
   try {
     if (!userStore.hasGetInfo) {
       const { data } = await getCommonUserDetail(userStore.userId)
-      // 使用解构赋值和展开语法过滤字段
-      // const { mainRelationships, ...filteredData } = data.data
-      // 直接赋值，不包含mainRelationships字段
       userStore.userInfo = data.data
       console.log(userStore.userInfo)
     }
@@ -91,8 +99,11 @@ onMounted(async () => {
   }
 })
 
-const tabs = ['用户信息', '邮箱信息', '系统设置']
-const activeTab = ref('用户信息')
+//打开修改个人信息对话框
+const dialogVisible = ref(false)
+const openUserInfoDialog = () => {
+  dialogVisible.value = true
+}
 </script>
 
 <style lang="less" scoped>
