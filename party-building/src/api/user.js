@@ -24,3 +24,13 @@ export const userVerification = (params) => {
 export const fileUpload = (data) => {
   return request.post('/general/file/upload', data)
 }
+
+//获取个人信息
+export const getCommonUserDetail = (userId) => {
+  return request.get(`/common/getCommonUserDetail/${userId}`)
+}
+
+//修改个人信息
+export const reviseCommonUserDetail = (data) => {
+  return request.post('/common/revise', data)
+}

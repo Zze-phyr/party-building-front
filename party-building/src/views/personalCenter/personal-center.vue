@@ -10,33 +10,33 @@
         <div class="info-item">
           <img src="../../assets/images/icons/number.png" alt="" class="icon" />
           <span class="label">学号/工号</span>
-          <span class="value">2318160169</span>
+          <span class="value">{{ userStore.userInfo.number }}</span>
         </div>
         <div class="info-item">
           <img src="../../assets/images/icons/name.png" alt="" class="icon" />
           <span class="label">用户姓名</span>
-          <span class="value">张三</span>
+          <span class="value">{{ userStore.userInfo.name }}</span>
         </div>
         <div class="info-item">
           <img src="../../assets/images/icons/phone.png" alt="" class="icon" />
           <span class="label">手机号码</span>
-          <span class="value">13800138000</span>
+          <span class="value">{{ userStore.userInfo.phone }}</span>
         </div>
         <div class="info-item">
           <img src="../../assets/images/icons/id.png" alt="" class="icon" />
           <span class="label">身份证号</span>
-          <span class="value">430606200101062564</span>
+          <span class="value">{{ userStore.userInfo.idcard }}</span>
         </div>
         <div class="info-item">
           <img src="../../assets/images/icons/branch.png" alt="" class="icon" />
           <span class="label">所属支部</span>
-          <span class="value">本科生第一党支部</span>
+          <span class="value">{{ userStore.userInfo.branch }}</span>
         </div>
-        <div class="info-item">
+        <!-- <div class="info-item">
           <img src="../../assets/images/icons/post.png" alt="" class="icon" />
           <span class="label">现任职务</span>
           <span class="value">支部委员</span>
-        </div>
+        </div> -->
         <div class="btn-box">
           <button class="btn">修改信息</button>
         </div>
@@ -64,10 +64,32 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import emailInfo from '@/components/email-info/email-info.vue'
 import systemSet from '@/components/system-set/system-set.vue'
 import userData from '@/components/user-data/user-data.vue'
+import { getCommonUserDetail } from '@/api/user'
+import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores'
+
+const userStore = useUserStore()
+
+// 组件挂载后
+onMounted(async () => {
+  try {
+    if (!userStore.hasGetInfo) {
+      const { data } = await getCommonUserDetail(userStore.userId)
+      // 使用解构赋值和展开语法过滤字段
+      // const { mainRelationships, ...filteredData } = data.data
+      // 直接赋值，不包含mainRelationships字段
+      userStore.userInfo = data.data
+      console.log(userStore.userInfo)
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage.error('数据请求失败')
+  }
+})
 
 const tabs = ['用户信息', '邮箱信息', '系统设置']
 const activeTab = ref('用户信息')
@@ -98,7 +120,7 @@ const activeTab = ref('用户信息')
       margin-right: 20px;
       padding-bottom: 10px;
       width: 300px;
-      height: 420px;
+      height: 400px;
       .title {
         font-size: 14px;
       }

@@ -32,7 +32,7 @@
             >
               <img class="img" :src="currentIcon" alt="个人图标" />
             </div>
-            <div class="text">{{ userStore.name }}</div>
+            <div class="text">{{ userStore.userInfo.name }}</div>
           </div>
         </el-menu>
       </el-header>
