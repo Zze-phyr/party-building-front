@@ -19,16 +19,16 @@ export const useUserStore = defineStore(
       idCard: '120111200006294512', //身份证号
       branch: '本科生第一党支部', //所属支部
       ethnicity: '汉', //民族
-      educationLevel: '高中', //文化程度
+      educationLevel: '', //文化程度
       originPlace: '吉林省长春市', //籍贯
       birthplace: '吉林省通化市辉南县', //出生地
-      politicalStatus: '共青团员', //政治面貌
+      politicalStatus: '', //政治面貌
       joinLeagueDate: '2018-11-04', //入团时间
       qq: '5372831762', //QQ
       email: '5372831762@qq.com', //电子邮箱
       phone: '19091742754', //手机号
       gender: 1, //性别0男1女
-      age: 18, //年龄
+      age: null, //年龄
       grade: '23级', //年级
       major: '数据科学与大数据技术', //专业
       sclass: '三班', //班级
