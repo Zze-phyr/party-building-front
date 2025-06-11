@@ -26,6 +26,12 @@
             <span class="record-item-title">参加人员</span>
             <span class="record-item-content">王五、李六、赵三...</span>
           </div>
+          <div class="download-box">
+            <div class="img-box">
+              <img class="img" src="../../../assets/images/icons/photo.png" alt="" />
+            </div>
+            <div class="download">点击下载查看吸收大会佐证材料</div>
+          </div>
         </div>
       </div>
     </div>
@@ -53,6 +59,12 @@
               我们党是根据自己的纲领和章程，按照民主集中制的原则，将全体党员组织起来的统一整体。党的组织自上而下分为三个层次：党的中央组织、党的地方组织和党的基层组织。
             </span>
           </div>
+          <div class="download-box">
+            <div class="img-box">
+              <img class="img" src="../../../assets/images/icons/photo.png" alt="" />
+            </div>
+            <div class="download">点击下载查看联系人谈话记录</div>
+          </div>
         </div>
       </div>
     </div>
@@ -76,6 +88,12 @@
           </div>
           <div class="record-item">
             <span class="record-item-content">点击上传宣誓会议照片(需上传PDF扫描版)</span>
+          </div>
+          <div class="download-box">
+            <div class="img-box">
+              <img class="img" src="../../../assets/images/icons/photo.png" alt="" />
+            </div>
+            <div class="download">点击下载查看入党宣誓会议记录</div>
           </div>
         </div>
       </div>
@@ -118,35 +136,52 @@
       line-height: 40px;
       background-color: #fbfbfb;
     }
-  }
-  // 记录
-  .record-content {
-    padding: 30px;
-    .record-item {
-      display: flex;
-      font-size: 14px;
-      margin-bottom: 15px;
-      .record-item-title {
-        flex: 1;
-        font-size: 15px;
+    // 记录
+    .record-content {
+      padding: 20px 30px;
+      .record-item {
+        display: flex;
+        font-size: 14px;
+        margin-bottom: 15px;
+        .record-item-title {
+          flex: 1;
+          font-size: 15px;
+        }
+        .record-item-content {
+          flex: 9;
+          color: #222;
+        }
+        &::before {
+          display: block;
+          margin-right: 10px;
+          content: '';
+          width: 3px;
+          height: 25px;
+          background-color: #bc0000c0;
+        }
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
-      .record-item-content {
-        flex: 9;
-        color: #222;
-      }
-      &::before {
-        display: block;
-        margin-right: 10px;
-        content: '';
-        width: 3px;
-        height: 25px;
-        background-color: #bc0000c0;
-      }
-      &:last-child {
-        margin-bottom: 0;
+      //右下角下载
+      .download-box {
+        display: flex;
+        justify-content: flex-end;
+        .img-box {
+          .img {
+            width: 22px;
+            height: 22px;
+          }
+        }
+        .download {
+          margin-left: 5px;
+          font-size: 14px;
+          color: #333;
+        }
       }
     }
   }
+
   // 入党志愿书
   .party-application-box {
     .content {
