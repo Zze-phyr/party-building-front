@@ -1,5 +1,7 @@
 <template>
   <div class="party-active-container">
+    <!-- 入党流程标题 -->
+    <div class="big-title">入党积极分子的确定和培养教育</div>
     <!-- 入党积极分子培养联系人 -->
     <div class="cultivate-contacts-box content-box">
       <div class="title">入党积极分子培养联系人信息填写</div>
@@ -167,6 +169,17 @@ const handleChange = (value) => {
 
 <style lang="less" scoped>
 .party-active-container {
+  .big-title {
+    margin-bottom: 20px;
+    width: 100%;
+    background-color: #f2c3b2;
+    border-radius: 8px;
+    height: 40px;
+    font-size: 20px;
+    line-height: 40px;
+    text-align: center;
+    color: #bc0000da;
+  }
   .content-box {
     width: 100%;
     background-color: #fff;

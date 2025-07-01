@@ -1,5 +1,7 @@
 <template>
   <div class="develop-candidate-container">
+    <!-- 入党流程标题 -->
+    <div class="big-title">发展对象的确定和考察</div>
     <!-- 自传&结业证书 -->
     <!-- 自传 -->
     <div class="autobiography-certificate-box">
@@ -69,6 +71,17 @@
 
 <style lang="less" scoped>
 .develop-candidate-container {
+  .big-title {
+    margin-bottom: 20px;
+    width: 100%;
+    background-color: #f2c3b2;
+    border-radius: 8px;
+    height: 40px;
+    font-size: 20px;
+    line-height: 40px;
+    text-align: center;
+    color: #bc0000da;
+  }
   .content-box {
     width: 100%;
     background-color: #fff;

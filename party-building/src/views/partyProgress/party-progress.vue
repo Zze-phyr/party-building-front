@@ -18,14 +18,17 @@
       <div class="step-item">
         <div
           class="step-dot"
-          :class="{ 'dot-finished': status === 'DevelopmentOver' }"
+          :class="{ 'dot-finished': status === 'Development' || status === 'DevelopmentOver' }"
           @click="checkFour()"
         ></div>
         <div
           class="step-connector"
           :class="{ finished: status === 'Development' || status === 'DevelopmentOver' }"
         ></div>
-        <div class="step-content" :class="{ finished: status === 'DevelopmentOver' }">
+        <div
+          class="step-content"
+          :class="{ finished: status === 'Development' || status === 'DevelopmentOver' }"
+        >
           预备党员的接收
         </div>
       </div>
@@ -33,7 +36,9 @@
       <div class="step-item">
         <div
           class="step-dot"
-          :class="{ 'dot-finished': status === 'Development' || status === 'DevelopmentOver' }"
+          :class="{
+            'dot-finished': status !== 'ApplicationPartyMembership' && status !== 'PartyActivities',
+          }"
           @click="checkThree()"
         ></div>
         <div
@@ -44,7 +49,9 @@
         ></div>
         <div
           class="step-content"
-          :class="{ finished: status === 'Development' || status === 'DevelopmentOver' }"
+          :class="{
+            finished: status !== 'ApplicationPartyMembership' && status !== 'PartyActivities',
+          }"
         >
           发展对象的确定和考察
         </div>
@@ -54,7 +61,7 @@
         <div
           class="step-dot"
           :class="{
-            'dot-finished': status !== 'ApplicationPartyMembership' && status !== 'PartyActivities',
+            'dot-finished': status !== 'ApplicationPartyMembership',
           }"
           @click="checkTwo()"
         ></div>
@@ -65,7 +72,7 @@
         <div
           class="step-content"
           :class="{
-            finished: status !== 'ApplicationPartyMembership' && status !== 'PartyActivities',
+            finished: status !== 'ApplicationPartyMembership',
           }"
         >
           入党积极分子的确定和培养教育
@@ -74,9 +81,7 @@
       <!-- 申请入党 -->
       <div class="step-item">
         <div class="step-dot dot-finished" @click="checkOne()"></div>
-        <div class="step-content" :class="{ finished: status !== 'ApplicationPartyMembership' }">
-          申请入党
-        </div>
+        <div class="step-content finished">申请入党</div>
       </div>
       <!-- 温馨提示 -->
       <div class="tips">Tips:可点击圆点查看历史上传记录</div>

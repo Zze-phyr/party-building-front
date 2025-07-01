@@ -1,5 +1,7 @@
 <template>
   <div class="full-party-member-box">
+    <!-- 入党流程标题 -->
+    <div class="big-title">预备党员的教育考察和转正</div>
     <!-- 支部大会会议记录 -->
     <div class="branch-general-assembly-record-box content-box">
       <div class="title">支部大会会议记录</div>
@@ -42,6 +44,17 @@
 
 <style lang="less" scoped>
 .full-party-member-box {
+  .big-title {
+    margin-bottom: 20px;
+    width: 100%;
+    background-color: #f2c3b2;
+    border-radius: 8px;
+    height: 40px;
+    font-size: 20px;
+    line-height: 40px;
+    text-align: center;
+    color: #bc0000da;
+  }
   .content-box {
     width: 100%;
     background-color: #fff;

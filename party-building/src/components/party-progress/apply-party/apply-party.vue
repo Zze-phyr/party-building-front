@@ -1,5 +1,7 @@
 <template>
   <div class="apply-party-box">
+    <!-- 入党流程标题 -->
+    <div class="big-title">申请入党</div>
     <!-- 入党申请书上传 -->
     <div class="party-application-box content-box">
       <!-- 标题 -->
@@ -134,6 +136,17 @@ const onSubmit = async () => {
 
 <style lang="less" scoped>
 .apply-party-box {
+  .big-title {
+    margin-bottom: 20px;
+    width: 100%;
+    background-color: #f2c3b2;
+    border-radius: 8px;
+    height: 40px;
+    font-size: 20px;
+    line-height: 40px;
+    text-align: center;
+    color: #bc0000da;
+  }
   .content-box {
     width: 100%;
     background-color: #fff;
@@ -144,9 +157,7 @@ const onSubmit = async () => {
       height: 40px;
       font-size: 18px;
       line-height: 40px;
-      // background-color: #f5f5f5;
       background-color: #fbfbfb;
-      // color: #bc0000;
     }
   }
   // 入党申请书上传
