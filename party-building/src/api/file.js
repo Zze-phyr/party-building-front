@@ -9,3 +9,8 @@ export const getFileMetadata = (data) => {
 export const fileUpload = (data) => {
   return request.post('/general/file/upload', data)
 }
+
+// 根据id删除文件
+export const deleteFile = (params) => {
+  return request.delete(`/general/file/delete/${params}`)
+}

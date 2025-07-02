@@ -6,43 +6,71 @@
     <div class="party-application-box content-box">
       <!-- 标题 -->
       <div class="title">入党申请书上传</div>
-      <!-- 待提交 -->
-      <div class="upload-box">
-        <!-- 文件上传 -->
-        <el-upload
-          class="upload"
-          v-model:file-list="fileList"
-          drag
-          action="#"
-          :http-request="uploadFile"
-          :limit="1"
-          :on-exceed="uploadExceed"
-          :on-remove="fileRemove"
-          accept=".pdf"
-          :before-upload="beforeUpload"
-        >
-          <el-icon class="upload-icon"><upload-filled /></el-icon>
-          <div class="upload-text">拖拽PDF文件到这里或 <em>点击选择文件</em></div>
-        </el-upload>
-        <!-- 时间选择 -->
-        <div class="date-picker-box">
-          <div class="label">申请入党时间</div>
-          <el-date-picker
-            v-model="form.attachTime"
-            type="date"
-            placeholder="请确认与入党申请书填写时间一致"
-            :disabled-date="disabledDate"
-            value-format="YYYY-MM-DD"
-          />
+      <!-- 待提交、待审核、审核失败 -->
+      <el-row v-if="fileStore.JoinPartyApplication.status !== 1" class="wait-submit">
+        <el-col :span="fileStore.JoinPartyApplication.status === -1 ? 12 : 24">
+          <div class="upload-box">
+            <!-- 状态提示 -->
+            <div v-if="fileStore.JoinPartyApplication.status === 0" class="text">审核中...</div>
+            <!-- 文件上传 -->
+            <el-upload
+              class="upload"
+              v-model:file-list="fileList"
+              drag
+              action="#"
+              :http-request="uploadFile"
+              :limit="1"
+              :on-exceed="uploadExceed"
+              :on-remove="fileRemove"
+              accept=".pdf"
+              :before-upload="beforeUpload"
+            >
+              <el-icon class="upload-icon"><upload-filled /></el-icon>
+              <div class="upload-text">拖拽PDF文件到这里或 <em>点击选择文件</em></div>
+            </el-upload>
+            <!-- 时间选择 -->
+            <div class="date-picker-box">
+              <div class="label">申请入党时间</div>
+              <el-date-picker
+                v-model="form.attachTime"
+                type="date"
+                placeholder="请确认与入党申请书填写时间一致"
+                :disabled-date="disabledDate"
+                value-format="YYYY-MM-DD"
+              />
+            </div>
+            <!-- 确认提交 -->
+            <div class="btn-box">
+              <el-button :loading="loading" @click="onSubmit()">{{
+                fileStore.JoinPartyApplication.status === -2 ? '确认提交' : '确认重新提交'
+              }}</el-button>
+            </div>
+          </div>
+        </el-col>
+        <el-col v-if="fileStore.JoinPartyApplication.status === -1" :span="12">
+          <div class="not-pass-box">
+            <div class="text">
+              你的申请书被<span class="red">驳回</span>，请按照要求修改，并重新上传！
+            </div>
+            <div class="text">修改意见：</div>
+            <el-scrollbar class="tips-box" height="100px">
+              <p>
+                {{ fileStore.JoinPartyApplication.attachText }}
+              </p>
+            </el-scrollbar>
+          </div>
+        </el-col>
+      </el-row>
+      <!-- 审核成功 -->
+      <div v-if="fileStore.JoinPartyApplication.status === 1" class="success-check-box">
+        <div class="img-box">
+          <img class="img" src="../../../assets/images/partyProgress/success-check.png" alt="" />
         </div>
-        <!-- 确认提交 -->
+        <div class="text">恭喜你，你的入党申请书已通过！</div>
         <div class="btn-box">
-          <el-button :loading="loading" @click="onSubmit()">确认提交 </el-button>
+          <el-button @click="downloadFile">下载入党申请书</el-button>
         </div>
       </div>
-      <!-- 待审核 -->
-      <!-- 审核失败 -->
-      <!-- 审核成功 -->
     </div>
     <!-- 谈话佐证材料记录 -->
     <div class="talk-materials-box content-box">
@@ -57,7 +85,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { reactive, ref, onMounted } from 'vue'
 import { useUserStore, useFileStore } from '@/stores'
 import { ElMessage } from 'element-plus'
-import { fileUpload, getFileMetadata } from '@/api/file'
+import { fileUpload, getFileMetadata, deleteFile } from '@/api/file'
 
 const userStore = useUserStore()
 const fileStore = useFileStore()
@@ -71,22 +99,28 @@ onMounted(async () => {
     })
     fileMsg.userId = userStore.userId
     fileMsg.fileType = 'JoinPartyApplication'
-    const { data } = getFileMetadata(fileMsg)
-    // ————1————
-    // const fileData = data.data
-    // fileStore.modifyFileInfo(
-    //   fileMsg.fileType,
-    //   fileData.status,
-    //   fileData.fileId,
-    //   fileData.attachText,
-    //   fileData.attachTime,
-    // )
-    // ————2————
-    // fileStore.JoinPartyApplication = data.data
-    fileStore.JoinPartyApplication.status = data.data.status
-    fileStore.JoinPartyApplication.fileId = data.data.fileId
-    fileStore.JoinPartyApplication.attachText = data.data.attachText
-    fileStore.JoinPartyApplication.attachTime = data.data.attachTime
+    const { data } = await getFileMetadata(fileMsg)
+    if (data.code === 1) {
+      if (data.data.fileId) {
+        // ————1————
+        // const fileData = data.data
+        // fileStore.modifyFileInfo(
+        //   fileMsg.fileType,
+        //   fileData.status,
+        //   fileData.fileId,
+        //   fileData.attachText,
+        //   fileData.attachTime,
+        // )
+        // ————2————
+        // fileStore.JoinPartyApplication = data.data
+        fileStore.JoinPartyApplication.status = data.data.status
+        fileStore.JoinPartyApplication.fileId = data.data.fileId
+        fileStore.JoinPartyApplication.attachText = data.data.attachText
+        fileStore.JoinPartyApplication.attachTime = data.data.attachTime
+      }
+    } else {
+      ElMessage.error(data.msg)
+    }
   } catch (error) {
     console.log(error)
     ElMessage.error('数据获取失败')
@@ -155,8 +189,16 @@ const onSubmit = async () => {
   formdata.append('attachTime', form.attachTime)
   formdata.append('file', form.file)
   try {
+    if (fileStore.JoinPartyApplication.status !== -2) {
+      const { deletData } = await deleteFile(fileStore.JoinPartyApplication.fileId)
+      if (deletData.code === 0) {
+        ElMessage.error('文件删除失败')
+        return
+      }
+    }
     const { data } = await fileUpload(formdata)
     if (data.code === 1) {
+      fileStore.JoinPartyApplication.status = data.status
       ElMessage.success('文件上传成功！')
     } else {
       ElMessage.error(data.msg)
@@ -199,79 +241,138 @@ const onSubmit = async () => {
   // 入党申请书上传
   .party-application-box {
     margin-bottom: 20px;
-    .upload-box {
-      // height: 270px;
-      //文件上传
-      .upload {
-        .upload-icon {
-          font-size: 80px;
-          color: #999;
+    //确认提交
+    .btn-box {
+      margin-bottom: 12px;
+      text-align: center;
+      :deep(.el-button) {
+        background-color: #bc0000;
+        color: #fff;
+        &:active {
+          background-color: #bc0000a8;
         }
-        .upload-text {
-          color: #999;
-          font-size: 16px;
+        &:hover {
+          background-color: #bc0000a8;
         }
-        :deep(.el-upload) {
-          --el-upload-dragger-padding-horizontal: 30px;
-        }
-        :deep(.el-upload:hover) {
+      }
+    }
+    // 待提交、待审核、审核失败
+    .wait-submit {
+      .upload-box {
+        // height: 270px;
+        // 状态提示
+        .text {
+          height: 100px;
+          line-height: 100px;
+          text-align: center;
           color: #d9001b;
-          .el-upload-dragger {
-            border-color: #d9001b;
-            .upload-icon {
-              color: #d9001b;
+          font-size: 30px;
+        }
+        //文件上传
+        .upload {
+          .upload-icon {
+            font-size: 80px;
+            color: #999;
+          }
+          .upload-text {
+            color: #999;
+            font-size: 16px;
+          }
+          :deep(.el-upload) {
+            --el-upload-dragger-padding-horizontal: 30px;
+          }
+          :deep(.el-upload:hover) {
+            color: #d9001b;
+            .el-upload-dragger {
+              border-color: #d9001b;
+              .upload-icon {
+                color: #d9001b;
+              }
+              .upload-text {
+                color: #d9001b;
+              }
             }
-            .upload-text {
-              color: #d9001b;
+          }
+          :deep(.el-upload:focus) {
+            .el-upload-dragger {
+              border-color: #d9001b;
             }
           }
         }
-        :deep(.el-upload:focus) {
-          .el-upload-dragger {
-            border-color: #d9001b;
-          }
-        }
-      }
-      //时间选择
-      .date-picker-box {
-        margin: 10px;
-        display: flex;
-        height: 25px;
-        justify-content: center;
-        align-items: center;
-        .label {
-          color: #333;
-          padding-right: 5px;
-          font-size: 14px;
-        }
-        :deep(.el-date-editor.el-input) {
+        //时间选择
+        .date-picker-box {
+          margin: 10px;
+          display: flex;
           height: 25px;
-          width: 255px;
-        }
-        :deep(.el-input__wrapper) {
-          font-size: 14px;
-          .is-focus {
-            box-shadow: 0 0 0 1px #bc0000 inset;
+          justify-content: center;
+          align-items: center;
+          .label {
+            color: #333;
+            padding-right: 5px;
+            font-size: 14px;
           }
-        }
-        :deep(.el-input__wrapper.is-focus) {
-          box-shadow: 0 0 0 1px #bc000062 inset;
+          :deep(.el-date-editor.el-input) {
+            height: 25px;
+            width: 255px;
+          }
+          :deep(.el-input__wrapper) {
+            font-size: 14px;
+            .is-focus {
+              box-shadow: 0 0 0 1px #bc0000 inset;
+            }
+          }
+          :deep(.el-input__wrapper.is-focus) {
+            box-shadow: 0 0 0 1px #bc000062 inset;
+          }
         }
       }
-      //确认提交
-      .btn-box {
-        margin-bottom: 12px;
-        text-align: center;
-        :deep(.el-button) {
-          background-color: #bc0000;
-          color: #fff;
-          &:active {
-            background-color: #bc0000a8;
+      .not-pass-box {
+        padding: 20px;
+        .text {
+          display: flex;
+          margin-bottom: 20px;
+          font-size: 16px;
+          line-height: 25px;
+          &::before {
+            display: block;
+            margin-right: 10px;
+            content: '';
+            width: 3px;
+            height: 25px;
+            background-color: #bc0000c0;
           }
-          &:hover {
-            background-color: #bc0000a8;
+          .red {
+            color: #bc0000;
           }
         }
+        &:last-child .text {
+          margin-bottom: 10px;
+        }
+        .tips-box {
+          padding: 5px 10px;
+          border: 1px solid #ddd;
+          border-radius: 3px;
+          p {
+            margin: 0;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+    // 审核成功
+    .success-check-box {
+      margin: 10px;
+      text-align: center;
+      .img-box {
+        .img {
+          width: 150px;
+          height: 150px;
+        }
+      }
+      .text {
+        margin: 10px 0;
+        font-size: 14px;
+        color: #bc0000;
       }
     }
   }
