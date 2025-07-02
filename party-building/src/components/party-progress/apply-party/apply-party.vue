@@ -6,6 +6,7 @@
     <div class="party-application-box content-box">
       <!-- 标题 -->
       <div class="title">入党申请书上传</div>
+      <!-- 待提交 -->
       <div class="upload-box">
         <!-- 文件上传 -->
         <el-upload
@@ -39,6 +40,9 @@
           <el-button :loading="loading" @click="onSubmit()">确认提交 </el-button>
         </div>
       </div>
+      <!-- 待审核 -->
+      <!-- 审核失败 -->
+      <!-- 审核成功 -->
     </div>
     <!-- 谈话佐证材料记录 -->
     <div class="talk-materials-box content-box">
@@ -50,12 +54,44 @@
 
 <script setup>
 import { UploadFilled } from '@element-plus/icons-vue'
-import { reactive, ref } from 'vue'
-import { useUserStore } from '@/stores'
+import { reactive, ref, onMounted } from 'vue'
+import { useUserStore, useFileStore } from '@/stores'
 import { ElMessage } from 'element-plus'
-import { fileUpload } from '@/api/user'
+import { fileUpload, getFileMetadata } from '@/api/file'
 
 const userStore = useUserStore()
+const fileStore = useFileStore()
+
+// 组件挂载后
+onMounted(async () => {
+  try {
+    const fileMsg = reactive({
+      userId: '',
+      fileType: '',
+    })
+    fileMsg.userId = userStore.userId
+    fileMsg.fileType = 'JoinPartyApplication'
+    const { data } = getFileMetadata(fileMsg)
+    // ————1————
+    // const fileData = data.data
+    // fileStore.modifyFileInfo(
+    //   fileMsg.fileType,
+    //   fileData.status,
+    //   fileData.fileId,
+    //   fileData.attachText,
+    //   fileData.attachTime,
+    // )
+    // ————2————
+    // fileStore.JoinPartyApplication = data.data
+    fileStore.JoinPartyApplication.status = data.data.status
+    fileStore.JoinPartyApplication.fileId = data.data.fileId
+    fileStore.JoinPartyApplication.attachText = data.data.attachText
+    fileStore.JoinPartyApplication.attachTime = data.data.attachTime
+  } catch (error) {
+    console.log(error)
+    ElMessage.error('数据获取失败')
+  }
+})
 
 const form = reactive({
   attachTime: '',

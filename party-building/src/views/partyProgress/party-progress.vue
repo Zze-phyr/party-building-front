@@ -131,8 +131,6 @@ const checkFour = () => {
 const checkFive = () => {
   if (status === 'DevelopmentOver') checkState.value = 'DevelopmentOver'
 }
-
-console.log(status)
 </script>
 
 <style lang="less" scoped>
