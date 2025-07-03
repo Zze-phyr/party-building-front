@@ -11,6 +11,13 @@ export const fileUpload = (data) => {
 }
 
 // 根据id删除文件
-export const deleteFile = (params) => {
+export const fileDelete = (params) => {
   return request.delete(`/general/file/delete/${params}`)
+}
+
+// 根据文件id下载文件
+export const fileDownload = (fileId) => {
+  return request.get(`/general/file/download/${fileId}`, {
+    responseType: 'blob', //没有固定结构的二进制对象
+  })
 }

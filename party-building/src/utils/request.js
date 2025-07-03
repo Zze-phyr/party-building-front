@@ -30,10 +30,15 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   //res相关数据信息
   (res) => {
+    //二进制文件直接通过
+    if (res.config.responseType === 'blob') {
+      return res
+    }
+
     if (res.data.code === 1) {
       return res
     }
-    //对接口异常，需要给用户提示
+
     if (res.data.code === 0) {
       ElMessage.warning(res.data.message)
       return Promise.reject(res.data) // 阻止后续链式调用

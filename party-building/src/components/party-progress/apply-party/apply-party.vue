@@ -68,7 +68,16 @@
         </div>
         <div class="text">恭喜你，你的入党申请书已通过！</div>
         <div class="btn-box">
-          <el-button @click="downloadFile">下载入党申请书</el-button>
+          <el-button
+            :loading="loading"
+            @click="
+              handleDownload(
+                fileStore.JoinPartyApplication.fileId,
+                fileStore.JoinPartyApplication.fileName,
+              )
+            "
+            >下载入党申请书</el-button
+          >
         </div>
       </div>
     </div>
@@ -85,7 +94,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { reactive, ref, onMounted } from 'vue'
 import { useUserStore, useFileStore } from '@/stores'
 import { ElMessage } from 'element-plus'
-import { fileUpload, getFileMetadata, deleteFile } from '@/api/file'
+import { fileUpload, getFileMetadata, fileDelete, fileDownload } from '@/api/file'
 
 const userStore = useUserStore()
 const fileStore = useFileStore()
@@ -115,6 +124,7 @@ onMounted(async () => {
         // fileStore.JoinPartyApplication = data.data
         fileStore.JoinPartyApplication.status = data.data.status
         fileStore.JoinPartyApplication.fileId = data.data.fileId
+        fileStore.JoinPartyApplication.fileName = data.data.fileName
         fileStore.JoinPartyApplication.attachText = data.data.attachText
         fileStore.JoinPartyApplication.attachTime = data.data.attachTime
       }
@@ -127,6 +137,7 @@ onMounted(async () => {
   }
 })
 
+//文件上传，删除
 const form = reactive({
   attachTime: '',
   file: '',
@@ -167,7 +178,6 @@ const beforeUpload = (file) => {
 }
 
 //文件变化
-
 const fileRemove = () => {
   form.file = ''
 }
@@ -190,22 +200,49 @@ const onSubmit = async () => {
   formdata.append('file', form.file)
   try {
     if (fileStore.JoinPartyApplication.status !== -2) {
-      const { deletData } = await deleteFile(fileStore.JoinPartyApplication.fileId)
+      const { data: deletData } = await fileDelete(fileStore.JoinPartyApplication.fileId)
       if (deletData.code === 0) {
         ElMessage.error('文件删除失败')
         return
       }
     }
-    const { data } = await fileUpload(formdata)
-    if (data.code === 1) {
-      fileStore.JoinPartyApplication.status = data.status
+    const { data: uploadData } = await fileUpload(formdata)
+    if (uploadData.code === 1) {
+      fileStore.JoinPartyApplication.status = uploadData.status
       ElMessage.success('文件上传成功！')
     } else {
-      ElMessage.error(data.msg)
+      ElMessage.error(uploadData.msg)
     }
   } catch (err) {
     console.log(err)
     ElMessage.error('文件上传失败，请重试')
+  } finally {
+    loading.value = false
+  }
+}
+
+// 文件下载
+const handleDownload = async (fileId, fileName) => {
+  try {
+    if (!fileId) {
+      ElMessage.error('文件ID不存在')
+      return
+    }
+    loading.value = true
+    const { data: downloadData } = await fileDownload(fileId)
+    const blob = new Blob([downloadData])
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', fileName)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+    ElMessage.success('文件下载成功')
+  } catch (error) {
+    console.error('下载失败:', error)
+    ElMessage.error('下载失败')
   } finally {
     loading.value = false
   }
@@ -361,7 +398,7 @@ const onSubmit = async () => {
     }
     // 审核成功
     .success-check-box {
-      margin: 10px;
+      margin: 20px 0;
       text-align: center;
       .img-box {
         .img {
@@ -370,7 +407,7 @@ const onSubmit = async () => {
         }
       }
       .text {
-        margin: 10px 0;
+        margin: 20px 0;
         font-size: 14px;
         color: #bc0000;
       }

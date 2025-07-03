@@ -10,7 +10,7 @@ export const useFileStore = defineStore('file', () => {
   //入党申请书
   const JoinPartyApplication = reactive({
     status: 1,
-    fileId: null,
+    fileId: '12345',
     attachText:
       '111首次申请入党时间错误，正确时间应该修改为：2025/09/16，请在2025年11月26日前修改为正确的时间，如未修改，后果自负！2025/09/16，请在2025年11月26日前修改为正确的时间，2025/09/16，请在2025年11月26日前修改为正确的时间，2025/09/16，请在2025年11月26日前修改为正确的时间，首次申请入党时间错误，正确时间应该修改为：2025/09/16，请在2025年11月',
     attachTime: null,
