@@ -199,13 +199,17 @@ const onSubmit = async () => {
   formdata.append('attachTime', form.attachTime)
   formdata.append('file', form.file)
   try {
-    if (fileStore.JoinPartyApplication.status !== -2) {
+    //重新上传先删除
+    const shouldDelete =
+      fileStore.JoinPartyApplication.fileId && fileStore.JoinPartyApplication.status !== -2
+    if (shouldDelete) {
       const { data: deletData } = await fileDelete(fileStore.JoinPartyApplication.fileId)
       if (deletData.code === 0) {
         ElMessage.error('文件删除失败')
         return
       }
     }
+    // 上传请求
     const { data: uploadData } = await fileUpload(formdata)
     if (uploadData.code === 1) {
       fileStore.JoinPartyApplication.status = uploadData.status
