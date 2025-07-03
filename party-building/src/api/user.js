@@ -20,11 +20,6 @@ export const userVerification = (params) => {
   return request.get('/public/phoneVerify', { params })
 }
 
-//文件上传
-export const fileUpload = (data) => {
-  return request.post('/general/file/upload', data)
-}
-
 //获取个人信息
 export const getCommonUserDetail = (userId) => {
   return request.get(`/common/getCommonUserDetail/${userId}`)
@@ -33,4 +28,9 @@ export const getCommonUserDetail = (userId) => {
 //修改个人信息
 export const reviseCommonUserDetail = (data) => {
   return request.post('/common/revise', data)
+}
+
+//新增培养联系人
+export const addNurtureContacts = (data) => {
+  return request.post('/common/nurtureContacts/add', data)
 }

@@ -9,84 +9,86 @@
         <el-col class="form-one" :span="12">
           <el-form
             style="max-width: 600px"
-            :model="formOne"
+            :model="cultivateContactForm"
             label-width="auto"
             label-position="left"
             size="small"
+            ref="cultivateContactFormRef"
+            :rules="cultivateContactRules"
           >
-            <el-form-item label="培养联系人姓名">
-              <el-input v-model="formOne.name" />
+            <el-form-item label="培养联系人姓名" prop="name">
+              <el-input v-model="cultivateContactForm.name" />
             </el-form-item>
-            <el-form-item label="培养联系人">
-              <el-radio-group v-model="formOne.order">
+            <el-form-item label="培养联系人" prop="number">
+              <el-radio-group v-model="cultivateContactForm.number">
                 <el-radio border value="1">培养联系人1</el-radio>
                 <el-radio border value="2">培养联系人2</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="党龄">
+            <el-form-item label="党龄" prop="paryAge">
               <el-input-number
-                v-model="formOne.pary_age"
+                v-model="cultivateContactForm.paryAge"
                 :min="1"
                 :max="150"
                 size="small"
                 controls-position="right"
-                @change="handleChange"
               />
             </el-form-item>
-            <el-form-item label="政治面貌">
-              <el-select v-model="formOne.visage" placeholder="请选择">
+            <el-form-item label="政治面貌" prop="visage">
+              <el-select v-model="cultivateContactForm.visage" placeholder="请选择">
                 <el-option label="群众" value="群众" />
                 <el-option label="共青团员" value="共青团员" />
                 <el-option label="中共党员" value="中共党员" />
               </el-select>
             </el-form-item>
-            <el-form-item label="单位及职务">
-              <el-input v-model="formOne.unit_occupation" />
+            <el-form-item label="单位及职务" prop="unitOccupation">
+              <el-input v-model="cultivateContactForm.unitOccupation" />
             </el-form-item>
             <div class="btn-box">
-              <el-button>确定保存</el-button>
+              <el-button @click="cultivateContactSubmnit(cultivateContactFormRef)"
+                >确定保存</el-button
+              >
             </div>
           </el-form>
         </el-col>
         <el-col class="form-two" :span="12">
           <el-form
             style="max-width: 600px"
-            :model="formOne"
+            :model="cultivateContactForm"
             label-width="auto"
             label-position="left"
             size="small"
           >
             <el-form-item label="培养联系人姓名">
-              <el-input v-model="formOne.name" />
+              <el-input v-model="cultivateContactForm.name" />
             </el-form-item>
             <el-form-item label="培养联系人">
-              <el-radio-group v-model="formOne.order">
+              <el-radio-group v-model="cultivateContactForm.number">
                 <el-radio border value="1">培养联系人1</el-radio>
                 <el-radio border value="2">培养联系人2</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="党龄">
               <el-input-number
-                v-model="formOne.pary_age"
+                v-model="cultivateContactForm.paryAge"
                 :min="1"
                 :max="150"
                 size="small"
                 controls-position="right"
-                @change="handleChange"
               />
             </el-form-item>
             <el-form-item label="政治面貌">
-              <el-select v-model="formOne.visage" placeholder="请选择">
+              <el-select v-model="cultivateContactForm.visage" placeholder="请选择">
                 <el-option label="群众" value="群众" />
                 <el-option label="共青团员" value="共青团员" />
                 <el-option label="中共党员" value="中共党员" />
               </el-select>
             </el-form-item>
             <el-form-item label="单位及职务">
-              <el-input v-model="formOne.unit_occupation" />
+              <el-input v-model="cultivateContactForm.unitOccupation" />
             </el-form-item>
             <div class="btn-box">
-              <el-button>确定保存</el-button>
+              <el-button @click="cultivateContactSubmnit()">确定保存</el-button>
             </div>
           </el-form></el-col
         >
@@ -148,22 +150,47 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import { addNurtureContacts } from '@/api/user'
 
 // 入党积极分子培养联系人
-
-const formOne = reactive({
-  userId: '',
-  name: '',
-  order: '',
-  pary_age: '',
-  visage: '',
-  unit_occupation: '',
+const cultivateContactForm = reactive({
+  commonUserId: '', //用户id
+  name: '', //培养联系人姓名
+  number: '1', //培养联系人顺序
+  paryAge: 2, //党龄
+  visage: '', //政治面貌
+  unitOccupation: '', //单位及职务
 })
 
-const handleChange = (value) => {
-  console.log(typeof value, value) // Element UI 会自动转为数字
-  formOne.name.value = String(value) // 手动转回字符串
+const cultivateContactFormRef = ref(null)
+
+//表单校验
+const cultivateContactRules = reactive({
+  name: [{ required: true, message: '请填写', trigger: 'blur' }],
+  number: [{ required: true, message: '请填写', trigger: 'blur' }],
+  paryAge: [{ required: true, message: '请填写', trigger: 'blur' }],
+  visage: [{ required: true, message: '请填写', trigger: 'blur' }],
+  unitOccupation: [{ required: true, message: '请填写', trigger: 'blur' }],
+})
+
+// 提交入党积极分子培养联系人表单
+const cultivateContactSubmnit = async (formEl) => {
+  if (!formEl) return
+  try {
+    await formEl.validate()
+    cultivateContactForm.number = parseInt(cultivateContactForm.number)
+    const { data: cultivateContactData } = await addNurtureContacts(cultivateContactForm)
+    if (cultivateContactData.code === 1) {
+      ElMessage.success('提交成功')
+    } else {
+      ElMessage.error(cultivateContactData.msg)
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage.error('提交失败，请重试')
+  }
 }
 </script>
 
@@ -223,7 +250,7 @@ const handleChange = (value) => {
         }
       }
       .el-form-item--small {
-        margin-bottom: 8px;
+        margin-bottom: 20px;
       }
       .btn-box {
         // margin-bottom: 12px;
