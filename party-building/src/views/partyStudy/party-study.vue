@@ -52,7 +52,7 @@ const handleStepClick = (index) => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .vertical-stepper {
   height: 500px;
   display: flex;

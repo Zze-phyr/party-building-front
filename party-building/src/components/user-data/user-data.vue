@@ -132,7 +132,7 @@ import { useUserStore } from '@/stores'
 const userStore = useUserStore()
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .userDataBox {
   padding: 15px 5px;
   .info-item {

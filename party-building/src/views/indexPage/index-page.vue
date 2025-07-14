@@ -74,7 +74,7 @@
 
 <script setup></script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .index-container {
   max-width: 1200px;
   margin: 0 auto;

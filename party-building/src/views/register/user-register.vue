@@ -219,7 +219,7 @@ const submitRegister = async (formEl) => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .bg-container {
   position: fixed;
   top: 0;

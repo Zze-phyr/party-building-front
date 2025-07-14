@@ -84,7 +84,7 @@ const handleMouseLeave = () => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .el-main {
   padding: 0;
 }

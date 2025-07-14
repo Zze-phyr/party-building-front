@@ -1,3 +1,5 @@
+// 路由主路口
+
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores'
 

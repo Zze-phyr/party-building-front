@@ -123,7 +123,7 @@
 
 <script setup></script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .probation-member-box {
   .big-title {
     margin-bottom: 20px;

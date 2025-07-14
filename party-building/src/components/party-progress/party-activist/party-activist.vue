@@ -194,7 +194,7 @@ const cultivateContactSubmnit = async (formEl) => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .party-active-container {
   .big-title {
     margin-bottom: 20px;

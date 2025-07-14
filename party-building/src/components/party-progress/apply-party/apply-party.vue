@@ -253,7 +253,7 @@ const handleDownload = async (fileId, fileName) => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .apply-party-box {
   .big-title {
     margin-bottom: 20px;

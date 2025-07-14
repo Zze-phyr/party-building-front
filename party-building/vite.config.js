@@ -21,8 +21,10 @@ export default defineConfig({
     }),
   ],
   resolve: {
+    // 配置路径别名
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      components: fileURLToPath(new URL('./src/components', import.meta.url)),
     },
   },
   server: {

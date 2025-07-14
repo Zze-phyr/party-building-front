@@ -390,7 +390,7 @@ const submitUserInfo = async (formEl) => {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .form {
   margin: 20px 50px 5px;
 }
