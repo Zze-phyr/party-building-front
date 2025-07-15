@@ -1,45 +1,61 @@
 // 普通用户
-export const userLayoutRoute = {
-  name: 'UserLayout',
-  path: '/user',
-  component: () => import('@/views/layout/UserLayout.vue'),
-  redirect: '/user/index',
+
+export const commonLayoutRoute = {
+  name: 'CommonLayout',
+  path: '/common',
+  component: () => import('@/views/common/layout/layout-page.vue'),
+  redirect: '/common/index',
   meta: {
     requiresAuth: true,
-    roleType: 'user', // 标记为用户路由
+    roleType: 'Common', // 标记为普通用户路由
   },
   children: [], // 动态添加子路由
 }
 
 // 基础路由（所有普通用户可见）
-export const userBaseRoutes = [
+export const commonBaseRoutes = [
   {
-    name: 'UserIndex',
+    name: 'CommonIndex',
     path: 'index',
-    component: () => import('@/views/user/index-page.vue'),
+    component: () => import('@/views/common/indexPage/index-page.vue'),
     meta: {
-      title: '用户首页',
-      icon: 'home',
+      title: '首页',
       roles: ['Student', 'Teacher', 'Applicant'],
     },
   },
   {
-    name: 'PartyProgress',
-    path: 'party-progress',
-    component: () => import('@/views/user/PartyProgress.vue'),
+    name: 'BranchConstruction',
+    path: 'branchConstruction',
+    component: () => import('@/views/common/branchConstruction/branch-construction.vue'),
     meta: {
-      title: '入党进度',
-      icon: 'progress',
-      roles: ['Student', 'Applicant'],
+      title: '支部建设',
+      roles: ['Student', 'Teacher', 'Applicant'],
+    },
+  },
+  {
+    name: 'PartyBuildingStyle',
+    path: 'partyBuildingStyle',
+    component: () => import('@/views/common/partyBuildingStyle'),
+    meta: {
+      title: '党建风采',
+      roles: ['Student', 'Teacher', 'Applicant'],
+    },
+  },
+  {
+    name: 'NotificationCenter',
+    path: 'notificationCenter',
+    component: () => import('@/views/common/notificationCenter/notification-center.vue'),
+    meta: {
+      title: '通知中心',
+      roles: ['Student', 'Teacher', 'Applicant'],
     },
   },
   {
     name: 'PersonalCenter',
-    path: 'personal-center',
-    component: () => import('@/views/user/PersonalCenter.vue'),
+    path: 'personalCenter',
+    component: () => import('@/views/common/personalCenter/personal-center.vue'),
     meta: {
       title: '个人中心',
-      icon: 'user',
       roles: ['Student', 'Teacher', 'Applicant'],
       hidden: true, // 不在主导航显示
     },
@@ -47,73 +63,41 @@ export const userBaseRoutes = [
 ]
 
 // 学生专属路由
-export const studentRoutes = [
-  {
-    name: 'StudyMaterials',
-    path: 'study-materials',
-    component: () => import('@/views/user/student/StudyMaterials.vue'),
-    meta: {
-      title: '学习资料',
-      icon: 'book',
-      roles: ['Student'],
-    },
-  },
-]
+export const studentRoutes = []
 
 // 教师专属路由
-export const teacherRoutes = [
-  {
-    name: 'ClassManagement',
-    path: 'class-management',
-    component: () => import('@/views/user/teacher/ClassManagement.vue'),
-    meta: {
-      title: '班级管理',
-      icon: 'team',
-      roles: ['Teacher'],
-    },
-  },
-  {
-    name: 'TaskApproval',
-    path: 'task-approval',
-    component: () => import('@/views/user/teacher/TaskApproval.vue'),
-    meta: {
-      title: '任务审批',
-      icon: 'check-circle',
-      roles: ['Teacher'],
-    },
-  },
-]
+export const teacherRoutes = []
 
 // 申请者专属路由
 export const applicantRoutes = [
   {
-    name: 'ApplicationStatus',
-    path: 'application-status',
-    component: () => import('@/views/user/applicant/ApplicationStatus.vue'),
+    name: 'PartyProgress',
+    path: 'partyProgress',
+    component: () => import('@/views/common/partyProgress'),
     meta: {
-      title: '申请状态',
-      icon: 'form',
+      title: '入党流程',
       roles: ['Applicant'],
     },
   },
 ]
 
 // 获取普通用户完整路由
-export const getUserRoutes = (secondaryRole) => {
-  const routes = [...userBaseRoutes]
+export const getCommonRoutes = (secondaryRole) => {
+  const routes = [...commonBaseRoutes]
 
   switch (secondaryRole) {
+    case 'Applicant':
+      routes.push(...applicantRoutes)
+      break
     case 'Student':
       routes.push(...studentRoutes)
       break
     case 'Teacher':
       routes.push(...teacherRoutes)
       break
-    case 'Applicant':
-      routes.push(...applicantRoutes)
-      break
     default:
       console.warn('未知的普通用户类型:', secondaryRole)
+      return []
   }
 
   return routes

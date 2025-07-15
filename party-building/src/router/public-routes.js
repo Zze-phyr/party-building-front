@@ -5,35 +5,35 @@ export default [
     path: '/',
     redirect: '/login',
     meta: {
-      public: true, // 为公共路由
-      hidden: true, // 不在菜单显示
+      public: true, // 为公共路由,不需要登录即可访问
+      hidden: true, // 不在导航栏中显示
     },
   },
   {
     name: 'Login',
     path: '/login',
-    component: () => import('@/views/login/login-page.vue'),
+    component: () => import('@/views/public/login/login-page.vue'),
     meta: {
-      public: true, // 为公共路由
-      hidden: true, // 不在菜单显示
+      public: true,
+      hidden: true,
     },
   },
   {
     name: 'Register',
     path: '/register',
-    component: () => import('@/views/register/user-register.vue'),
+    component: () => import('@/views/public/register/user-register.vue'),
     meta: {
-      public: true, // 为公共路由,不需要登录即可访问
-      hidden: true, // 不在菜单显示
+      public: true,
+      hidden: true,
     },
   },
   {
     name: '404',
     path: '/404',
-    component: () => import('@/views/404/404-page.vue'),
+    component: () => import('@/views/public/404/404-page.vue'),
     meta: {
-      public: true, // 为公共路由
-      hidden: true, // 不在菜单显示
+      public: true,
+      hidden: true,
     },
   },
 ]
