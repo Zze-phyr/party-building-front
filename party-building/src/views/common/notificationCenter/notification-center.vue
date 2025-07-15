@@ -1,4 +1,4 @@
-<template>我的组织</template>
+<template>通知中心</template>
 
 <script setup></script>
 

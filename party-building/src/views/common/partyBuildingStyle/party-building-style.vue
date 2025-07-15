@@ -1,4 +1,4 @@
-<template>邮箱信息</template>
+<template>党建风采</template>
 
 <script setup></script>
 

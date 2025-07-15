@@ -1,52 +1,51 @@
 // 路由主路口
-
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores'
 
-export const staticRoutes = [
-  {
-    path: '/',
-    redirect: '/login',
-    meta: {
-      public: true, // 为公共路由
-      hidden: true, // 不在菜单显示
-    },
-  },
-  {
-    name: 'Login',
-    path: '/login',
-    component: () => import('@/views/login/login-page.vue'),
-    meta: {
-      public: true, // 为公共路由
-      hidden: true, // 不在菜单显示
-    },
-  },
-  {
-    name: 'Register',
-    path: '/register',
-    component: () => import('@/views/register/user-register.vue'),
-    meta: {
-      public: true, // 为公共路由,不需要登录即可访问
-      hidden: true, // 不在菜单显示
-    },
-  },
-  {
-    name: '404',
-    path: '/404',
-    component: () => import('@/views/404/404-page.vue'),
-    meta: {
-      public: true, // 为公共路由
-      hidden: true, // 不在菜单显示
-    },
-  },
-  {
-    name: 'Layout',
-    path: '/layout',
-    component: () => import('@/views/layout/layout-page.vue'),
-    redirect: '/layout/index',
-    children: [],
-  },
-]
+// export const staticRoutes = [
+//   {
+//     path: '/',
+//     redirect: '/login',
+//     meta: {
+//       public: true, // 为公共路由
+//       hidden: true, // 不在菜单显示
+//     },
+//   },
+//   {
+//     name: 'Login',
+//     path: '/login',
+//     component: () => import('@/views/login/login-page.vue'),
+//     meta: {
+//       public: true, // 为公共路由
+//       hidden: true, // 不在菜单显示
+//     },
+//   },
+//   {
+//     name: 'Register',
+//     path: '/register',
+//     component: () => import('@/views/register/user-register.vue'),
+//     meta: {
+//       public: true, // 为公共路由,不需要登录即可访问
+//       hidden: true, // 不在菜单显示
+//     },
+//   },
+//   {
+//     name: '404',
+//     path: '/404',
+//     component: () => import('@/views/404/404-page.vue'),
+//     meta: {
+//       public: true, // 为公共路由
+//       hidden: true, // 不在菜单显示
+//     },
+//   },
+//   {
+//     name: 'Layout',
+//     path: '/layout',
+//     component: () => import('@/views/layout/layout-page.vue'),
+//     redirect: '/layout/index',
+//     children: [],
+//   },
+// ]
 
 //dynamicRoutes不导出,仅在路由守卫内部使用，保证路由配置的安全性和封装性。
 const dynamicRoutes = [
@@ -100,7 +99,7 @@ const dynamicRoutes = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: staticRoutes,
+  // routes: staticRoutes,
 })
 
 //路由守卫

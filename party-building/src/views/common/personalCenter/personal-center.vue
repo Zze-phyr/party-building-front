@@ -76,7 +76,7 @@ import emailInfo from '@/components/email-info/email-info.vue'
 import systemSet from '@/components/system-set/system-set.vue'
 import userData from '@/components/user-data/user-data.vue'
 import userInfoDialog from '@/components/user-info-dialog/user-info-dialog.vue'
-import { getCommonUserDetail } from '@/api/user'
+import { getCommonUserDetail } from '@/api/public'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores'
 

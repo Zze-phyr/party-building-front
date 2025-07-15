@@ -1,3 +1,5 @@
+// 通用接口
+
 import request from '@/utils/request'
 
 // 批量请求需要的文件元数据

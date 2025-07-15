@@ -94,7 +94,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { reactive, ref, onMounted } from 'vue'
 import { useUserStore, useFileStore } from '@/stores'
 import { ElMessage } from 'element-plus'
-import { fileUpload, getFileMetadata, fileDelete, fileDownload } from '@/api/file'
+import { fileUpload, getFileMetadata, fileDelete, fileDownload } from '@/api/general'
 
 const userStore = useUserStore()
 const fileStore = useFileStore()

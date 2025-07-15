@@ -152,7 +152,7 @@
 <script setup>
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { addNurtureContacts } from '@/api/user'
+import { addNurtureContacts } from '@/api/public'
 
 // 入党积极分子培养联系人
 const cultivateContactForm = reactive({
