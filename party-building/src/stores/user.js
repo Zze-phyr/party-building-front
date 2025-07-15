@@ -1,3 +1,4 @@
+// 用户权限状态
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useInfoStore } from '@/stores'
@@ -5,13 +6,13 @@ import { useInfoStore } from '@/stores'
 export const useUserStore = defineStore(
   'user', //该 store 的唯一标识
   () => {
-    // 用户信息
+    // 认证状态
     const token = ref('111')
     const permission = ref(['Common', 'Applicant', 'DevelopmentOver'])
     const userId = ref(null)
     const hasAddedRoutes = ref(false) // 是否动态添加路由
     const dynamicRoutes = ref([]) // 存储动态路由信息
-    // 用户资料
+    // 用户infoStore引用
     const infoStore = useInfoStore()
 
     // 操作

@@ -1,3 +1,4 @@
+// 文件状态
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
 
