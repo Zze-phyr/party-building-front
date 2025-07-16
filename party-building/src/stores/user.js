@@ -15,13 +15,12 @@ export const useUserStore = defineStore(
     // 用户infoStore引用
     const infoStore = useInfoStore()
 
-    // 操作
     //登录成功
-    const login = (newToken, newPermission, newUserId, newName) => {
-      token.value = newToken
-      permission.value = newPermission
-      userId.value = newUserId
-      infoStore.userInfo.name = newName
+    const login = (userData) => {
+      token.value = userData.token
+      permission.value = userData.permission
+      userId.value = userData.userId
+      infoStore.userInfo.name = userData.username
       hasAddedRoutes.value = false // 重置路由状态
     }
 
@@ -36,14 +35,17 @@ export const useUserStore = defineStore(
       window.location.reload() // 强制刷新重置路由
     }
 
-    //响应式获取permission
-    const getPermission = computed(() => {
-      return permission.value
-    })
+    // 获取用户权限
+    const getPermission = computed(() => permission.value)
 
     // 动态路由
     const setDynamicRoutes = (routes) => {
       dynamicRoutes.value = routes
+    }
+
+    // 标记路由已添加
+    const setHasAddedRoutes = (status) => {
+      hasAddedRoutes.value = status
     }
 
     const getDynamicRoutes = computed(() => {
@@ -61,6 +63,7 @@ export const useUserStore = defineStore(
       setDynamicRoutes,
       getDynamicRoutes,
       getPermission,
+      setHasAddedRoutes,
     }
   },
   // {
