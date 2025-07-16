@@ -6,9 +6,7 @@ export const adminLayoutRoute = {
   component: () => import('@/views/admin/layout/layout-page.vue'),
   redirect: '/admin/joinParty',
   meta: {
-    requiresAuth: true,
-    adminOnly: true,
-    roleType: 'Admin', // 标记为管理员路由
+    roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
   },
   children: [], // 动态添加子路由
 }

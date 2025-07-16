@@ -7,7 +7,7 @@ export const commonLayoutRoute = {
   redirect: '/common/index',
   meta: {
     requiresAuth: true,
-    roleType: 'Common', // 标记为普通用户路由
+    roles: ['Student', 'Teacher', 'Applicant'],
   },
   children: [], // 动态添加子路由
 }
