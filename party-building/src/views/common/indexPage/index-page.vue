@@ -6,7 +6,7 @@
         <el-carousel class="slider" height="150px" :interval="3000" :duration="1000" :ease="'ease'">
           <el-carousel-item v-for="item in 2" :key="item">
             <div class="img-box">
-              <img class="img" src="../../assets/images/common/slider1.png" alt="" />
+              <img class="img" src="../../../assets/images/common/slider1.png" alt="" />
             </div>
           </el-carousel-item>
         </el-carousel>
@@ -28,7 +28,7 @@
           <el-row class="content-box" :gutter="10">
             <el-col v-for="item in 2" :key="item.index" :span="12">
               <div class="img-box">
-                <img class="img" src="../../assets/images/common/news1.png" alt="" />
+                <img class="img" src="../../../assets/images/common/news1.png" alt="" />
               </div>
               <div class="news-box" v-for="item in 3" :key="item.index">
                 <div class="line"></div>

@@ -99,11 +99,11 @@
 <script setup>
 import { ref } from 'vue'
 import { useUserStore } from '@/stores'
-import applyParty from '@/components/party-progress/apply-party/apply-party.vue'
-import partyActivist from '@/components/party-progress/party-activist/party-activist.vue'
-import developCandidate from '@/components/party-progress/develop-candidate/develop-candidate.vue'
-import probationMember from '@/components/party-progress/probation-member/probation-member.vue'
-import fullPartyMember from '@/components/party-progress/full-party-member/full-party-member.vue'
+import applyParty from '@/components/common/party-progress/apply-party/apply-party.vue'
+import partyActivist from '@/components/common/party-progress/party-activist/party-activist.vue'
+import developCandidate from '@/components/common/party-progress/develop-candidate/develop-candidate.vue'
+import probationMember from '@/components/common/party-progress/probation-member/probation-member.vue'
+import fullPartyMember from '@/components/common/party-progress/full-party-member/full-party-member.vue'
 
 const userStore = useUserStore()
 const status = userStore.getPermission[2]
@@ -135,7 +135,7 @@ const checkFive = () => {
 
 <style lang="scss" scoped>
 .bg-container {
-  background: url(../../assets/images/common/person-center-bg.png) no-repeat 0 0 / 100% fixed;
+  background: url(../../../assets/images/common/person-center-bg.png) no-repeat 0 0 / 100% fixed;
   background-size: cover; //图片比例与屏幕不匹配
   position: fixed;
   top: 0;

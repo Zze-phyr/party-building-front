@@ -30,7 +30,7 @@
           </div>
           <div class="download-box">
             <div class="img-box">
-              <img class="img" src="../../../assets/images/icons/photo.png" alt="" />
+              <img class="img" src="../../../../assets/images/icons/photo.png" alt="" />
             </div>
             <div class="download">点击下载查看吸收大会佐证材料</div>
           </div>

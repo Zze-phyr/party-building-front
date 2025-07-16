@@ -35,7 +35,7 @@ export const commonBaseRoutes = [
   {
     name: 'PartyBuildingStyle',
     path: 'partyBuildingStyle',
-    component: () => import('@/views/common/partyBuildingStyle'),
+    component: () => import('@/views/common/partyBuildingStyle/party-building-style.vue'),
     meta: {
       title: '党建风采',
       roles: ['Student', 'Teacher', 'Applicant'],
@@ -73,7 +73,7 @@ export const applicantRoutes = [
   {
     name: 'PartyProgress',
     path: 'partyProgress',
-    component: () => import('@/views/common/partyProgress'),
+    component: () => import('@/views/common/partyProgress/party-progress.vue'),
     meta: {
       title: '入党流程',
       roles: ['Applicant'],

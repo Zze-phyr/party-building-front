@@ -7,32 +7,32 @@
       <div class="card small-card">
         <div class="title">个人信息</div>
         <div class="avatar-container">
-          <img src="../../assets/images/common/profile-photo.png" alt="" />
+          <img src="../../../assets/images/common/profile-photo.png" alt="" />
         </div>
         <div class="info-item">
-          <img src="../../assets/images/icons/number.png" alt="" class="icon" />
+          <img src="../../../assets/images/icons/number.png" alt="" class="icon" />
           <span class="label">学号/工号</span>
-          <span class="value">{{ userStore.userInfo.number }}</span>
+          <span class="value">{{ infoStore.userInfo.number }}</span>
         </div>
         <div class="info-item">
-          <img src="../../assets/images/icons/name.png" alt="" class="icon" />
+          <img src="../../../assets/images/icons/name.png" alt="" class="icon" />
           <span class="label">用户姓名</span>
-          <span class="value">{{ userStore.userInfo.name }}</span>
+          <span class="value">{{ infoStore.userInfo.name }}</span>
         </div>
         <div class="info-item">
-          <img src="../../assets/images/icons/phone.png" alt="" class="icon" />
+          <img src="../../../assets/images/icons/phone.png" alt="" class="icon" />
           <span class="label">手机号码</span>
-          <span class="value">{{ userStore.userInfo.phone }}</span>
+          <span class="value">{{ infoStore.userInfo.phone }}</span>
         </div>
         <div class="info-item">
-          <img src="../../assets/images/icons/id.png" alt="" class="icon" />
+          <img src="../../../assets/images/icons/id.png" alt="" class="icon" />
           <span class="label">身份证号</span>
-          <span class="value">{{ userStore.userInfo.idCard }}</span>
+          <span class="value">{{ infoStore.userInfo.idCard }}</span>
         </div>
         <div class="info-item">
-          <img src="../../assets/images/icons/branch.png" alt="" class="icon" />
+          <img src="../../../assets/images/icons/branch.png" alt="" class="icon" />
           <span class="label">所属支部</span>
-          <span class="value">{{ userStore.userInfo.branch }}</span>
+          <span class="value">{{ infoStore.userInfo.branch }}</span>
         </div>
         <!-- <div class="info-item">
           <img src="../../assets/images/icons/post.png" alt="" class="icon" />
@@ -58,7 +58,6 @@
         </div>
         <div class="contents">
           <userData v-if="activeTab === '用户信息'"></userData>
-          <emailInfo v-if="activeTab === '邮箱信息'"></emailInfo>
           <systemSet v-if="activeTab === '系统设置'"></systemSet>
         </div>
       </div>
@@ -72,26 +71,26 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import emailInfo from '@/components/email-info/email-info.vue'
-import systemSet from '@/components/system-set/system-set.vue'
-import userData from '@/components/user-data/user-data.vue'
-import userInfoDialog from '@/components/user-info-dialog/user-info-dialog.vue'
-import { getCommonUserDetail } from '@/api/public'
+import systemSet from '@/components/common/personal-center/system-set/system-set.vue'
+import userData from '@/components/common/personal-center/user-data/user-data.vue'
+import userInfoDialog from '@/components/common/personal-center/user-info-dialog/user-info-dialog.vue'
+import { getCommonUserDetail } from '@/api/common'
 import { ElMessage } from 'element-plus'
-import { useUserStore } from '@/stores'
+import { useInfoStore, useUserStore } from '@/stores'
 
 const userStore = useUserStore()
+const infoStore = useInfoStore()
 
-const tabs = ['用户信息', '邮箱信息', '系统设置']
+const tabs = ['用户信息', '系统设置']
 const activeTab = ref('用户信息')
 
 // 组件挂载后
 onMounted(async () => {
   try {
-    if (!userStore.hasGetInfo) {
+    if (!infoStore.hasGetInfo) {
       const { data } = await getCommonUserDetail(userStore.userId)
-      userStore.userInfo = data.data
-      console.log(userStore.userInfo)
+      infoStore.userInfo = data.data
+      console.log(infoStore.userInfo)
     }
   } catch (error) {
     console.log(error)
@@ -108,7 +107,7 @@ const openUserInfoDialog = () => {
 
 <style lang="scss" scoped>
 .bg-container {
-  background: url(../../assets/images/common/person-center-bg.png) no-repeat 0 0 / 100% fixed;
+  background: url(../../../assets/images/common/person-center-bg.png) no-repeat 0 0 / 100% fixed;
   background-size: cover; //图片比例与屏幕不匹配
   position: fixed;
   top: 0;

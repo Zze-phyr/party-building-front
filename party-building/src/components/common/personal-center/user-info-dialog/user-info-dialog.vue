@@ -214,10 +214,10 @@
 
 <script setup>
 import { reactive, ref, watch } from 'vue'
-import { useUserStore } from '@/stores'
+import { useInfoStore } from '@/stores'
 // import { ElMessage } from 'element-plus'
 
-const userStore = useUserStore()
+const infoStore = useInfoStore()
 
 //父子通信
 const emit = defineEmits(['update:modelValue'])
@@ -271,7 +271,7 @@ let userInfoForm = reactive({
 watch(dialogVisible, (visible) => {
   if (visible) {
     // 使用深拷贝初始化表单
-    const userInfo = userStore.userInfo
+    const userInfo = infoStore.userInfo
     Object.keys(userInfoForm).forEach((key) => {
       if (Array.isArray(userInfo[key])) {
         userInfoForm[key] = JSON.parse(JSON.stringify(userInfo[key]))

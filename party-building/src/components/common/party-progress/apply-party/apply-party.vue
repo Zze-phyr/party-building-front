@@ -64,7 +64,7 @@
       <!-- 审核成功 -->
       <div v-if="fileStore.JoinPartyApplication.status === 1" class="success-check-box">
         <div class="img-box">
-          <img class="img" src="../../../assets/images/partyProgress/success-check.png" alt="" />
+          <img class="img" src="../../../../assets/images/partyProgress/success-check.png" alt="" />
         </div>
         <div class="text">恭喜你，你的入党申请书已通过！</div>
         <div class="btn-box">
@@ -98,6 +98,7 @@ import { fileUpload, getFileMetadata, fileDelete, fileDownload } from '@/api/gen
 
 const userStore = useUserStore()
 const fileStore = useFileStore()
+// const infoStore = useInfoStore()
 
 // 组件挂载后
 onMounted(async () => {

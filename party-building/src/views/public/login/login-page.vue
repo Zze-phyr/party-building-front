@@ -92,7 +92,7 @@
 
 <script setup>
 import { reactive, ref, onUnmounted } from 'vue'
-import { userPhoneLogin, userVerification, userNumberLogin } from '../../api/user'
+import { userPhoneLogin, userVerification, userNumberLogin } from '@/api/public'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores'
 import { useRouter } from 'vue-router'
@@ -267,7 +267,7 @@ const switchLoginWay = () => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-image: url(../../assets/images/common/login-background.png);
+  background-image: url(../../../assets/images/common/login-background.png);
   background-size: cover;
   background-position: center;
   z-index: -1;

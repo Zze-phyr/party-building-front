@@ -14,11 +14,11 @@
         >
           <!-- 校徽 -->
           <div class="img-box">
-            <img class="img" src="../../assets/images/common/hnust-logo.png" alt="校徽" />
+            <img class="img" src="../../../assets/images/common/hnust-logo.png" alt="校徽" />
           </div>
           <!-- 菜单选择 -->
           <template v-for="route in dynamicRoutes" :key="route.name">
-            <el-menu-item :index="route.name" @click="skipPage(`/layout/${route.path}`)">
+            <el-menu-item :index="route.name" @click="skipPage(`/common/${route.path}`)">
               {{ route.meta.title }}
             </el-menu-item>
           </template>
@@ -26,13 +26,13 @@
           <div class="self-box">
             <div
               class="party-icon-box"
-              @click="skipPage('/layout/personalCenter')"
+              @click="skipPage('/common/personalCenter')"
               @mouseenter="handleMouseEnter"
               @mouseleave="handleMouseLeave"
             >
               <img class="img" :src="currentIcon" alt="个人图标" />
             </div>
-            <div class="text">{{ userStore.userInfo.name }}</div>
+            <div class="text">{{ infoStore.userInfo.name }}</div>
           </div>
         </el-menu>
       </el-header>
@@ -49,11 +49,12 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { ref, computed } from 'vue'
-import { useUserStore } from '@/stores'
+import { useUserStore, useInfoStore } from '@/stores'
 
 //动态路由
 const router = useRouter()
 const userStore = useUserStore()
+const infoStore = useInfoStore()
 
 let dynamicRoutes = userStore.getDynamicRoutes
 
@@ -69,8 +70,8 @@ const skipPage = (path) => {
 }
 
 // 定义默认图片和 hover 图片路径
-const normalIcon = new URL('../../assets/images/common/nav-icon.png', import.meta.url).href
-const hoverIcon = new URL('../../assets/images/common/nav-icon-2.png', import.meta.url).href
+const normalIcon = new URL('../../../assets/images/common/nav-icon.png', import.meta.url).href
+const hoverIcon = new URL('../../../assets/images/common/nav-icon-2.png', import.meta.url).href
 
 // 动态绑定的图片路径
 const currentIcon = ref(normalIcon)

@@ -5,43 +5,43 @@
         <div class="info-item">
           <span class="lable">姓名</span>
           <span class="content">
-            {{ userStore.userInfo.name }}
+            {{ infoStore.userInfo.name }}
           </span>
         </div>
         <div class="info-item">
           <span class="lable">民族</span>
           <span class="content">
-            {{ userStore.userInfo.ethnicity }}
+            {{ infoStore.userInfo.ethnicity }}
           </span>
         </div>
         <div class="info-item">
           <span class="lable">籍贯</span>
           <span class="content">
-            {{ userStore.userInfo.originPlace }}
+            {{ infoStore.userInfo.originPlace }}
           </span>
         </div>
         <div class="info-item">
           <span class="lable">政治面貌</span>
           <span class="content">
-            {{ userStore.userInfo.politicalStatus }}
+            {{ infoStore.userInfo.politicalStatus }}
           </span>
         </div>
         <div class="info-item">
           <span class="lable">学号</span>
           <span class="content">
-            {{ userStore.userInfo.number }}
+            {{ infoStore.userInfo.number }}
           </span>
         </div>
         <div class="info-item">
           <span class="lable">邮箱</span>
           <span class="content">
-            {{ userStore.userInfo.email }}
+            {{ infoStore.userInfo.email }}
           </span>
         </div>
         <div class="info-item">
           <span class="lable">性别</span>
           <span class="content">
-            {{ userStore.userInfo.gender === 1 ? '女' : '男' }}
+            {{ infoStore.userInfo.gender === 1 ? '女' : '男' }}
           </span>
         </div>
       </el-col>
@@ -49,43 +49,43 @@
         <div class="info-item">
           <span class="lable">身份证号</span>
           <span class="content">
-            {{ userStore.userInfo.idCard }}
+            {{ infoStore.userInfo.idCard }}
           </span>
         </div>
         <div class="info-item">
           <span class="lable">文化程度</span>
           <span class="content">
-            {{ userStore.userInfo.educationLevel }}
+            {{ infoStore.userInfo.educationLevel }}
           </span>
         </div>
         <div class="info-item">
           <span class="lable">出生地</span>
           <span class="content">
-            {{ userStore.userInfo.birthplace }}
+            {{ infoStore.userInfo.birthplace }}
           </span>
         </div>
         <div class="info-item">
           <span class="lable">入团时间</span>
           <span class="content">
-            {{ userStore.userInfo.joinLeagueDate }}
+            {{ infoStore.userInfo.joinLeagueDate }}
           </span>
         </div>
         <div class="info-item">
           <span class="lable">QQ</span>
           <span class="content">
-            {{ userStore.userInfo.qq }}
+            {{ infoStore.userInfo.qq }}
           </span>
         </div>
         <div class="info-item">
           <span class="lable">电话</span>
           <span class="content">
-            {{ userStore.userInfo.phone }}
+            {{ infoStore.userInfo.phone }}
           </span>
         </div>
         <div class="info-item">
           <span class="lable">年龄</span>
           <span class="content">
-            {{ userStore.userInfo.age }}
+            {{ infoStore.userInfo.age }}
           </span>
         </div>
       </el-col>
@@ -95,7 +95,7 @@
         <div class="info-item">
           <span class="lable">年级专业班级</span>
           <span class="content">
-            {{ userStore.userInfo.grade + userStore.userInfo.major + userStore.userInfo.sclass }}
+            {{ infoStore.userInfo.grade + infoStore.userInfo.major + infoStore.userInfo.sclass }}
           </span>
         </div>
       </el-col>
@@ -113,7 +113,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in userStore.userInfo.mainRelationships" :key="item.name">
+            <tr v-for="item in infoStore.userInfo.mainRelationships" :key="item.name">
               <td>{{ item.name }}</td>
               <td>{{ item.relationship }}</td>
               <td>{{ item.visage }}</td>
@@ -127,9 +127,9 @@
 </template>
 reactive
 <script setup>
-import { useUserStore } from '@/stores'
+import { useInfoStore } from '@/stores'
 
-const userStore = useUserStore()
+const infoStore = useInfoStore()
 </script>
 
 <style lang="scss" scoped>

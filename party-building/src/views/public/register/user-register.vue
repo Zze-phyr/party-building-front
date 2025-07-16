@@ -15,7 +15,7 @@
         >
           <div class="title">
             <div class="img-container">
-              <img class="img" src="../../assets/images/common/party-emblem-1.png" alt="" />
+              <img class="img" src="../../../assets/images/common/party-emblem-1.png" alt="" />
             </div>
             <div class="text">学生党建平台</div>
           </div>
@@ -68,7 +68,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import { userRegister, userVerification } from '../../api/user'
+import { userRegister, userVerification } from '@/api/public'
 import { ElMessage } from 'element-plus'
 
 //创建表单实例
@@ -226,7 +226,7 @@ const submitRegister = async (formEl) => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-image: url(../../assets/images/common/login-background.png);
+  background-image: url(../../../assets/images/common/login-background.png);
   background-size: cover;
   background-position: center;
   z-index: -1;

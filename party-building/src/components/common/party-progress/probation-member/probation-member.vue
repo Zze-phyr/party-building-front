@@ -30,7 +30,7 @@
           </div>
           <div class="download-box">
             <div class="img-box">
-              <img class="img" src="../../../assets/images/icons/photo.png" alt="" />
+              <img class="img" src="../../../../assets/images/icons/photo.png" alt="" />
             </div>
             <div class="download">点击下载查看吸收大会佐证材料</div>
           </div>
@@ -63,7 +63,7 @@
           </div>
           <div class="download-box">
             <div class="img-box">
-              <img class="img" src="../../../assets/images/icons/photo.png" alt="" />
+              <img class="img" src="../../../../assets/images/icons/photo.png" alt="" />
             </div>
             <div class="download">点击下载查看联系人谈话记录</div>
           </div>
@@ -93,7 +93,7 @@
           </div>
           <div class="download-box">
             <div class="img-box">
-              <img class="img" src="../../../assets/images/icons/photo.png" alt="" />
+              <img class="img" src="../../../../assets/images/icons/photo.png" alt="" />
             </div>
             <div class="download">点击下载查看入党宣誓会议记录</div>
           </div>
@@ -106,13 +106,13 @@
       <div class="content">
         <div class="load-box">
           <div class="img-box">
-            <img class="img" src="../../../assets/images/partyProgress/word-pic.png" alt="" />
+            <img class="img" src="../../../../assets/images/partyProgress/word-pic.png" alt="" />
           </div>
           <div class="load">点击下载入党志愿书填写模板</div>
         </div>
         <div class="load-box">
           <div class="img-box">
-            <img class="img" src="../../../assets/images/partyProgress/pdf.png" alt="" />
+            <img class="img" src="../../../../assets/images/partyProgress/pdf.png" alt="" />
           </div>
           <div class="load">点击上传我的入党志愿书（需上传PDF扫描版）</div>
         </div>

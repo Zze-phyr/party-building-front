@@ -10,13 +10,13 @@
         <div class="content">
           <div class="load-box">
             <div class="img-box">
-              <img class="img" src="../../../assets/images/partyProgress/pdf.png" alt="" />
+              <img class="img" src="../../../../assets/images/partyProgress/pdf.png" alt="" />
             </div>
             <div class="load">点击下载自传填写要求</div>
           </div>
           <div class="load-box">
             <div class="img-box">
-              <img class="img" src="../../../assets/images/partyProgress/pdf.png" alt="" />
+              <img class="img" src="../../../../assets/images/partyProgress/pdf.png" alt="" />
             </div>
             <div class="load">点击上传我的自传（需上传PDF扫描版）</div>
           </div>
@@ -27,7 +27,7 @@
         <div class="title">发展对象结业证书</div>
         <div class="content">
           <div class="img-box">
-            <img class="img" src="../../../assets/images/partyProgress/certificate.png" alt="" />
+            <img class="img" src="../../../../assets/images/partyProgress/certificate.png" alt="" />
           </div>
           <div class="time-box">结业时间：2025-02-01</div>
         </div>
@@ -39,13 +39,13 @@
       <div class="content">
         <div class="load-box">
           <div class="img-box">
-            <img class="img" src="../../../assets/images/partyProgress/word-pic.png" alt="" />
+            <img class="img" src="../../../../assets/images/partyProgress/word-pic.png" alt="" />
           </div>
           <div class="load">点击下载入党志愿书填写模板</div>
         </div>
         <div class="load-box">
           <div class="img-box">
-            <img class="img" src="../../../assets/images/partyProgress/pdf.png" alt="" />
+            <img class="img" src="../../../../assets/images/partyProgress/pdf.png" alt="" />
           </div>
           <div class="load">点击上传我的入党志愿书（需上传PDF扫描版）</div>
         </div>

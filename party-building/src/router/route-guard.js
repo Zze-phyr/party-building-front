@@ -1,9 +1,11 @@
 // 路由守卫
 import { getCommonRoutes, commonLayoutRoute } from './common-routes'
 import { getAdminRoutes, adminLayoutRoute } from './admin-routes'
+import { useUserStore } from '@/stores/user'
 
-export const setupRouteGuard = (router, userStore) => {
+export const setupRouteGuard = (router) => {
   router.beforeEach(async (to, from, next) => {
+    const userStore = useUserStore()
     const isPublic = to.meta.public
 
     // 公共路由直接放行
@@ -19,7 +21,7 @@ export const setupRouteGuard = (router, userStore) => {
         const primaryRole = permissions[0]
         const secondaryRole = permissions[1]
 
-        let layoutSonRoutes = []
+        let dynamicRoutes = []
         let layoutRoute = null
         let redirectPath = ''
 
@@ -30,7 +32,7 @@ export const setupRouteGuard = (router, userStore) => {
           router.addRoute(layoutRoute)
 
           // 获取用户子路由
-          layoutSonRoutes = getCommonRoutes(secondaryRole)
+          dynamicRoutes = getCommonRoutes(secondaryRole)
           redirectPath = '/common/index'
         } else if (primaryRole === 'Admin') {
           // 添加管理员布局路由
@@ -38,18 +40,18 @@ export const setupRouteGuard = (router, userStore) => {
           router.addRoute(layoutRoute)
 
           // 获取管理子路由
-          layoutSonRoutes = getAdminRoutes(secondaryRole)
+          dynamicRoutes = getAdminRoutes(secondaryRole)
           redirectPath = '/admin/joinParty'
         }
 
         // 未知身份异常处理
-        if (layoutSonRoutes.length === 0) {
+        if (dynamicRoutes.length === 0) {
           throw new Error(`未知角色: ${secondaryRole}`)
         }
 
         // 添加动态子路由
         if (layoutRoute) {
-          layoutSonRoutes.forEach((route) => {
+          dynamicRoutes.forEach((route) => {
             router.addRoute(layoutRoute.name, route)
           })
         }
@@ -60,11 +62,6 @@ export const setupRouteGuard = (router, userStore) => {
           redirect: '/404',
           meta: { public: true, hidden: true },
         })
-
-        // 获取已添加到 layoutRoute 中的子路由
-        const allRoutes = router.getRoutes() // 获取所有注册的路由
-        // 筛选出父路由为 layoutRoute.name 的子路由
-        const dynamicRoutes = allRoutes.filter((route) => route.parentName === layoutRoute.name)
 
         // 保存路由信息并标记已添加
         userStore.setDynamicRoutes(dynamicRoutes)
