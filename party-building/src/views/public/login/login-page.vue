@@ -29,7 +29,7 @@
               <!-- 输入框尾部追加一个span标签 -->
               <template #append>
                 <el-button type="warning" :disabled="isDisabled" @click="countdownChange">{{
-                  countdown.validText
+                  buttonText
                 }}</el-button>
               </template>
             </el-input>
@@ -91,11 +91,13 @@
 </template>
 
 <script setup>
-import { reactive, ref, onUnmounted } from 'vue'
+import { reactive, ref } from 'vue'
 import { userPhoneLogin, userVerification, userNumberLogin } from '@/api/public'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores'
 import { useRouter } from 'vue-router'
+import { validatePhone } from '@/utils/validators'
+import { useCountdown } from '@/composables/useCountdown'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -110,43 +112,39 @@ const phoneLoginForm = reactive({
   permission: 'Common',
 })
 
+// 是否可获取验证码
 let isDisabled = ref(true)
-// 自定义手机号验证函数
-const validatePhone = (rule, value, callback) => {
-  const reg = /^1[3-9]\d{9}$/
-  if (reg.test(value)) {
-    isDisabled.value = false
-    callback()
-  } else {
-    callback(new Error('请输入有效的电话号码'))
-  }
-}
 
 //表单校验
 const phoneLoginRules = reactive({
   phone: [
     { required: true, message: '请填写电话号码', trigger: 'blur' },
-    { validator: validatePhone, trigger: 'blur' },
+    {
+      validator: (rule, value, callback) => {
+        const result = validatePhone(value, callback)
+        if (result === true) {
+          isDisabled.value = false
+          callback()
+        }
+      },
+      trigger: 'blur',
+    },
   ],
   verify: [{ required: true, message: '请填写验证码', trigger: 'blur' }],
 })
 
 //发送短信
-let timer = null
-let flag = false
-const countdown = reactive({
-  time: 60,
-  validText: '获取验证码',
-})
+
+const { buttonText, isCounting, start } = useCountdown(60, '获取验证码')
 
 const countdownChange = async () => {
-  if (flag) return
+  if (isCounting.value) return
   try {
     const { data } = await userVerification({ phone: phoneLoginForm.phone })
     console.log(data)
     if (data.code === 1) {
       ElMessage.success('短信成功发送')
-      startCountdown()
+      start() //开始倒计时
     } else {
       ElMessage.error('短信发送失败')
     }
@@ -155,36 +153,6 @@ const countdownChange = async () => {
     ElMessage.error('网络错误，请重试')
   }
 }
-
-// 设置定时器
-const startCountdown = () => {
-  if (timer) {
-    clearInterval(timer)
-    timer = null
-  }
-  flag = true
-  //使每一次倒计时都能从60开始
-  countdown.time = 60
-  timer = setInterval(() => {
-    if (countdown.time <= 0) {
-      countdown.time = 60
-      countdown.validText = '获取验证码'
-      clearInterval(timer)
-      timer = null
-      flag = false
-    } else {
-      countdown.time--
-      countdown.validText = `倒计时${countdown.time}s`
-    }
-  }, 1000)
-}
-
-onUnmounted(() => {
-  if (timer) {
-    clearInterval(timer)
-    timer = null
-  }
-})
 
 //提交验证码登录表单
 const submitPhoneLogin = async (formEl) => {
@@ -196,7 +164,7 @@ const submitPhoneLogin = async (formEl) => {
     if (data.code === 1) {
       ElMessage.success('登录成功！')
       userStore.login(data.data.token, data.data.permission, data.data.userId, data.data.name)
-      router.push('/layout')
+      router.push('/common/index')
     } else {
       ElMessage.error(data.msg)
     }
@@ -232,7 +200,7 @@ const submitNumberLogin = async (formEl) => {
     if (data.code === 1) {
       ElMessage.success('登录成功！')
       userStore.login(data.data.token, data.data.permission, data.data.userId, data.data.name)
-      router.push('/layout')
+      router.push('/common/index')
     } else {
       ElMessage.error(data.msg)
     }
