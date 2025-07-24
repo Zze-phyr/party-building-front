@@ -90,6 +90,11 @@ const handleMouseLeave = () => {
   padding: 0;
 }
 .nav-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   padding: 0;
   height: 70px;
   .nav {
@@ -140,5 +145,8 @@ const handleMouseLeave = () => {
   .el-menu--horizontal .el-menu .el-menu-item.is-active {
     color: var(--el-menu-active-color);
   }
+}
+.main {
+  margin-top: 70px;
 }
 </style>
