@@ -21,6 +21,7 @@ export const useUserStore = defineStore(
       permission.value = userData.permission
       userId.value = userData.userId
       infoStore.userInfo.name = userData.username
+      infoStore.hasGetInfo = false
       hasAddedRoutes.value = false // 重置路由状态
     }
 

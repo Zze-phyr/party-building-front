@@ -3,12 +3,10 @@
     <div class="form-container">
       <!-- 身份选择 -->
       <div class="roule-choice">
-        <span :class="{ active: phoneLoginForm.permission === 'Common' }" @click="choiceCommon()"
+        <span :class="{ active: permission === 'Common' }" @click="choiceCommon()"
           >普通用户登录</span
         >
-        <span :class="{ active: phoneLoginForm.permission === 'Admin' }" @click="choiceAdmin()"
-          >管理员登录</span
-        >
+        <span :class="{ active: permission === 'Admin' }" @click="choiceAdmin()">管理员登录</span>
       </div>
       <!-- 手机验证码表单 -->
       <div v-if="loginWay" class="phone-login-container form-box">
@@ -38,7 +36,11 @@
             <span @click="switchLoginWay()">切换账号密码登录</span>
           </el-form-item>
           <el-form-item class="btn-box">
-            <el-button class="btn" @click="submitPhoneLogin(phoneLoginFormRef)">确认登录</el-button>
+            <el-button
+              class="btn"
+              @click="submitLoginForm(phoneLoginFormRef, phoneLoginForm, userPhoneLogin)"
+              >确认登录</el-button
+            >
           </el-form-item>
           <el-form-item>
             <el-link :underline="false" href="/register" class="link" type="info"
@@ -74,7 +76,9 @@
               <span @click="switchLoginWay()">切换手机号验证码登录</span>
             </el-form-item>
             <el-form-item class="btn-box">
-              <el-button class="btn" @click="submitNumberLogin(numberLoginFormRef)"
+              <el-button
+                class="btn"
+                @click="submitLoginForm(numberLoginFormRef, numberLogin, userNumberLogin)"
                 >确认登录</el-button
               >
             </el-form-item>
@@ -98,45 +102,61 @@ import { useUserStore } from '@/stores'
 import { useRouter } from 'vue-router'
 import { validatePhone } from '@/utils/validators'
 import { useCountdown } from '@/composables/useCountdown'
+import { clearForm } from '@/composables/useFormUtils'
 
 const userStore = useUserStore()
 const router = useRouter()
 
-// 手机验证码登录
-//创建表单实例
-const phoneLoginFormRef = ref(null)
+// 身份切换
+let permission = ref('Common')
+const choiceCommon = () => (permission.value = 'Common')
+const choiceAdmin = () => (permission.value = 'Admin')
 
+// 登录方式切换
+let loginWay = ref(1)
+const switchLoginWay = () => {
+  loginWay.value = loginWay.value ? 0 : 1
+}
+
+//创建表单实例——手机验证码
+const phoneLoginFormRef = ref(null)
 const phoneLoginForm = reactive({
   phone: '',
   verify: '',
-  permission: 'Common',
+  permission: '',
+})
+//创建表单实例——账号密码
+const numberLoginFormRef = ref(null)
+const numberLoginForm = reactive({
+  number: '',
+  password: '',
+  permission: '',
 })
 
-// 是否可获取验证码
-let isDisabled = ref(true)
-
-//表单校验
+//表单校验——手机验证码
+let isDisabled = ref(true) // 是否可获取验证码
 const phoneLoginRules = reactive({
   phone: [
     { required: true, message: '请填写电话号码', trigger: 'blur' },
     {
       validator: (rule, value, callback) => {
-        const result = validatePhone(value, callback)
-        if (result === true) {
-          isDisabled.value = false
-          callback()
-        }
+        const result = validatePhone(value)
+        if (!result) callback('请输入有效的11位手机号码')
+        else isDisabled.value = false
       },
       trigger: 'blur',
     },
   ],
   verify: [{ required: true, message: '请填写验证码', trigger: 'blur' }],
 })
+//表单校验——账号密码
+const numberLoginRules = reactive({
+  number: [{ required: true, message: '请填写账号', trigger: 'blur' }],
+  password: [{ required: true, message: '请填写密码', trigger: 'blur' }],
+})
 
-//发送短信
-
+//发送短信——手机验证码
 const { buttonText, isCounting, start } = useCountdown(60, '获取验证码')
-
 const countdownChange = async () => {
   if (isCounting.value) return
   try {
@@ -154,77 +174,26 @@ const countdownChange = async () => {
   }
 }
 
-//提交验证码登录表单
-const submitPhoneLogin = async (formEl) => {
-  if (!formEl) return
+// 提交登录表单
+const submitLoginForm = async (formRef, formData, api) => {
+  if (!formRef) return
   //手动触发校验
   try {
-    await formEl.validate()
-    const { data } = await userPhoneLogin(phoneLoginForm)
+    await formRef.validate()
+    formData.permission = permission
+    const { data } = await api(formData)
     if (data.code === 1) {
       ElMessage.success('登录成功！')
-      userStore.login(data.data.token, data.data.permission, data.data.userId, data.data.name)
-      router.push('/common/index')
+      userStore.login(data.data)
+      router.push(permission.value === 'Common' ? '/common/index' : '/admin/joinParty')
     } else {
       ElMessage.error(data.msg)
     }
   } catch (error) {
     console.log(error)
+    clearForm(formRef, formData)
     ElMessage.error('登录失败，请重试')
   }
-}
-
-// 账号密码登录
-//创建表单实例
-const numberLoginFormRef = ref(null)
-
-const numberLoginForm = reactive({
-  number: '',
-  password: '',
-  permission: 'Common',
-})
-
-//表单校验
-const numberLoginRules = reactive({
-  number: [{ required: true, message: '请填写账号', trigger: 'blur' }],
-  password: [{ required: true, message: '请填写密码', trigger: 'blur' }],
-})
-
-//提交表单
-const submitNumberLogin = async (formEl) => {
-  if (!formEl) return
-  //手动触发校验
-  try {
-    await formEl.validate()
-    const { data } = await userNumberLogin(numberLoginForm)
-    if (data.code === 1) {
-      ElMessage.success('登录成功！')
-      userStore.login(data.data.token, data.data.permission, data.data.userId, data.data.name)
-      router.push('/common/index')
-    } else {
-      ElMessage.error(data.msg)
-    }
-  } catch (error) {
-    console.log(error)
-    ElMessage.error('登录失败，请重试')
-  }
-}
-
-// 身份切换
-const choiceCommon = () => {
-  phoneLoginForm.permission = 'Common'
-  numberLoginForm.permission = 'Common'
-}
-
-const choiceAdmin = () => {
-  phoneLoginForm.permission = 'Admin'
-  numberLoginForm.permission = 'Admin'
-}
-
-// 登录方式切换
-let loginWay = ref(1)
-const switchLoginWay = () => {
-  loginWay.value = loginWay.value ? 0 : 1
 }
 </script>
 

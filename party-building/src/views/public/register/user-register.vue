@@ -11,7 +11,7 @@
           size="small"
           :model="registerForm"
           ref="registerFormRef"
-          :rules="rules"
+          :rules="registerRules"
         >
           <div class="title">
             <div class="img-container">
@@ -33,7 +33,7 @@
               <!-- 输入框尾部追加一个span标签 -->
               <template #append>
                 <el-button type="warning" :disabled="isDisabled" @click="countdownChange">{{
-                  countdown.validText
+                  buttonText
                 }}</el-button>
               </template>
             </el-input>
@@ -53,7 +53,9 @@
             />
           </el-form-item>
           <el-form-item class="btn-box">
-            <el-button class="btn" @click="submitRegister(registerFormRef)">确认注册</el-button>
+            <el-button class="btn" @click="submitRegister(registerFormRef, registerForm)"
+              >确认注册</el-button
+            >
           </el-form-item>
           <el-form-item>
             <el-link :underline="false" href="/login" class="link" type="info"
@@ -70,10 +72,12 @@
 import { reactive, ref } from 'vue'
 import { userRegister, userVerification } from '@/api/public'
 import { ElMessage } from 'element-plus'
+import { clearForm } from '@/composables/useFormUtils'
+import { validatePhone, validateIdCard } from '@/utils/validators'
+import { useCountdown } from '@/composables/useCountdown'
 
 //创建表单实例
 const registerFormRef = ref(null)
-
 const registerForm = reactive({
   number: '',
   idCard: '',
@@ -82,36 +86,6 @@ const registerForm = reactive({
   password: '',
   repassword: '',
 })
-
-// 自定义身份证验证函数
-
-// 加权因子
-const weightFactor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
-// 校验码对应值
-const checkCodeList = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2']
-
-// 身份证验证函数
-const validateIdCard = (rule, value, callback) => {
-  const idCardReg = /^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[0-9Xx]$/
-  if (!idCardReg.test(value)) {
-    callback(new Error('请输入有效的18位身份证号码'))
-    return
-  }
-
-  const idCardArray = value.split('')
-  let sum = 0
-  for (let i = 0; i < 17; i++) {
-    sum += parseInt(idCardArray[i]) * weightFactor[i]
-  }
-  const mod = sum % 11
-  const checkCode = idCardArray[17].toUpperCase()
-  if (checkCodeList[mod] !== checkCode) {
-    callback(new Error('请输入有效的18位身份证号码'))
-    return
-  }
-
-  callback()
-}
 
 // 自定义二次验证密码函数
 const validateRepassword = (rule, value, callback) => {
@@ -122,31 +96,36 @@ const validateRepassword = (rule, value, callback) => {
   }
 }
 
-let isDisabled = ref(true)
-// 自定义手机号验证函数
-const validatePhone = (rule, value, callback) => {
-  const reg = /^1[3-9]\d{9}$/
-  if (reg.test(value)) {
-    isDisabled.value = false
-    callback()
-  } else {
-    callback(new Error('请输入有效的电话号码'))
-  }
-}
-
 //表单校验
-const rules = reactive({
+let isDisabled = ref(true) // 是否可获取验证码
+const registerRules = reactive({
   number: [
     { required: true, message: '请填写学号', trigger: 'blur' },
     { min: 10, max: 11, message: '请输入有效的学号', trigger: 'blur' },
   ],
   idCard: [
     { required: true, message: '请填写身份证号', trigger: 'blur' },
-    { validator: validateIdCard, trigger: 'blur' },
+    {
+      validator: (rule, value, callback) => {
+        if (!validateIdCard(value)) {
+          callback(new Error('请输入有效的18位身份证号码'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur',
+    },
   ],
   phone: [
     { required: true, message: '请填写电话号码', trigger: 'blur' },
-    { validator: validatePhone, trigger: 'blur' },
+    {
+      validator: (rule, value, callback) => {
+        const result = validatePhone(value)
+        if (!result) callback('请输入有效的11位手机号码')
+        else isDisabled.value = false
+      },
+      trigger: 'blur',
+    },
   ],
   verify: [{ required: true, message: '请填写验证码', trigger: 'blur' }],
   password: [
@@ -168,44 +147,31 @@ const rules = reactive({
   ],
 })
 
-//发送短信
-const countdown = reactive({
-  validText: '获取验证码',
-  time: 60,
-})
-let flag = false
-const countdownChange = () => {
-  //如果已发送,则不重复处理
-  if (flag) return
-  //判断手机号是否正确
-
-  //倒计时
-  let interval = setInterval(() => {
-    if (countdown.time <= 0) {
-      countdown.time = 60
-      countdown.validText = '获取验证码'
-      flag = false
-      clearInterval(interval)
-    } else {
-      countdown.time -= 1
-      countdown.validText = `剩余${countdown.time}s`
-    }
-  }, 1000)
-  flag = true
-  userVerification({ phone: registerForm.phone }).then(({ data }) => {
-    console.log(data, 'data')
+//发送短信——手机验证码
+const { buttonText, isCounting, start } = useCountdown(60, '获取验证码')
+const countdownChange = async () => {
+  if (isCounting.value) return
+  try {
+    const { data } = await userVerification({ phone: registerForm.phone })
+    console.log(data)
     if (data.code === 1) {
-      ElMessage.success('发送成功')
+      ElMessage.success('短信成功发送')
+      start() //开始倒计时
+    } else {
+      ElMessage.error('短信发送失败')
     }
-  })
+  } catch (error) {
+    console.log(error)
+    ElMessage.error('网络错误，请重试')
+  }
 }
 
 //提交表单
-const submitRegister = async (formEl) => {
-  if (!formEl) return
+const submitRegister = async (formRef, formData) => {
+  if (!formRef) return
   //手动触发校验
   try {
-    await formEl.validate()
+    await formRef.validate()
     const { data } = await userRegister(registerForm)
     if (data.code === 1) {
       ElMessage.success('注册成功，请登录')
@@ -214,6 +180,7 @@ const submitRegister = async (formEl) => {
     }
   } catch (error) {
     console.log(error)
+    clearForm(formRef, formData)
     ElMessage.error('注册失败，请重试')
   }
 }
