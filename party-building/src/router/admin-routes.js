@@ -41,6 +41,186 @@ export const adminBaseRoutes = [
       },
     ],
   },
+  {
+    name: 'FileManage',
+    path: 'fileManage',
+    meta: {
+      title: '文件管理',
+      roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+    },
+    children: [
+      {
+        name: 'UploadFileTemplate',
+        path: 'uploadFileTemplate',
+        component: () => import('@/views/admin/fileManage/upload-file-template.vue'),
+        meta: {
+          title: '上传文件模板',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+      {
+        name: 'CheckFile',
+        path: 'checkFile',
+        component: () => import('@/views/admin/fileManage/check-file.vue'),
+        meta: {
+          title: '查看文件',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+    ],
+  },
+  {
+    name: 'PersonManage',
+    path: 'personManage',
+    meta: {
+      title: '人员管理',
+      roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+    },
+    children: [
+      {
+        name: 'PersonCheck',
+        path: 'personCheck',
+        component: () => import('@/views/admin/personManage/person-check.vue'),
+        meta: {
+          title: '人员查看',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+      {
+        name: 'CheckFile',
+        path: 'checkFile',
+        meta: {
+          title: '管理员身份',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+        children: [
+          {
+            name: 'HistoryLeaderTeam',
+            path: 'historyLeaderTeam',
+            component: () =>
+              import('@/views/admin/personManage/administrator/history-leader-team.vue'),
+            meta: {
+              title: '查看历史领导班子',
+              roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+            },
+          },
+          {
+            name: 'AppointLeaderTeam',
+            path: 'appointLeaderTeam',
+            component: () =>
+              import('@/views/admin/personManage/administrator/appoint-leader-team.vue'),
+            meta: {
+              title: '任命新的领导班子',
+              roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+            },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: 'BranchConstruction',
+    path: 'branchConstruction',
+    meta: {
+      title: '支部建设',
+      roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+    },
+    children: [
+      {
+        name: 'BasicInformatione',
+        path: 'basicInformatione',
+        component: () => import('@/views/admin/branchConstruction/basic-information.vue'),
+        meta: {
+          title: '基本信息',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+      {
+        name: 'OrganizationLifeMeeting',
+        path: 'organizationLifeMeeting',
+        component: () => import('@/views/admin/branchConstruction/organization-life-meeting.vue'),
+        meta: {
+          title: '组织生活会',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+      {
+        name: 'Talks',
+        path: 'talks',
+        component: () => import('@/views/admin/branchConstruction/talks-talks.vue'),
+        meta: {
+          title: '谈心谈话',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+      {
+        name: 'MonthlySummary',
+        path: 'monthlySummary',
+        component: () => import('@/views/admin/branchConstruction/monthly-summary.vue'),
+        meta: {
+          title: '每月总结',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+      {
+        name: 'PartyBuildingStyle',
+        path: 'partyBuildingStyle',
+        component: () => import('@/views/admin/branchConstruction/party-building-style.vue'),
+        meta: {
+          title: '党建风采',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+    ],
+  },
+  {
+    name: 'MessageNotification',
+    path: 'messageNotification',
+    meta: {
+      title: '消息通知',
+      roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+    },
+    children: [
+      {
+        name: 'CheckHistoryNotices',
+        path: 'checkHistoryNotices',
+        component: () => import('@/views/admin/messageNotification/check-history-notices.vue'),
+        meta: {
+          title: '查看历史通知',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+      {
+        name: 'SendNotices',
+        path: 'sendNotices',
+        component: () => import('@/views/admin/messageNotification/send-notices.vue'),
+        meta: {
+          title: '发送通知',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+    ],
+  },
+  {
+    name: 'ChatInformation',
+    path: 'chatInformation',
+    component: () => import('@/views/admin/chatInformation/chat-information.vue'),
+    meta: {
+      title: '消息（聊天室）',
+      roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+      hidden: true, // 不在导航栏显示
+    },
+  },
+  {
+    name: 'MessageNotification',
+    path: 'messageNotification',
+    component: () => import('@/views/admin/messageNotification/check-history-notices.vue'),
+    meta: {
+      title: '管理员个人中心',
+      roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+      hidden: true, // 不在导航栏显示
+    },
+  },
 ]
 
 // 一级管理员路由

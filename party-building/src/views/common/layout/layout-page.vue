@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-container">
+  <div class="common-layout">
     <el-container>
       <!-- 顶部导航栏 -->
       <el-header class="nav-container">

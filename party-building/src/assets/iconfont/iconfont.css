@@ -1,0 +1,53 @@
+@font-face {
+  font-family: 'iconfont'; /* Project id 4998547 */
+  src:
+    /* url('iconfont.woff2?t=1755083966352') format('woff2'),
+    url('iconfont.woff?t=1755083966352') format('woff'),
+    url('iconfont.ttf?t=1755083966352') format('truetype'); */
+    url('./iconfont.woff2') format('woff2'),
+    url('./iconfont.woff') format('woff'),
+    url('./iconfont.ttf') format('truetype');
+}
+
+.iconfont {
+  font-family: 'iconfont' !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 文件 */
+.icon-wenjian:before {
+  content: '\e68f';
+}
+
+/* 消息 */
+.icon-xiaoxi:before {
+  content: '\e604';
+}
+
+/* 管理员 */
+.icon-qiyeguanli_yuangongguanli:before {
+  content: '\e62c';
+}
+
+/* 人员管理 */
+.icon-renyuanguanli:before {
+  content: '\e621';
+}
+
+/* 学生 */
+.icon-xuesheng:before {
+  content: '\e63a';
+}
+
+/* 退出 */
+.icon-exit-full:before {
+  content: '\e97f';
+}
+
+/* 支部建设 */
+.icon-zhibujianshe:before {
+  content: '\e603';
+}

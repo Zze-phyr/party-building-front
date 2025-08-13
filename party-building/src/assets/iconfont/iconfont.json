@@ -1,0 +1,58 @@
+{
+  "id": "4998547",
+  "name": "党建",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1008561",
+      "name": "文件",
+      "font_class": "wenjian",
+      "unicode": "e68f",
+      "unicode_decimal": 59023
+    },
+    {
+      "icon_id": "4391226",
+      "name": "消息",
+      "font_class": "xiaoxi",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "5323801",
+      "name": "企业管理_员工管理",
+      "font_class": "qiyeguanli_yuangongguanli",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "7274105",
+      "name": "人员管理",
+      "font_class": "renyuanguanli",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "8156558",
+      "name": "学生",
+      "font_class": "xuesheng",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    },
+    {
+      "icon_id": "18170188",
+      "name": "退出,出",
+      "font_class": "exit-full",
+      "unicode": "e97f",
+      "unicode_decimal": 59775
+    },
+    {
+      "icon_id": "22031839",
+      "name": "支部建设",
+      "font_class": "zhibujianshe",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    }
+  ]
+}

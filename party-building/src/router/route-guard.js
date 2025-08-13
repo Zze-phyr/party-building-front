@@ -41,7 +41,8 @@ export const setupRouteGuard = (router) => {
 
           // 获取管理子路由
           dynamicRoutes = getAdminRoutes(secondaryRole)
-          redirectPath = '/admin/joinParty'
+          console.log(dynamicRoutes)
+          redirectPath = '/admin/joinParty/reviewUpload'
         }
 
         // 未知身份异常处理
