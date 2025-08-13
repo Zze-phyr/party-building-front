@@ -1,90 +1,91 @@
 <template>
   <div class="apply-party-box">
     <!-- 入党流程标题 -->
-    <div class="big-title">申请入党</div>
+    <BigTitle>申请入党</BigTitle>
     <!-- 入党申请书上传 -->
-    <div class="party-application-box content-box">
-      <!-- 标题 -->
-      <div class="title">入党申请书上传</div>
-      <!-- 待提交、待审核、审核失败 -->
-      <el-row v-if="fileStore.JoinPartyApplication.status !== 1" class="wait-submit">
-        <el-col :span="fileStore.JoinPartyApplication.status === -1 ? 12 : 24">
-          <div class="upload-box">
-            <!-- 状态提示 -->
-            <div v-if="fileStore.JoinPartyApplication.status === 0" class="text">审核中...</div>
-            <!-- 文件上传 -->
-            <el-upload
-              class="upload"
-              v-model:file-list="fileList"
-              drag
-              action="#"
-              :http-request="uploadFile"
-              :limit="1"
-              :on-exceed="uploadExceed"
-              :on-remove="fileRemove"
-              accept=".pdf"
-              :before-upload="beforeUpload"
+    <div class="party-application-box">
+      <ContentBox>
+        <!-- 标题 -->
+        <template #title> 入党申请书上传 </template>
+        <!-- 待提交、待审核、审核失败 -->
+        <el-row v-if="fileStore.JoinPartyApplication.status !== 1" class="wait-submit">
+          <el-col :span="fileStore.JoinPartyApplication.status === -1 ? 12 : 24">
+            <div class="upload-box">
+              <!-- 状态提示 -->
+              <div v-if="fileStore.JoinPartyApplication.status === 0" class="text">审核中...</div>
+              <!-- 文件上传 -->
+              <el-upload
+                class="upload"
+                v-model:file-list="fileList"
+                drag
+                action="#"
+                :http-request="uploadFile"
+                :limit="1"
+                :on-exceed="uploadExceed"
+                :on-remove="fileRemove"
+                accept=".pdf"
+                :before-upload="beforeUpload"
+              >
+                <el-icon class="upload-icon"><upload-filled /></el-icon>
+                <div class="upload-text">拖拽PDF文件到这里或 <em>点击选择文件</em></div>
+              </el-upload>
+              <!-- 时间选择 -->
+              <div class="date-picker-box">
+                <div class="label">申请入党时间</div>
+                <el-date-picker
+                  v-model="form.attachTime"
+                  type="date"
+                  placeholder="请确认与入党申请书填写时间一致"
+                  :disabled-date="disabledDate"
+                  value-format="YYYY-MM-DD"
+                />
+              </div>
+              <!-- 确认提交 -->
+              <div class="btn-box">
+                <el-button :loading="loading" @click="onSubmit()">{{
+                  fileStore.JoinPartyApplication.status === -2 ? '确认提交' : '确认重新提交'
+                }}</el-button>
+              </div>
+            </div>
+          </el-col>
+          <el-col v-if="fileStore.JoinPartyApplication.status === -1" :span="12">
+            <div class="not-pass-box">
+              <div class="text">
+                你的申请书被<span class="red">驳回</span>，请按照要求修改，并重新上传！
+              </div>
+              <div class="text">修改意见：</div>
+              <el-scrollbar class="tips-box" height="100px">
+                <p>
+                  {{ fileStore.JoinPartyApplication.attachText }}
+                </p>
+              </el-scrollbar>
+            </div>
+          </el-col>
+        </el-row>
+        <!-- 审核成功 -->
+        <div v-if="fileStore.JoinPartyApplication.status === 1" class="success-check-box">
+          <div class="img-box">
+            <img
+              class="img"
+              src="../../../../assets/images/partyProgress/success-check.png"
+              alt=""
+            />
+          </div>
+          <div class="text">恭喜你，你的入党申请书已通过！</div>
+          <div class="btn-box">
+            <el-button
+              :loading="loading"
+              @click="
+                handleDownload(
+                  fileStore.JoinPartyApplication.fileId,
+                  fileStore.JoinPartyApplication.fileName,
+                )
+              "
+              >下载入党申请书</el-button
             >
-              <el-icon class="upload-icon"><upload-filled /></el-icon>
-              <div class="upload-text">拖拽PDF文件到这里或 <em>点击选择文件</em></div>
-            </el-upload>
-            <!-- 时间选择 -->
-            <div class="date-picker-box">
-              <div class="label">申请入党时间</div>
-              <el-date-picker
-                v-model="form.attachTime"
-                type="date"
-                placeholder="请确认与入党申请书填写时间一致"
-                :disabled-date="disabledDate"
-                value-format="YYYY-MM-DD"
-              />
-            </div>
-            <!-- 确认提交 -->
-            <div class="btn-box">
-              <el-button :loading="loading" @click="onSubmit()">{{
-                fileStore.JoinPartyApplication.status === -2 ? '确认提交' : '确认重新提交'
-              }}</el-button>
-            </div>
           </div>
-        </el-col>
-        <el-col v-if="fileStore.JoinPartyApplication.status === -1" :span="12">
-          <div class="not-pass-box">
-            <div class="text">
-              你的申请书被<span class="red">驳回</span>，请按照要求修改，并重新上传！
-            </div>
-            <div class="text">修改意见：</div>
-            <el-scrollbar class="tips-box" height="100px">
-              <p>
-                {{ fileStore.JoinPartyApplication.attachText }}
-              </p>
-            </el-scrollbar>
-          </div>
-        </el-col>
-      </el-row>
-      <!-- 审核成功 -->
-      <div v-if="fileStore.JoinPartyApplication.status === 1" class="success-check-box">
-        <div class="img-box">
-          <img class="img" src="../../../../assets/images/partyProgress/success-check.png" alt="" />
         </div>
-        <div class="text">恭喜你，你的入党申请书已通过！</div>
-        <div class="btn-box">
-          <el-button
-            :loading="loading"
-            @click="
-              handleDownload(
-                fileStore.JoinPartyApplication.fileId,
-                fileStore.JoinPartyApplication.fileName,
-              )
-            "
-            >下载入党申请书</el-button
-          >
-        </div>
-      </div>
-    </div>
-    <!-- 谈话佐证材料记录 -->
-    <div class="talk-materials-box content-box">
-      <div class="title">谈话佐证材料记录</div>
-      <div class="text">等待文件上传</div>
+      </ContentBox>
     </div>
   </div>
 </template>
@@ -95,10 +96,11 @@ import { reactive, ref, onMounted } from 'vue'
 import { useUserStore, useFileStore } from '@/stores'
 import { ElMessage } from 'element-plus'
 import { fileUpload, getFileMetadata, fileDelete, fileDownload } from '@/api/general'
+import BigTitle from '../BigTitle.vue'
+import ContentBox from '../ContentBox.vue'
 
 const userStore = useUserStore()
 const fileStore = useFileStore()
-// const infoStore = useInfoStore()
 
 // 组件挂载后
 onMounted(async () => {
@@ -112,17 +114,6 @@ onMounted(async () => {
     const { data } = await getFileMetadata(fileMsg)
     if (data.code === 1) {
       if (data.data.fileId) {
-        // ————1————
-        // const fileData = data.data
-        // fileStore.modifyFileInfo(
-        //   fileMsg.fileType,
-        //   fileData.status,
-        //   fileData.fileId,
-        //   fileData.attachText,
-        //   fileData.attachTime,
-        // )
-        // ————2————
-        // fileStore.JoinPartyApplication = data.data
         fileStore.JoinPartyApplication.status = data.data.status
         fileStore.JoinPartyApplication.fileId = data.data.fileId
         fileStore.JoinPartyApplication.fileName = data.data.fileName
@@ -256,33 +247,8 @@ const handleDownload = async (fileId, fileName) => {
 
 <style lang="scss" scoped>
 .apply-party-box {
-  .big-title {
-    margin-bottom: 20px;
-    width: 100%;
-    background-color: #f2c3b2;
-    border-radius: 8px;
-    height: 40px;
-    font-size: 20px;
-    line-height: 40px;
-    text-align: center;
-    color: #bc0000da;
-  }
-  .content-box {
-    width: 100%;
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    .title {
-      padding-left: 20px;
-      height: 40px;
-      font-size: 18px;
-      line-height: 40px;
-      background-color: #fbfbfb;
-    }
-  }
   // 入党申请书上传
   .party-application-box {
-    margin-bottom: 20px;
     //确认提交
     .btn-box {
       margin-bottom: 12px;
@@ -416,16 +382,6 @@ const handleDownload = async (fileId, fileName) => {
         font-size: 14px;
         color: #bc0000;
       }
-    }
-  }
-  // 谈话佐证材料记录
-  .talk-materials-box {
-    .text {
-      height: 270px;
-      line-height: 270px;
-      text-align: center;
-      color: #d9001b;
-      font-size: 30px;
     }
   }
 }
