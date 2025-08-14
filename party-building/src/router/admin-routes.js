@@ -17,6 +17,7 @@ export const adminBaseRoutes = [
     name: 'JoinParty',
     path: 'joinParty',
     meta: {
+      icon: '&#xe63a;',
       title: '学生入党',
       roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
     },
@@ -26,6 +27,7 @@ export const adminBaseRoutes = [
         path: 'reviewUpload',
         component: () => import('@/views/admin/joinParty/review-upload.vue'),
         meta: {
+          icon: '&#xe600;',
           title: '审核上传',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -35,6 +37,7 @@ export const adminBaseRoutes = [
         path: 'stateModification',
         component: () => import('@/views/admin/joinParty/state-modification.vue'),
         meta: {
+          icon: '&#xe644;',
           title: '状态修改',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -45,6 +48,7 @@ export const adminBaseRoutes = [
     name: 'FileManage',
     path: 'fileManage',
     meta: {
+      icon: '&#xe68f;',
       title: '文件管理',
       roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
     },
@@ -54,6 +58,7 @@ export const adminBaseRoutes = [
         path: 'uploadFileTemplate',
         component: () => import('@/views/admin/fileManage/upload-file-template.vue'),
         meta: {
+          icon: '&#xea25;',
           title: '上传文件模板',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -63,6 +68,7 @@ export const adminBaseRoutes = [
         path: 'checkFile',
         component: () => import('@/views/admin/fileManage/check-file.vue'),
         meta: {
+          icon: '&#xe642;',
           title: '查看文件',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -73,6 +79,7 @@ export const adminBaseRoutes = [
     name: 'PersonManage',
     path: 'personManage',
     meta: {
+      icon: '&#xe606;',
       title: '人员管理',
       roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
     },
@@ -82,6 +89,7 @@ export const adminBaseRoutes = [
         path: 'personCheck',
         component: () => import('@/views/admin/personManage/person-check.vue'),
         meta: {
+          icon: '&#xe621;',
           title: '人员查看',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -90,6 +98,7 @@ export const adminBaseRoutes = [
         name: 'CheckFile',
         path: 'checkFile',
         meta: {
+          icon: '&#xe62c;',
           title: '管理员身份',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -100,6 +109,7 @@ export const adminBaseRoutes = [
             component: () =>
               import('@/views/admin/personManage/administrator/history-leader-team.vue'),
             meta: {
+              icon: '&#xe61a;',
               title: '查看历史领导班子',
               roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
             },
@@ -110,6 +120,7 @@ export const adminBaseRoutes = [
             component: () =>
               import('@/views/admin/personManage/administrator/appoint-leader-team.vue'),
             meta: {
+              icon: '&#xe9d6;',
               title: '任命新的领导班子',
               roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
             },
@@ -122,6 +133,7 @@ export const adminBaseRoutes = [
     name: 'BranchConstruction',
     path: 'branchConstruction',
     meta: {
+      icon: '&#xe603;',
       title: '支部建设',
       roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
     },
@@ -131,6 +143,7 @@ export const adminBaseRoutes = [
         path: 'basicInformatione',
         component: () => import('@/views/admin/branchConstruction/basic-information.vue'),
         meta: {
+          icon: '&#xe616;',
           title: '基本信息',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -140,6 +153,7 @@ export const adminBaseRoutes = [
         path: 'organizationLifeMeeting',
         component: () => import('@/views/admin/branchConstruction/organization-life-meeting.vue'),
         meta: {
+          icon: '&#xea26;',
           title: '组织生活会',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -149,6 +163,7 @@ export const adminBaseRoutes = [
         path: 'talks',
         component: () => import('@/views/admin/branchConstruction/talks-talks.vue'),
         meta: {
+          icon: '&#xe63b;',
           title: '谈心谈话',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -158,6 +173,7 @@ export const adminBaseRoutes = [
         path: 'monthlySummary',
         component: () => import('@/views/admin/branchConstruction/monthly-summary.vue'),
         meta: {
+          icon: '&#xe652;',
           title: '每月总结',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -167,6 +183,7 @@ export const adminBaseRoutes = [
         path: 'partyBuildingStyle',
         component: () => import('@/views/admin/branchConstruction/party-building-style.vue'),
         meta: {
+          icon: '&#xe7b7;',
           title: '党建风采',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -177,6 +194,7 @@ export const adminBaseRoutes = [
     name: 'MessageNotification',
     path: 'messageNotification',
     meta: {
+      icon: '&#xe604;',
       title: '消息通知',
       roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
     },
@@ -186,6 +204,7 @@ export const adminBaseRoutes = [
         path: 'checkHistoryNotices',
         component: () => import('@/views/admin/messageNotification/check-history-notices.vue'),
         meta: {
+          icon: '&#xe61a;',
           title: '查看历史通知',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -195,6 +214,7 @@ export const adminBaseRoutes = [
         path: 'sendNotices',
         component: () => import('@/views/admin/messageNotification/send-notices.vue'),
         meta: {
+          icon: '&#xe893;',
           title: '发送通知',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
@@ -212,9 +232,9 @@ export const adminBaseRoutes = [
     },
   },
   {
-    name: 'MessageNotification',
-    path: 'messageNotification',
-    component: () => import('@/views/admin/messageNotification/check-history-notices.vue'),
+    name: 'PersonalCenter',
+    path: 'personalCenter',
+    component: () => import('@/views/admin/personalCenter/personal-center.vue'),
     meta: {
       title: '管理员个人中心',
       roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],

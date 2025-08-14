@@ -6,9 +6,107 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1118",
+      "name": "审核上传",
+      "font_class": "shenheshangchuan",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "880305",
+      "name": "信息",
+      "font_class": "xinxi",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "1727345",
+      "name": "发送",
+      "font_class": "send",
+      "unicode": "e893",
+      "unicode_decimal": 59539
+    },
+    {
+      "icon_id": "2405254",
+      "name": "党建风采",
+      "font_class": "dangjianfengcai",
+      "unicode": "e7b7",
+      "unicode_decimal": 59319
+    },
+    {
+      "icon_id": "2506436",
+      "name": "管理员",
+      "font_class": "guanliyuan",
+      "unicode": "e6d0",
+      "unicode_decimal": 59088
+    },
+    {
+      "icon_id": "8094173",
+      "name": "查看",
+      "font_class": "chakan",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "15392661",
+      "name": "历史",
+      "font_class": "lishi",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "16358848",
+      "name": "状态修改",
+      "font_class": "zhuangtaixiugai",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "18171199",
+      "name": "上传文件模板",
+      "font_class": "upload-file-template",
+      "unicode": "ea25",
+      "unicode_decimal": 59941
+    },
+    {
+      "icon_id": "21642899",
+      "name": "每月总结",
+      "font_class": "meiyuezongjie",
+      "unicode": "e652",
+      "unicode_decimal": 58962
+    },
+    {
+      "icon_id": "33762463",
+      "name": "人员管理",
+      "font_class": "renyuanguanli",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "36377897",
+      "name": "谈心谈话",
+      "font_class": "tanxintanhua",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "42901242",
+      "name": "添加新管理员",
+      "font_class": "tianjiaguanliyuan",
+      "unicode": "e9d6",
+      "unicode_decimal": 59862
+    },
+    {
+      "icon_id": "45255485",
+      "name": "组织生活会",
+      "font_class": "zuzhishenghuohui",
+      "unicode": "ea26",
+      "unicode_decimal": 59942
+    },
+    {
       "icon_id": "1008561",
-      "name": "文件",
-      "font_class": "wenjian",
+      "name": "文件管理",
+      "font_class": "wenjianguanli",
       "unicode": "e68f",
       "unicode_decimal": 59023
     },
@@ -21,28 +119,28 @@
     },
     {
       "icon_id": "5323801",
-      "name": "企业管理_员工管理",
-      "font_class": "qiyeguanli_yuangongguanli",
+      "name": "管理员身份",
+      "font_class": "guanliyuanshenfen",
       "unicode": "e62c",
       "unicode_decimal": 58924
     },
     {
       "icon_id": "7274105",
-      "name": "人员管理",
-      "font_class": "renyuanguanli",
+      "name": "人员查看",
+      "font_class": "renyuanchakan",
       "unicode": "e621",
       "unicode_decimal": 58913
     },
     {
       "icon_id": "8156558",
-      "name": "学生",
+      "name": "学生入党",
       "font_class": "xuesheng",
       "unicode": "e63a",
       "unicode_decimal": 58938
     },
     {
       "icon_id": "18170188",
-      "name": "退出,出",
+      "name": "退出",
       "font_class": "exit-full",
       "unicode": "e97f",
       "unicode_decimal": 59775
