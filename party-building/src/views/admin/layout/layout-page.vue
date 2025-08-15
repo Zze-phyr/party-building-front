@@ -167,7 +167,24 @@ const dynamicRoutes = computed(() => {
       height: 100vh;
       overflow-y: auto;
       .aside-menu {
+        padding: 10px 15px;
         height: 100vh;
+        .iconfont {
+          padding-right: 10px;
+        }
+        :deep(.el-sub-menu__title:hover),
+        :deep(.el-menu-item.is-active),
+        :deep(.el-menu-item:hover) {
+          background-color: #fee2e2;
+          border-radius: 5px;
+          color: #bc0000;
+        }
+        :deep(.el-sub-menu) {
+          margin-bottom: 5px;
+        }
+        :deep(.el-menu-item) {
+          margin-top: 5px;
+        }
       }
     }
     // 右侧边内容
