@@ -19,7 +19,7 @@ instance.interceptors.request.use(
     const userStore = useUserStore()
     //要等Pinia实例尚被挂载到 Vue 应用之后使用 Pinia Store，所以必须在拦截器里面定义
     if (userStore.token) {
-      config.headers['token'] = userStore.token
+      config.headers['Authorization'] = userStore.token
     }
     return config
   },
