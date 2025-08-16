@@ -2,6 +2,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useInfoStore } from '@/stores'
+import Cookies from 'js-cookie'
 
 export const useUserStore = defineStore(
   'user', //该 store 的唯一标识
@@ -68,8 +69,19 @@ export const useUserStore = defineStore(
       setHasAddedRoutes,
     }
   },
-  // {
-  //   // 配置项，启用数据持久化功能
-  //   persist: { paths: ['token', 'permission'] },
-  // },
+  {
+    // 配置项，启用数据持久化功能
+    persist: {
+      storage: {
+        // cookie存储需指定操作方法
+        getItem: (key) => Cookies.get(key),
+        setItem: (key, value) =>
+          Cookies.set(key, value, {
+            expires: 7, // 7天后过期
+          }),
+        removeItem: (key) => Cookies.remove(key),
+      },
+      paths: ['token'],
+    },
+  },
 )
