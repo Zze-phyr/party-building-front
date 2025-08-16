@@ -176,7 +176,7 @@ const dynamicRoutes = computed(() => {
         :deep(.el-menu-item.is-active),
         :deep(.el-menu-item:hover) {
           background-color: #fee2e2;
-          border-radius: 5px;
+          border-radius: 8px;
           color: #bc0000;
         }
         :deep(.el-sub-menu) {
@@ -191,6 +191,7 @@ const dynamicRoutes = computed(() => {
     .main {
       height: 100vh;
       overflow-y: auto;
+      padding: 20px;
     }
   }
 }
