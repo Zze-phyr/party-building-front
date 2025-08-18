@@ -76,60 +76,6 @@ export const adminBaseRoutes = [
     ],
   },
   {
-    name: 'PersonManage',
-    path: 'personManage',
-    meta: {
-      icon: '&#xe606;',
-      title: '人员管理',
-      roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-    },
-    children: [
-      {
-        name: 'PersonCheck',
-        path: 'personCheck',
-        component: () => import('@/views/admin/personManage/person-check.vue'),
-        meta: {
-          icon: '&#xe621;',
-          title: '人员查看',
-          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-        },
-      },
-      {
-        name: 'CheckFile',
-        path: 'checkFile',
-        meta: {
-          icon: '&#xe62c;',
-          title: '管理员身份',
-          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-        },
-        children: [
-          {
-            name: 'HistoryLeaderTeam',
-            path: 'historyLeaderTeam',
-            component: () =>
-              import('@/views/admin/personManage/administrator/history-leader-team.vue'),
-            meta: {
-              icon: '&#xe61a;',
-              title: '查看历史领导班子',
-              roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-            },
-          },
-          {
-            name: 'AppointLeaderTeam',
-            path: 'appointLeaderTeam',
-            component: () =>
-              import('@/views/admin/personManage/administrator/appoint-leader-team.vue'),
-            meta: {
-              icon: '&#xe9d6;',
-              title: '任命新的领导班子',
-              roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-            },
-          },
-        ],
-      },
-    ],
-  },
-  {
     name: 'BranchConstruction',
     path: 'branchConstruction',
     meta: {
@@ -243,17 +189,119 @@ export const adminBaseRoutes = [
   },
 ]
 
-// 一级管理员路由
-export const branchCommitteeRoutes = []
+// 完整人员管理数组
+const personManageArr = [
+  {
+    name: 'PersonManage',
+    path: 'personManage',
+    meta: {
+      icon: '&#xe606;',
+      title: '人员管理',
+      roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+    },
+    children: [
+      {
+        name: 'PersonCheck',
+        path: 'personCheck',
+        component: () => import('@/views/admin/personManage/person-check.vue'),
+        meta: {
+          icon: '&#xe621;',
+          title: '人员查看',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+      {
+        name: 'CheckFile',
+        path: 'checkFile',
+        meta: {
+          icon: '&#xe62c;',
+          title: '管理员身份',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+        children: [
+          {
+            name: 'HistoryLeaderTeam',
+            path: 'historyLeaderTeam',
+            component: () =>
+              import('@/views/admin/personManage/administrator/history-leader-team.vue'),
+            meta: {
+              icon: '&#xe61a;',
+              title: '查看历史领导班子',
+              roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+            },
+          },
+          {
+            name: 'AppointLeaderTeam',
+            path: 'appointLeaderTeam',
+            component: () =>
+              import('@/views/admin/personManage/administrator/appoint-leader-team.vue'),
+            meta: {
+              icon: '&#xe9d6;',
+              title: '任命新的领导班子',
+              roles: ['Administrator', 'Organizers', 'BranchSecretary'],
+            },
+          },
+        ],
+      },
+    ],
+  },
+]
 
-// 二级管理员路由
-export const branchSecretaryRoutes = []
+// 一级管理员路由（系统管理员）
+export const administratorRoutes = personManageArr
 
-// 三级管理员路由
-export const organizersRoutes = []
+// 二级管理员路由（书记，副书记，组织员）
+export const organizersRoutes = personManageArr
 
-// 四级管理员路由
-export const administratorRoutes = []
+// 三级管理员路由（支部书记）
+export const branchSecretaryRoutes = personManageArr
+
+// 四级管理员路由（支委，支部副书记）
+export const branchCommitteeRoutes = [
+  {
+    name: 'PersonManage',
+    path: 'personManage',
+    meta: {
+      icon: '&#xe606;',
+      title: '人员管理',
+      roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+    },
+    children: [
+      {
+        name: 'PersonCheck',
+        path: 'personCheck',
+        component: () => import('@/views/admin/personManage/person-check.vue'),
+        meta: {
+          icon: '&#xe621;',
+          title: '人员查看',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+      {
+        name: 'CheckFile',
+        path: 'checkFile',
+        meta: {
+          icon: '&#xe62c;',
+          title: '管理员身份',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+        children: [
+          {
+            name: 'HistoryLeaderTeam',
+            path: 'historyLeaderTeam',
+            component: () =>
+              import('@/views/admin/personManage/administrator/history-leader-team.vue'),
+            meta: {
+              icon: '&#xe61a;',
+              title: '查看历史领导班子',
+              roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+            },
+          },
+        ],
+      },
+    ],
+  },
+]
 
 // 获取管理员完整路由
 export const getAdminRoutes = (secondaryRole) => {

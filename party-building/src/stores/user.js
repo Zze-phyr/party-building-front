@@ -2,15 +2,16 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useInfoStore } from '@/stores'
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 
 export const useUserStore = defineStore(
   'user', //该 store 的唯一标识
   () => {
     // 认证状态
     const token = ref('Bearer 111')
-    const permission = ref(['Common', 'Applicant', 'DevelopmentOver'])
+    // const permission = ref(['Common', 'Applicant', 'DevelopmentOver'])
     // const permission = ref(['Admin', 'Administrator'])
+    const permission = ref(['Admin', 'BranchCommittee'])
     const userId = ref(null)
     const hasAddedRoutes = ref(false) // 是否动态添加路由
     const dynamicRoutes = ref([]) // 存储动态路由信息
@@ -69,19 +70,19 @@ export const useUserStore = defineStore(
       setHasAddedRoutes,
     }
   },
-  {
-    // 配置项，启用数据持久化功能
-    persist: {
-      storage: {
-        // cookie存储需指定操作方法
-        getItem: (key) => Cookies.get(key),
-        setItem: (key, value) =>
-          Cookies.set(key, value, {
-            expires: 7, // 7天后过期
-          }),
-        removeItem: (key) => Cookies.remove(key),
-      },
-      paths: ['token'],
-    },
-  },
+  // {
+  //   // 配置项，启用数据持久化功能
+  //   persist: {
+  //     storage: {
+  //       // cookie存储需指定操作方法
+  //       getItem: (key) => Cookies.get(key),
+  //       setItem: (key, value) =>
+  //         Cookies.set(key, value, {
+  //           expires: 7, // 7天后过期
+  //         }),
+  //       removeItem: (key) => Cookies.remove(key),
+  //     },
+  //     paths: ['token'],
+  //   },
+  // },
 )
