@@ -127,3 +127,66 @@ body {
   -webkit-transition: opacity 0.3s;
   transition: opacity 0.3s;
 }
+
+/* 输入框聚焦样式 */
+.el-select__wrapper {
+  &.is-focused {
+    box-shadow: 0 0 0 1px #bc0000 inset !important;
+    border-color: #bc0000 !important;
+  }
+}
+
+/* 下拉菜单中的树节点样式 */
+.el-tree {
+  /* 节点悬停 */
+  .el-tree-node__content:hover {
+    background-color: #feeaea !important; // 浅红色背景
+  }
+
+  /* 选中节点 */
+  .el-tree-node.is-current > .el-tree-node__content {
+    background-color: #feeaea !important;
+    color: #bc0000 !important;
+    font-weight: bold;
+  }
+}
+
+/* 自定义下拉选择器样式 */
+
+/* 输入框聚焦 */
+.el-select__wrapper {
+  &.is-focused {
+    box-shadow: 0 0 0 1px #bc0000 inset !important;
+    border-color: #bc0000 !important;
+  }
+}
+
+/* 下拉菜单 */
+.el-select-dropdown {
+  /* 选项悬停 */
+  .el-select-dropdown__item:hover {
+    background-color: #feeaea !important;
+  }
+
+  /* 选中选项 */
+  .el-select-dropdown__item.selected {
+    color: #bc0000 !important;
+    font-weight: bold;
+    background-color: #feeaea !important;
+  }
+  /* 选项被选中时的样式（即使没有hover） */
+  .el-select-dropdown__item.is-selected {
+    color: #bc0000 !important;
+  }
+}
+
+/* 输入框悬停状态 */
+.el-input__wrapper:hover {
+  box-shadow: 0 0 0 1px #bc0000 inset !important;
+}
+
+/* 输入框聚焦状态 */
+.el-input__wrapper.is-focus {
+  box-shadow: 0 0 0 1px #bc0000 inset !important;
+  border-color: #bc0000 !important;
+}
