@@ -99,11 +99,11 @@
 <script setup>
 import { ref } from 'vue'
 import { useUserStore } from '@/stores'
-import applyParty from '@/components/common/party-progress/apply-party/apply-party.vue'
-import partyActivist from '@/components/common/party-progress/party-activist/party-activist.vue'
-import developCandidate from '@/components/common/party-progress/develop-candidate/develop-candidate.vue'
-import probationMember from '@/components/common/party-progress/probation-member/probation-member.vue'
-import fullPartyMember from '@/components/common/party-progress/full-party-member/full-party-member.vue'
+import applyParty from './apply-party/apply-party.vue'
+import partyActivist from './party-activist/party-activist.vue'
+import developCandidate from './develop-candidate/develop-candidate.vue'
+import probationMember from './probation-member/probation-member.vue'
+import fullPartyMember from './full-party-member/full-party-member.vue'
 
 const userStore = useUserStore()
 const status = userStore.getPermission[2]

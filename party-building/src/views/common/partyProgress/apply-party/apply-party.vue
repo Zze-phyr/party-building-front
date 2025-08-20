@@ -96,8 +96,8 @@ import { reactive, ref, onMounted } from 'vue'
 import { useUserStore, useFileStore } from '@/stores'
 import { ElMessage } from 'element-plus'
 import { fileUpload, getFileMetadata, fileDelete, fileDownload } from '@/api/general'
-import BigTitle from '../BigTitle.vue'
-import ContentBox from '../ContentBox.vue'
+import BigTitle from '../components/BigTitle.vue'
+import ContentBox from '../components/ContentBox.vue'
 
 const userStore = useUserStore()
 const fileStore = useFileStore()

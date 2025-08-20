@@ -149,7 +149,7 @@ const handleSearchClick = () => {
 
 // 处理提交事件
 const handleSubmit = () => {
-  emit('submit', ...formModel.value)
+  emit('submit', formModel.value)
 }
 
 // 获取选项数据（处理 ref 或普通数组）

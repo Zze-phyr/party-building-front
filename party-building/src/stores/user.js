@@ -9,9 +9,9 @@ export const useUserStore = defineStore(
   () => {
     // 认证状态
     const token = ref('Bearer 111')
-    // const permission = ref(['Common', 'Applicant', 'DevelopmentOver'])
+    const permission = ref(['Common', 'Applicant', 'DevelopmentOver'])
     // const permission = ref(['Admin', 'Administrator'])
-    const permission = ref(['Admin', 'BranchCommittee'])
+    // const permission = ref(['Admin', 'BranchCommittee'])
     const userId = ref(null)
     const hasAddedRoutes = ref(false) // 是否动态添加路由
     const dynamicRoutes = ref([]) // 存储动态路由信息

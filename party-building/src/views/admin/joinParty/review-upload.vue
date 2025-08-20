@@ -18,7 +18,7 @@
       <el-table-column prop="phone" label="手机号" />
       <el-table-column prop="auditStatus" label="审核状态" />
       <el-table-column v-if="false" prop="uploadStatus" label="上传状态" />
-      <el-table-column label="Operations">
+      <el-table-column label="操作">
         <template #default="scope">
           <el-button size="small" @click="handleEdit(scope.$index, scope.row)"> Edit </el-button>
           <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">
@@ -38,44 +38,6 @@ import DynamicFilterForm from '@/components/admin/DynamicFilterForm.vue'
 import { reactive, ref, onMounted } from 'vue'
 import { getBatch } from '@/api/admin'
 import { ElMessage } from 'element-plus'
-
-// const tableData = [
-//   {
-//     name: 'Tom',
-//     branch: 'California',
-//     partyStatus: 'Los Angeles',
-//     number: 'No. 189, Grove St, Los Angeles',
-//     phone: 'CA 90036',
-//     auditStatus: 'Home',
-//   },
-//   {
-//     date: '2016-05-02',
-//     name: 'Tom',
-//     state: 'California',
-//     city: 'Los Angeles',
-//     address: 'No. 189, Grove St, Los Angeles',
-//     zip: 'CA 90036',
-//     tag: 'Office',
-//   },
-//   {
-//     date: '2016-05-04',
-//     name: 'Tom',
-//     state: 'California',
-//     city: 'Los Angeles',
-//     address: 'No. 189, Grove St, Los Angeles',
-//     zip: 'CA 90036',
-//     tag: 'Home',
-//   },
-//   {
-//     date: '2016-05-01',
-//     name: 'Tom',
-//     state: 'California',
-//     city: 'Los Angeles',
-//     address: 'No. 189, Grove St, Los Angeles',
-//     zip: 'CA 90036',
-//     tag: 'Office',
-//   },
-// ]
 
 // 编辑操作
 const handleEdit = (index, row) => {
@@ -219,48 +181,7 @@ const handleSeach = (searchValue) => {
 const onSubmit = (formData) => {
   console.log('提交筛选:', formData)
   // 执行搜索逻辑
-  performSearch(formData)
-}
-
-const performSearch = async (searchParams) => {
-  try {
-    loading.value = true
-    // 这里可以实现实际的搜索逻辑，例如调用API
-    console.log('执行搜索:', searchParams)
-
-    // 模拟API调用延迟
-    await new Promise((resolve) => setTimeout(resolve, 500))
-
-    // 搜索成功后的处理逻辑
-    // 例如更新表格数据等
-  } catch (error) {
-    console.error('搜索失败:', error)
-    ElMessage.error('搜索失败，请重试')
-  } finally {
-    loading.value = false
-  }
 }
 </script>
 
-<style lang="scss" scoped>
-.filter-form {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  .search-btn {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    /* 悬停状态 */
-    &:hover {
-      color: #bc0000 !important;
-      border-color: #bc0000 !important;
-      background-color: #feeaea !important;
-    }
-    /* 点击状态 */
-    &:active {
-      color: #feeaea !important;
-      background-color: #bc0000 !important;
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>
