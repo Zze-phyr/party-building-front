@@ -62,7 +62,7 @@
             </el-sub-menu>
             <!-- 无子路由的菜单 -->
             <el-menu-item v-else :index="index + 1" @click="navigateTo(`/admin/${route.path}`)">
-              <i class="iconfont" v-html="child.meta.icon"></i>
+              <i class="iconfont" v-html="route.meta.icon"></i>
               <span>{{ route.meta.title }}</span>
             </el-menu-item>
           </template>

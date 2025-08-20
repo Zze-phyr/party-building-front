@@ -69,7 +69,7 @@ export const adminBaseRoutes = [
         component: () => import('@/views/admin/fileManage/check-file.vue'),
         meta: {
           icon: '&#xe642;',
-          title: '查看文件',
+          title: '查看文件模板',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
         },
       },
@@ -201,8 +201,8 @@ const personManageArr = [
     },
     children: [
       {
-        name: 'PersonCheck',
-        path: 'personCheck',
+        name: 'Administrator',
+        path: 'administrator',
         component: () => import('@/views/admin/personManage/person-check.vue'),
         meta: {
           icon: '&#xe621;',
@@ -211,8 +211,8 @@ const personManageArr = [
         },
       },
       {
-        name: 'CheckFile',
-        path: 'checkFile',
+        name: 'Administrator',
+        path: 'administrator',
         meta: {
           icon: '&#xe62c;',
           title: '管理员身份',
@@ -278,8 +278,8 @@ export const branchCommitteeRoutes = [
         },
       },
       {
-        name: 'CheckFile',
-        path: 'checkFile',
+        name: 'Administrator',
+        path: 'administrator',
         meta: {
           icon: '&#xe62c;',
           title: '管理员身份',
