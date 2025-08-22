@@ -1,6 +1,6 @@
 <template>
   <div class="cultivate-contacts-box">
-    <ContentBox>
+    <ContentBox :confirm="confirmOne" :proposed-changes="attachTextOne">
       <!-- 标题 -->
       <template #title> 入党积极分子培养联系人信息填写 </template>
       <el-row class="form-box" :gutter="40">
@@ -47,14 +47,16 @@
         </el-col>
       </el-row>
       <div class="btn-box">
-        <el-button color="#d12626" @click="cultivateContactSubmnit()">确定提交</el-button>
+        <el-button v-if="!FormDisabled" color="#d12626" @click="cultivateContactSubmnit()">{{
+          confirmOne === -2 ? '确定提交' : '确定重新提交'
+        }}</el-button>
       </div>
     </ContentBox>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { addNurtureContacts, getNurtureContacts } from '@/api/common'
 import { useUserStore, useFileStore } from '@/stores'
@@ -63,30 +65,37 @@ import ContentBox from '../../components/ContentBox.vue'
 const userStore = useUserStore()
 const fileStore = useFileStore()
 
-// 表单禁用
-const FormDisabled = ref(false)
+// 表单状态
+const confirmOne = computed(() => fileStore.NurtureContacts[0]?.confirm)
+const confirmTwo = computed(() => fileStore.NurtureContacts[1]?.confirm)
+
+// 修改建议
+const attachTextOne = computed(() => fileStore.NurtureContacts[0]?.attachText)
+
+// 表单禁用状态
+const FormDisabled = computed(() => confirmOne.value === 1 && confirmTwo.value === 1)
 
 // 组件挂载后
 onMounted(async () => {
   try {
     const { data: nurtureContactsData } = await getNurtureContacts(userStore.userId)
-    if (nurtureContactsData.code === 1 && nurtureContactsData.data.length > 0) {
-      fileStore.NurtureContacts.value = nurtureContactsData.data
-      // 初始化表单数据
-      nurtureContactsData.data.forEach((item, index) => {
-        if (index < cultivateContactForms.length) {
-          Object.assign(cultivateContactForms[index], {
-            commonUserId: userStore.userId,
-            name: item.name,
-            number: item.number,
-            partyAge: item.partyAge,
-            visage: item.visage,
-            unitOccupation: item.unitOccupation,
-          })
-        }
-      })
-      if (nurtureContactsData.data[0].confirm === 1 && nurtureContactsData.data[1].confirm === 1)
-        FormDisabled.value = true
+    if (nurtureContactsData.code === 1) {
+      if (nurtureContactsData.data.length > 0) {
+        fileStore.NurtureContacts.value = nurtureContactsData.data
+        // 初始化表单数据
+        nurtureContactsData.data.forEach((item, index) => {
+          if (index < cultivateContactForms.length) {
+            Object.assign(cultivateContactForms[index], {
+              commonUserId: userStore.userId,
+              name: item.name,
+              number: item.number,
+              partyAge: item.partyAge,
+              visage: item.visage,
+              unitOccupation: item.unitOccupation,
+            })
+          }
+        })
+      }
     } else {
       ElMessage.error(nurtureContactsData.msg || '获取培养联系人数据失败')
     }
