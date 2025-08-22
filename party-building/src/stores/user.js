@@ -12,7 +12,7 @@ export const useUserStore = defineStore(
     const permission = ref(['Common', 'Applicant', 'DevelopmentOver'])
     // const permission = ref(['Admin', 'Administrator'])
     // const permission = ref(['Admin', 'BranchCommittee'])
-    const userId = ref(null)
+    const userId = ref('222')
     const hasAddedRoutes = ref(false) // 是否动态添加路由
     const dynamicRoutes = ref([]) // 存储动态路由信息
     // 用户infoStore引用
@@ -32,7 +32,7 @@ export const useUserStore = defineStore(
     const logout = () => {
       token.value = ''
       permission.value = []
-      userId.value = null
+      userId.value = ''
       hasAddedRoutes.value = false
       dynamicRoutes.value = []
       infoStore.hasGetInfo = false

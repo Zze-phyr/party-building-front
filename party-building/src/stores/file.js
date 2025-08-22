@@ -1,6 +1,6 @@
 // 文件状态
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 
 // -2 未提交
 // 0  待审核
@@ -10,7 +10,7 @@ import { reactive } from 'vue'
 export const useFileStore = defineStore('file', () => {
   //入党申请书
   const JoinPartyApplication = reactive({
-    status: 1,
+    status: 0,
     fileId: '12345',
     attachText:
       '111首次申请入党时间错误，正确时间应该修改为：2025/09/16，请在2025年11月26日前修改为正确的时间，如未修改，后果自负！2025/09/16，请在2025年11月26日前修改为正确的时间，2025/09/16，请在2025年11月26日前修改为正确的时间，2025/09/16，请在2025年11月26日前修改为正确的时间，首次申请入党时间错误，正确时间应该修改为：2025/09/16，请在2025年11月',
@@ -65,6 +65,30 @@ export const useFileStore = defineStore('file', () => {
     attachTime: null,
   })
 
+  // 培养联系人
+  const NurtureContacts = ref([
+    {
+      id: 0,
+      name: '张三老师',
+      partyAge: 8,
+      visage: '中共党员',
+      unitOccupation: '教授',
+      number: 1,
+      confirm: -2,
+      attachText: '请修改',
+    },
+    {
+      id: 1,
+      name: '李四老师',
+      partyAge: 10,
+      visage: '中共党员',
+      unitOccupation: '副教授',
+      number: 2,
+      confirm: -2,
+      attachText: '请修改',
+    },
+  ])
+
   // //修改文件信息
   // const modifyFileInfo = (fileType, newStatus, newFileId, newattAchText, newattAchTime) => {
   //   fileType.status = newStatus
@@ -81,6 +105,7 @@ export const useFileStore = defineStore('file', () => {
     HandbookFirst,
     HandbookSecond,
     VolunteerLetter,
+    NurtureContacts,
     // modifyFileInfo,
   }
 })

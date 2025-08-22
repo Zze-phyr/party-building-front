@@ -9,10 +9,23 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { defineProps } from 'vue'
+const props = defineProps({
+  // 是否显示审核状态
+  showReview: {
+    type: Boolean,
+    default: false,
+  },
+  reviewState: {
+    type: Number,
+  },
+})
+</script>
 
 <style scoped>
 .content-box {
+  margin-bottom: 20px;
   width: 100%;
   background-color: #fff;
   border-radius: 8px;

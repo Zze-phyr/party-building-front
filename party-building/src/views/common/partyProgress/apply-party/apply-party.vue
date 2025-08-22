@@ -42,7 +42,7 @@
               </div>
               <!-- 确认提交 -->
               <div class="btn-box">
-                <el-button :loading="loading" @click="onSubmit()">{{
+                <el-button color="#d12626" :loading="loading" @click="onSubmit()">{{
                   fileStore.JoinPartyApplication.status === -2 ? '确认提交' : '确认重新提交'
                 }}</el-button>
               </div>
@@ -114,11 +114,7 @@ onMounted(async () => {
     const { data } = await getFileMetadata(fileMsg)
     if (data.code === 1) {
       if (data.data.fileId) {
-        fileStore.JoinPartyApplication.status = data.data.status
-        fileStore.JoinPartyApplication.fileId = data.data.fileId
-        fileStore.JoinPartyApplication.fileName = data.data.fileName
-        fileStore.JoinPartyApplication.attachText = data.data.attachText
-        fileStore.JoinPartyApplication.attachTime = data.data.attachTime
+        fileStore.JoinPartyApplication = { ...fileStore.JoinPartyApplication, ...data.data }
       }
     } else {
       ElMessage.error(data.msg)
@@ -253,16 +249,6 @@ const handleDownload = async (fileId, fileName) => {
     .btn-box {
       margin-bottom: 12px;
       text-align: center;
-      :deep(.el-button) {
-        background-color: #bc0000;
-        color: #fff;
-        &:active {
-          background-color: #bc0000a8;
-        }
-        &:hover {
-          background-color: #bc0000a8;
-        }
-      }
     }
     // 待提交、待审核、审核失败
     .wait-submit {

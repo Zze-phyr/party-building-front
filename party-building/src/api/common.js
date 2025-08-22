@@ -16,3 +16,13 @@ export const reviseCommonUserDetail = (data) => {
 export const addNurtureContacts = (data) => {
   return request.post('/common/nurtureContacts/add', data)
 }
+
+// 根据用户id获取培养联系人
+export const getNurtureContacts = (commonUserId) => {
+  return request.get(`/common/nurtureContacts/getByCommonId/${commonUserId}`)
+}
+
+// 修改培养联系人
+export const updateNurtureContacts = (data) => {
+  return request.put('/common/nurtureContacts/update', data)
+}

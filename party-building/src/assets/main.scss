@@ -190,3 +190,31 @@ body {
   box-shadow: 0 0 0 1px #bc0000 inset !important;
   border-color: #bc0000 !important;
 }
+
+.el-form-item {
+  .el-input {
+    --el-input-focus-border-color: #bc000062;
+  }
+  .el-radio.is-bordered.is-checked {
+    border-color: #bc000062;
+  }
+  .el-radio__input.is-checked .el-radio__inner {
+    background: #bc0000a8;
+    border-color: #bc0000a8;
+  }
+  .el-radio__input.is-checked + .el-radio__label {
+    color: #bc0000a8;
+  }
+  .el-input-number__decrease:hover {
+    color: #bc0000a8;
+  }
+  .el-input-number__increase:hover {
+    color: #bc0000a8;
+  }
+  .el-select__wrapper.is-focused {
+    box-shadow: 0 0 0 1px #bc000062 inset;
+  }
+}
+.el-form-item--small {
+  margin-bottom: 20px;
+}

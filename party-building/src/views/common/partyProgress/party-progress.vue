@@ -9,8 +9,15 @@
           :class="{ 'dot-finished': status === 'DevelopmentOver' }"
           @click="checkFive()"
         ></div>
-        <div class="step-connector" :class="{ finished: status === 'DevelopmentOver' }"></div>
-        <div class="step-content" :class="{ finished: status === 'DevelopmentOver' }">
+        <div
+          class="step-connector"
+          :class="{ 'connector-finished': status === 'DevelopmentOver' }"
+        ></div>
+        <div
+          class="step-content"
+          :class="{ 'content-finished': status === 'DevelopmentOver' }"
+          @click="checkFive()"
+        >
           预备党员的教育考察和转正
         </div>
       </div>
@@ -23,11 +30,14 @@
         ></div>
         <div
           class="step-connector"
-          :class="{ finished: status === 'Development' || status === 'DevelopmentOver' }"
+          :class="{
+            'connector-finished': status === 'Development' || status === 'DevelopmentOver',
+          }"
         ></div>
         <div
           class="step-content"
-          :class="{ finished: status === 'Development' || status === 'DevelopmentOver' }"
+          :class="{ 'content-finished': status === 'Development' || status === 'DevelopmentOver' }"
+          @click="checkFour()"
         >
           预备党员的接收
         </div>
@@ -44,14 +54,17 @@
         <div
           class="step-connector"
           :class="{
-            finished: status !== 'ApplicationPartyMembership' && status !== 'PartyActivities',
+            'connector-finished':
+              status !== 'ApplicationPartyMembership' && status !== 'PartyActivities',
           }"
         ></div>
         <div
           class="step-content"
           :class="{
-            finished: status !== 'ApplicationPartyMembership' && status !== 'PartyActivities',
+            'content-finished':
+              status !== 'ApplicationPartyMembership' && status !== 'PartyActivities',
           }"
+          @click="checkThree()"
         >
           发展对象的确定和考察
         </div>
@@ -67,13 +80,14 @@
         ></div>
         <div
           class="step-connector"
-          :class="{ finished: status !== 'ApplicationPartyMembership' }"
+          :class="{ 'connector-finished': status !== 'ApplicationPartyMembership' }"
         ></div>
         <div
           class="step-content"
           :class="{
-            finished: status !== 'ApplicationPartyMembership',
+            'content-finished': status !== 'ApplicationPartyMembership',
           }"
+          @click="checkTwo()"
         >
           入党积极分子的确定和培养教育
         </div>
@@ -81,7 +95,7 @@
       <!-- 申请入党 -->
       <div class="step-item">
         <div class="step-dot dot-finished" @click="checkOne()"></div>
-        <div class="step-content finished">申请入党</div>
+        <div class="step-content content-finished" @click="checkOne()">申请入党</div>
       </div>
       <!-- 温馨提示 -->
       <div class="tips">Tips:可点击圆点查看历史上传记录</div>
@@ -188,8 +202,16 @@ const checkFive = () => {
       &:nth-child(even) .step-content {
         right: -10px;
       }
-      .finished {
+      .connector-finished {
         background-color: #bc0000;
+      }
+      .content-finished {
+        background-color: #bc0000;
+        transition: all 0.3s ease-in-out;
+        &:hover {
+          padding: 8px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
       }
       .dot-finished {
         background-color: #bc0000;
