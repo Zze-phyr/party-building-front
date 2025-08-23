@@ -73,16 +73,7 @@
           </div>
           <div class="text">恭喜你，你的入党申请书已通过！</div>
           <div class="btn-box">
-            <el-button
-              :loading="loading"
-              @click="
-                handleDownload(
-                  fileStore.JoinPartyApplication.fileId,
-                  fileStore.JoinPartyApplication.fileName,
-                )
-              "
-              >下载入党申请书</el-button
-            >
+            <el-button :loading="loading" @click="handleDownloadClick()">下载入党申请书</el-button>
           </div>
         </div>
       </ContentBox>
@@ -95,9 +86,10 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { reactive, ref, onMounted } from 'vue'
 import { useUserStore, useFileStore } from '@/stores'
 import { ElMessage } from 'element-plus'
-import { fileUpload, getFileMetadata, fileDelete, fileDownload } from '@/api/general'
+import { fileUpload, getFileMetadata, fileDelete } from '@/api/general'
 import BigTitle from '../components/BigTitle.vue'
 import ContentBox from '../components/ContentBox.vue'
+import { handleDownload } from '@/utils/downloadFile'
 
 const userStore = useUserStore()
 const fileStore = useFileStore()
@@ -213,28 +205,10 @@ const onSubmit = async () => {
   }
 }
 
-// 文件下载
-const handleDownload = async (fileId, fileName) => {
+const handleDownloadClick = async () => {
   try {
-    if (!fileId) {
-      ElMessage.error('文件ID不存在')
-      return
-    }
     loading.value = true
-    const { data: downloadData } = await fileDownload(fileId)
-    const blob = new Blob([downloadData])
-    const url = window.URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', fileName)
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    window.URL.revokeObjectURL(url)
-    ElMessage.success('文件下载成功')
-  } catch (error) {
-    console.error('下载失败:', error)
-    ElMessage.error('下载失败')
+    await handleDownload(fileStore.JoinPartyApplication.fileId)
   } finally {
     loading.value = false
   }
@@ -272,26 +246,6 @@ const handleDownload = async (fileId, fileName) => {
             color: #999;
             font-size: 16px;
           }
-          :deep(.el-upload) {
-            --el-upload-dragger-padding-horizontal: 30px;
-          }
-          :deep(.el-upload:hover) {
-            color: #d9001b;
-            .el-upload-dragger {
-              border-color: #d9001b;
-              .upload-icon {
-                color: #d9001b;
-              }
-              .upload-text {
-                color: #d9001b;
-              }
-            }
-          }
-          :deep(.el-upload:focus) {
-            .el-upload-dragger {
-              border-color: #d9001b;
-            }
-          }
         }
         //时间选择
         .date-picker-box {
@@ -304,19 +258,6 @@ const handleDownload = async (fileId, fileName) => {
             color: #333;
             padding-right: 5px;
             font-size: 14px;
-          }
-          :deep(.el-date-editor.el-input) {
-            height: 25px;
-            width: 255px;
-          }
-          :deep(.el-input__wrapper) {
-            font-size: 14px;
-            .is-focus {
-              box-shadow: 0 0 0 1px #bc0000 inset;
-            }
-          }
-          :deep(.el-input__wrapper.is-focus) {
-            box-shadow: 0 0 0 1px #bc000062 inset;
           }
         }
       }

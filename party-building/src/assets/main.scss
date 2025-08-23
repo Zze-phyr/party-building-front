@@ -218,3 +218,104 @@ body {
 .el-form-item--small {
   margin-bottom: 20px;
 }
+
+// 文件上传
+.el-upload {
+  --el-upload-dragger-padding-horizontal: 30px;
+  &:hover {
+    color: #d9001b;
+    .el-upload-dragger {
+      border-color: #d9001b;
+      .upload-icon {
+        color: #d9001b;
+      }
+      .upload-text {
+        color: #d9001b;
+      }
+    }
+  }
+}
+
+.el-upload:focus {
+  .el-upload-dragger {
+    border-color: #d9001b;
+  }
+}
+
+//时间选择
+.el-date-editor.el-input {
+  height: 25px;
+  width: 255px;
+}
+
+.el-input__wrapper {
+  .is-focus {
+    box-shadow: 0 0 0 1px #bc0000 inset !important;
+  }
+  &:hover {
+    box-shadow: 0 0 0 1px #bc0000 inset !important;
+  }
+}
+
+.el-date-picker__header-label {
+  &:hover {
+    color: #bc0000 !important;
+  }
+  &:focus-visible {
+    color: #bc0000 !important;
+  }
+  &.active {
+    color: #bc0000 !important;
+  }
+}
+
+.el-date-table {
+  .el-date-table__row {
+    &:hover {
+      td.available:hover {
+        color: #bc0000 !important;
+      }
+    }
+  }
+  td {
+    &.current:not(.disabled) span {
+      background-color: #bc0000 !important;
+      color: white;
+    }
+    &.today {
+      .el-date-table-cell__text {
+        color: #bc0000 !important;
+      }
+    }
+  }
+}
+
+// .el-month-table {
+//   td {
+//     &.today {
+//       .el-date-table-cell__text {
+//         background-color: #bc0000 !important;
+//       }
+//     }
+//     .el-date-table-cell__text {
+//       &:hover {
+//         color: #bc0000 !important;
+//       }
+//     }
+//   }
+// }
+
+// .el-year-table {
+//   td {
+//     &.today {
+//       .el-date-table-cell__text {
+//         background-color: #bc0000 !important;
+//       }
+//     }
+//     .el-date-table-cell__text {
+//       &:hover {
+//         color: #bc0000 !important;
+//       }
+//     }
+//   }
+// }
