@@ -23,8 +23,7 @@ export const useUserStore = defineStore(
       token.value = userData.token
       permission.value = userData.permission
       userId.value = userData.userId
-      infoStore.userInfo.name = userData.username
-      infoStore.hasGetInfo = false
+      infoStore.loginInfo(userData.username)
       hasAddedRoutes.value = false // 重置路由状态
     }
 
@@ -35,7 +34,7 @@ export const useUserStore = defineStore(
       userId.value = ''
       hasAddedRoutes.value = false
       dynamicRoutes.value = []
-      infoStore.hasGetInfo = false
+      infoStore.logoutInfo()
       window.location.reload() // 强制刷新重置路由
     }
 

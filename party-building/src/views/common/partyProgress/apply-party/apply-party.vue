@@ -56,7 +56,7 @@
               <div class="text">修改意见：</div>
               <el-scrollbar class="tips-box" height="100px">
                 <p>
-                  {{ fileStore.JoinPartyApplication.attachText }}
+                  {{ fileStore.JoinPartyApplication.returnText }}
                 </p>
               </el-scrollbar>
             </div>
@@ -105,8 +105,8 @@ onMounted(async () => {
     fileMsg.fileType = 'JoinPartyApplication'
     const { data } = await getFileMetadata(fileMsg)
     if (data.code === 1) {
-      if (data.data.fileId) {
-        fileStore.JoinPartyApplication = { ...fileStore.JoinPartyApplication, ...data.data }
+      if (data.data.length > 0) {
+        fileStore.modifyFileInfo(fileStore.JoinPartyApplication, data.data[0])
       }
     } else {
       ElMessage.error(data.msg)
@@ -192,7 +192,9 @@ const onSubmit = async () => {
     // 上传请求
     const { data: uploadData } = await fileUpload(formdata)
     if (uploadData.code === 1) {
-      fileStore.JoinPartyApplication.status = uploadData.status
+      fileStore.modifyFileId(fileStore.JoinPartyApplication, uploadData.data.fileId)
+      if (fileStore.JoinPartyApplication.fileId !== 0)
+        fileStore.modifyFileStatus(fileStore.JoinPartyApplication, 0)
       ElMessage.success('文件上传成功！')
     } else {
       ElMessage.error(uploadData.msg)

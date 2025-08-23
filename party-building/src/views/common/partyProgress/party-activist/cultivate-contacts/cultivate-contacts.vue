@@ -1,6 +1,6 @@
 <template>
   <div class="cultivate-contacts-box">
-    <ContentBox :confirm="confirmOne" :proposed-changes="attachTextOne">
+    <ContentBox :confirm="confirmOne" :proposed-changes="returnTextOne">
       <!-- 标题 -->
       <template #title> 入党积极分子培养联系人信息填写 </template>
       <el-row class="form-box" :gutter="40">
@@ -58,7 +58,7 @@
 <script setup>
 import { reactive, ref, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
-import { addNurtureContacts, getNurtureContacts } from '@/api/common'
+import { addNurtureContacts, getNurtureContacts, updateNurtureContacts } from '@/api/common'
 import { useUserStore, useFileStore } from '@/stores'
 import ContentBox from '../../components/ContentBox.vue'
 
@@ -70,7 +70,7 @@ const confirmOne = computed(() => fileStore.NurtureContacts[0]?.confirm)
 const confirmTwo = computed(() => fileStore.NurtureContacts[1]?.confirm)
 
 // 修改建议
-const attachTextOne = computed(() => fileStore.NurtureContacts[0]?.attachText)
+const returnTextOne = computed(() => fileStore.NurtureContacts[0]?.returnText)
 
 // 表单禁用状态
 const FormDisabled = computed(() => confirmOne.value === 1 && confirmTwo.value === 1)
@@ -81,7 +81,7 @@ onMounted(async () => {
     const { data: nurtureContactsData } = await getNurtureContacts(userStore.userId)
     if (nurtureContactsData.code === 1) {
       if (nurtureContactsData.data.length > 0) {
-        fileStore.NurtureContacts.value = nurtureContactsData.data
+        fileStore.replaceNurtureContacts(nurtureContactsData.data)
         // 初始化表单数据
         nurtureContactsData.data.forEach((item, index) => {
           if (index < cultivateContactForms.length) {
@@ -146,14 +146,19 @@ const cultivateContactSubmnit = async () => {
     })
 
     // 并行提交所有表单
-    const submitPromises = cultivateContactForms.map((form) => addNurtureContacts(form))
+    let submitPromises
+    if (confirmOne.value === -2 && confirmTwo.value === -2) {
+      submitPromises = cultivateContactForms.map((form) => addNurtureContacts(form))
+    } else {
+      submitPromises = cultivateContactForms.map((form) => updateNurtureContacts(form))
+    }
     const results = await Promise.all(submitPromises)
 
     // 检查提交结果
     const allSuccess = results.every((res) => res.data.code === 1)
     if (allSuccess) {
       ElMessage.success('提交成功')
-      fileStore.NurtureContacts.value = [...cultivateContactForms]
+      fileStore.updateNurtureContacts([...cultivateContactForms])
     } else {
       results.forEach((res, index) => {
         if (res.data.code !== 1) {

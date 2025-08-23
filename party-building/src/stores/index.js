@@ -6,6 +6,6 @@ const pinia = createPinia()
 pinia.use(persist)
 
 export default pinia
-export * from './user'
-export * from './file'
-export * from './info'
+export * from './modules/user'
+export * from './modules/file'
+export * from './modules/info'

@@ -1,7 +1,7 @@
 // 路由守卫
 import { getCommonRoutes, commonLayoutRoute } from './common-routes'
 import { getAdminRoutes, adminLayoutRoute } from './admin-routes'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/modules/user'
 
 export const setupRouteGuard = (router) => {
   router.beforeEach(async (to, from, next) => {

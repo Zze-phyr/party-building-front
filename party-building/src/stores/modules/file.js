@@ -10,59 +10,73 @@ import { reactive, ref } from 'vue'
 export const useFileStore = defineStore('file', () => {
   //入党申请书
   const JoinPartyApplication = reactive({
-    status: 0,
     fileId: '12345',
-    attachText:
+    status: 0,
+    attachText: '',
+    attachTime: '',
+    returnText:
       '111首次申请入党时间错误，正确时间应该修改为：2025/09/16，请在2025年11月26日前修改为正确的时间，如未修改，后果自负！2025/09/16，请在2025年11月26日前修改为正确的时间，2025/09/16，请在2025年11月26日前修改为正确的时间，2025/09/16，请在2025年11月26日前修改为正确的时间，首次申请入党时间错误，正确时间应该修改为：2025/09/16，请在2025年11月',
-    attachTime: null,
+    fileName: '',
   })
 
   //第一次谈话
   const ConversationFirst = reactive({
-    status: -2,
     fileId: null,
-    attachText: null,
-    attachTime: null,
+    status: -2,
+    attachText: '',
+    attachTime: '',
+    returnText: '',
+    fileName: '',
   })
 
   //思想汇报
   const ThoughtDebriefing = reactive({
-    status: -2,
     fileId: null,
-    attachText: null,
-    attachTime: null,
+    status: -2,
+    attachText: '',
+    attachTime: '',
+    returnText: '',
+    fileName: '',
   })
 
   //考察报告
   const InvestigationReport = reactive({
-    status: -2,
     fileId: null,
-    attachText: null,
-    attachTime: null,
+    status: -2,
+    attachText: '',
+    attachTime: '',
+    returnText: '',
+    fileName: '',
   })
 
   //手册一
   const HandbookFirst = reactive({
-    status: -2,
     fileId: null,
-    attachText: null,
-    attachTime: null,
+    status: -2,
+    attachText: '',
+    attachTime: '',
+    returnText: '',
+    fileName: '',
   })
 
   //手册二
   const HandbookSecond = reactive({
-    status: -2,
     fileId: null,
-    attachText: null,
-    attachTime: null,
+    status: -2,
+    attachText: '',
+    attachTime: '',
+    returnText: '',
+    fileName: '',
   })
 
   //入党志愿书
   const VolunteerLetter = reactive({
-    status: -2,
     fileId: null,
-    attachText: null,
-    attachTime: null,
+    status: -2,
+    attachText: '',
+    attachTime: '',
+    returnText: '',
+    fileName: '',
   })
 
   // 培养联系人
@@ -89,13 +103,39 @@ export const useFileStore = defineStore('file', () => {
     },
   ])
 
-  // //修改文件信息
-  // const modifyFileInfo = (fileType, newStatus, newFileId, newattAchText, newattAchTime) => {
-  //   fileType.status = newStatus
-  //   fileType.fileId = newFileId
-  //   fileType.attachText = newattAchText
-  //   fileType.attachTime = newattAchTime
-  // }
+  // 替换培养联系人信息
+  const replaceNurtureContacts = (newNurtureContacts) => {
+    NurtureContacts.value = newNurtureContacts
+  }
+
+  // 更新培养联系人信息
+  const updateNurtureContacts = (data) => {
+    NurtureContacts.value.forEach((item, index) => {
+      item.name = data[index].name
+      item.number = data[index].number
+      item.partyAge = data[index].partyAge
+      item.visage = data[index].visage
+      item.unitOccupation = data[index].unitOccupation
+    })
+  }
+
+  //修改文件信息
+  const modifyFileInfo = (fileType, newData) => {
+    fileType.fileId = newData.fileId
+    fileType.status = newData.status
+    fileType.attachText = newData.achText
+    fileType.attachTime = newData.achTime
+    fileType.returnText = newData.returnText
+    fileType.fileName = newData.fileName
+  }
+
+  const modifyFileId = (fileType, data) => {
+    fileType.fileId = data
+  }
+
+  const modifyFileStatus = (fileType, data) => {
+    fileType.status = data
+  }
 
   return {
     JoinPartyApplication,
@@ -106,6 +146,10 @@ export const useFileStore = defineStore('file', () => {
     HandbookSecond,
     VolunteerLetter,
     NurtureContacts,
-    // modifyFileInfo,
+    modifyFileInfo,
+    modifyFileId,
+    modifyFileStatus,
+    replaceNurtureContacts,
+    updateNurtureContacts,
   }
 })

@@ -35,7 +35,8 @@
 import { defineProps } from 'vue'
 import { ref } from 'vue'
 
-const { confirm, proposedChanges } = defineProps({
+/* eslint-disable-next-line no-unused-vars */
+const props = defineProps({
   // 是否显示审核状态
   confirm: {
     type: Number,

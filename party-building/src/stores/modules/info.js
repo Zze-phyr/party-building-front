@@ -65,9 +65,20 @@ export const useInfoStore = defineStore('info', () => {
   //获取用户信息
   // const getUserInfo = (data) => {}
 
+  //用户登录登出infoStore需要做的相关操作
+  const loginInfo = (data) => {
+    userInfo.name = data
+    hasGetInfo.value = false
+  }
+  const logoutInfo = () => {
+    hasGetInfo.value = false
+  }
+
   return {
     hasGetInfo,
     userInfo,
     // getUserInfo,
+    loginInfo,
+    logoutInfo,
   }
 })

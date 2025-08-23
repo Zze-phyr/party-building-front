@@ -18,7 +18,6 @@ export const handleDownload = async (fileId) => {
     }
 
     const response = await fileDownload(fileId)
-    // response.data 已经是 Blob 对象，不需要再次包装
     const blob = response.data
     const contentDisposition = response.headers['content-disposition']
     const fileName = getFileNameFromDisposition(contentDisposition) || '下载文件.pdf'
@@ -27,9 +26,7 @@ export const handleDownload = async (fileId) => {
     const link = document.createElement('a')
     link.href = url
     link.download = fileName
-    document.body.appendChild(link)
     link.click()
-    document.body.removeChild(link)
     URL.revokeObjectURL(url)
     ElMessage.success('文件下载成功')
   } catch (error) {

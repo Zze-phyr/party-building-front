@@ -16,7 +16,8 @@
 import { useRouter } from 'vue-router'
 import { Back } from '@element-plus/icons-vue'
 
-const { title, showBackBtn } = defineProps({
+/* eslint-disable-next-line no-unused-vars */
+const props = defineProps({
   title: {
     type: String,
     required: true,

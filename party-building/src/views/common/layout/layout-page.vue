@@ -56,9 +56,9 @@ const router = useRouter()
 const userStore = useUserStore()
 const infoStore = useInfoStore()
 
-let dynamicRoutes = userStore.getDynamicRoutes
-
-dynamicRoutes = dynamicRoutes.filter((route) => !route.meta?.hidden)
+const dynamicRoutes = computed(() => {
+  return userStore.getDynamicRoutes.filter((route) => !route.meta?.hidden)
+})
 
 // 当前激活菜单
 const activeIndex = computed(() => {
