@@ -191,6 +191,7 @@ body {
   border-color: #bc0000 !important;
 }
 
+// 表单元素
 .el-form-item {
   .el-input {
     --el-input-focus-border-color: #bc000062;
@@ -237,8 +238,19 @@ body {
 }
 
 .el-upload:focus {
+  color: #d9001b !important;
   .el-upload-dragger {
-    border-color: #d9001b;
+    border-color: #d9001b !important;
+  }
+}
+
+.el-upload-list__item {
+  &:hover {
+    background-color: #bc00000b !important;
+  }
+  .el-icon--close:hover {
+    color: #d9001996 !important;
+    opacity: 1;
   }
 }
 
