@@ -49,10 +49,9 @@ import ContentBox from '../../components/ContentBox.vue'
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { fileUpload } from '@/api/general'
-import { useUserStore, useFileStore } from '@/stores'
+import { useUserStore } from '@/stores'
 
 const userStore = useUserStore()
-const fileStore = useFileStore()
 
 //文件列表
 const fileList = ref([])

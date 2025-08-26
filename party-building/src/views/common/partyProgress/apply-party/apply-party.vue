@@ -8,11 +8,11 @@
         <!-- 标题 -->
         <template #title> 入党申请书上传 </template>
         <!-- 待提交、待审核、审核失败 -->
-        <el-row v-if="fileStore.JoinPartyApplication.status !== 1" class="wait-submit">
-          <el-col :span="fileStore.JoinPartyApplication.status === -1 ? 12 : 24">
+        <el-row v-if="fileMetadataParams.status !== 1" class="wait-submit">
+          <el-col :span="fileMetadataParams.status === -1 ? 12 : 24">
             <div class="upload-box">
               <!-- 状态提示 -->
-              <div v-if="fileStore.JoinPartyApplication.status === 0" class="text">审核中...</div>
+              <div v-if="fileMetadataParams.status === 0" class="text">审核中...</div>
               <!-- 文件上传 -->
               <el-upload
                 class="upload"
@@ -43,12 +43,12 @@
               <!-- 确认提交 -->
               <div class="btn-box">
                 <el-button color="#d12626" :loading="loading" @click="onSubmit()">{{
-                  fileStore.JoinPartyApplication.status === -2 ? '确认提交' : '确认重新提交'
+                  fileMetadataParams.status === -2 ? '确认提交' : '确认重新提交'
                 }}</el-button>
               </div>
             </div>
           </el-col>
-          <el-col v-if="fileStore.JoinPartyApplication.status === -1" :span="12">
+          <el-col v-if="fileMetadataParams.status === -1" :span="12">
             <div class="not-pass-box">
               <div class="text">
                 你的申请书被<span class="red">驳回</span>，请按照要求修改，并重新上传！
@@ -56,14 +56,14 @@
               <div class="text">修改意见：</div>
               <el-scrollbar class="tips-box" height="100px">
                 <p>
-                  {{ fileStore.JoinPartyApplication.returnText }}
+                  {{ fileMetadataParams.returnText }}
                 </p>
               </el-scrollbar>
             </div>
           </el-col>
         </el-row>
         <!-- 审核成功 -->
-        <div v-if="fileStore.JoinPartyApplication.status === 1" class="success-check-box">
+        <div v-if="fileMetadataParams.status === 1" class="success-check-box">
           <div class="img-box">
             <img
               class="img"
@@ -84,7 +84,7 @@
 <script setup>
 import { UploadFilled } from '@element-plus/icons-vue'
 import { reactive, ref, onMounted } from 'vue'
-import { useUserStore, useFileStore } from '@/stores'
+import { useUserStore } from '@/stores'
 import { ElMessage } from 'element-plus'
 import { fileUpload, getFileMetadata, fileDelete } from '@/api/general'
 import BigTitle from '../components/BigTitle.vue'
@@ -92,21 +92,39 @@ import ContentBox from '../components/ContentBox.vue'
 import { handleDownload } from '@/utils/downloadFile'
 
 const userStore = useUserStore()
-const fileStore = useFileStore()
+
+// 获取文件元数据请求参数
+const fileMetadataRequestParams = reactive({
+  userId: '',
+  fileType: '',
+})
+
+// 文件元数据
+const fileMetadataParams = reactive({
+  fileId: null,
+  status: -2,
+  attachText: '',
+  attachTime: '',
+  returnText: '',
+  fileName: '',
+})
+
+// 页面表单数据
+const form = reactive({
+  attachTime: '',
+  file: '',
+})
 
 // 组件挂载后
 onMounted(async () => {
   try {
-    const fileMsg = reactive({
-      userId: '',
-      fileType: '',
-    })
-    fileMsg.userId = userStore.userId
-    fileMsg.fileType = 'JoinPartyApplication'
-    const { data } = await getFileMetadata(fileMsg)
+    fileMetadataRequestParams.userId = userStore.userId
+    fileMetadataRequestParams.fileType = 'JoinPartyApplication'
+    const { data } = await getFileMetadata(fileMetadataRequestParams)
     if (data.code === 1) {
       if (data.data.length > 0) {
-        fileStore.modifyFileInfo(fileStore.JoinPartyApplication, data.data[0])
+        Object.assign(fileMetadataParams, data.data[0])
+        form.attachTime = data.data[0].attachTime
       }
     } else {
       ElMessage.error(data.msg)
@@ -118,10 +136,6 @@ onMounted(async () => {
 })
 
 //文件上传，删除
-const form = reactive({
-  attachTime: '',
-  file: '',
-})
 
 const fileList = ref([])
 
@@ -180,10 +194,9 @@ const onSubmit = async () => {
   formdata.append('file', form.file)
   try {
     //重新上传先删除
-    const shouldDelete =
-      fileStore.JoinPartyApplication.fileId && fileStore.JoinPartyApplication.status !== -2
+    const shouldDelete = fileMetadataParams.status !== -2 && fileMetadataParams.status !== 1
     if (shouldDelete) {
-      const { data: deletData } = await fileDelete(fileStore.JoinPartyApplication.fileId)
+      const { data: deletData } = await fileDelete(fileMetadataParams.fileId)
       if (deletData.code === 0) {
         ElMessage.error('文件删除失败')
         return
@@ -192,9 +205,8 @@ const onSubmit = async () => {
     // 上传请求
     const { data: uploadData } = await fileUpload(formdata)
     if (uploadData.code === 1) {
-      fileStore.modifyFileId(fileStore.JoinPartyApplication, uploadData.data.fileId)
-      if (fileStore.JoinPartyApplication.fileId !== 0)
-        fileStore.modifyFileStatus(fileStore.JoinPartyApplication, 0)
+      fileMetadataParams.fileId = uploadData.data.fileId
+      if (fileMetadataParams.status !== 0) fileMetadataParams.status = 0
       ElMessage.success('文件上传成功！')
     } else {
       ElMessage.error(uploadData.msg)
@@ -210,7 +222,7 @@ const onSubmit = async () => {
 const handleDownloadClick = async () => {
   try {
     loading.value = true
-    await handleDownload(fileStore.JoinPartyApplication.fileId)
+    await handleDownload(fileMetadataParams.fileId)
   } finally {
     loading.value = false
   }

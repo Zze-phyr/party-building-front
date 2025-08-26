@@ -59,54 +59,13 @@
 import { reactive, ref, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { addNurtureContacts, getNurtureContacts, updateNurtureContacts } from '@/api/common'
-import { useUserStore, useFileStore } from '@/stores'
+import { useUserStore } from '@/stores'
 import ContentBox from '../../components/ContentBox.vue'
 
 const userStore = useUserStore()
-const fileStore = useFileStore()
 
-// 表单状态
-const confirmOne = computed(() => fileStore.NurtureContacts[0]?.confirm)
-const confirmTwo = computed(() => fileStore.NurtureContacts[1]?.confirm)
-
-// 修改建议
-const returnTextOne = computed(() => fileStore.NurtureContacts[0]?.returnText)
-
-// 表单禁用状态
-const FormDisabled = computed(() => confirmOne.value === 1 && confirmTwo.value === 1)
-
-// 组件挂载后
-onMounted(async () => {
-  try {
-    const { data: nurtureContactsData } = await getNurtureContacts(userStore.userId)
-    if (nurtureContactsData.code === 1) {
-      if (nurtureContactsData.data.length > 0) {
-        fileStore.replaceNurtureContacts(nurtureContactsData.data)
-        // 初始化表单数据
-        nurtureContactsData.data.forEach((item, index) => {
-          if (index < cultivateContactForms.length) {
-            Object.assign(cultivateContactForms[index], {
-              commonUserId: userStore.userId,
-              name: item.name,
-              number: item.number,
-              partyAge: item.partyAge,
-              visage: item.visage,
-              unitOccupation: item.unitOccupation,
-            })
-          }
-        })
-      }
-    } else {
-      ElMessage.error(nurtureContactsData.msg || '获取培养联系人数据失败')
-    }
-  } catch (error) {
-    console.log(error)
-    ElMessage.error('数据获取失败')
-  }
-})
-
-// 入党积极分子培养联系人表单数据
-const baseContactForm = {
+// 添加入党积极分子培养联系人表单数据
+const addContactForm = {
   commonUserId: userStore.userId,
   name: '', //姓名
   number: '1', //第几联系人
@@ -115,11 +74,72 @@ const baseContactForm = {
   unitOccupation: '', //单位职务/职业
 }
 
-// 创建两个表单数据对象
-const cultivateContactForms = reactive([
-  Object.assign({}, baseContactForm, { number: '1' }),
-  Object.assign({}, baseContactForm, { number: '2' }),
+// 修改入党积极分子培养联系人表单数据
+const updateContactForm = {
+  commonUserId: userStore.userId,
+  name: '', //姓名
+  number: '1', //第几联系人
+  partyAge: 1, //党龄
+  visage: '', //政治面貌
+  unitOccupation: '', //单位职务/职业
+  id: 0,
+  confirm: 0,
+  attachText: '请修改',
+}
+
+let cultivateContactForms
+
+cultivateContactForms = ref([
+  Object.assign({}, addContactForm, { number: '1' }),
+  Object.assign({}, addContactForm, { number: '2' }),
 ])
+
+// 组件挂载后
+onMounted(async () => {
+  try {
+    const { data } = await getNurtureContacts(userStore.userId)
+    if (data.code === 1) {
+      if (data.data.length > 0) {
+        cultivateContactForms = ref([
+          Object.assign({}, updateContactForm, { number: '1' }),
+          Object.assign({}, updateContactForm, { number: '2' }),
+        ])
+        for (let i = 0; i < data.data.length; i++) {
+          cultivateContactForms.value[i] = { ...cultivateContactForms.value[i], ...data.data[i] }
+        }
+      } else {
+        // 创建两个表单数据对象
+        cultivateContactForms = ref([
+          Object.assign({}, addContactForm, { number: '1' }),
+          Object.assign({}, addContactForm, { number: '2' }),
+        ])
+      }
+    } else {
+      ElMessage.error(data.msg || '获取培养联系人数据失败')
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage.error('数据获取失败')
+  }
+})
+
+// 表单状态
+const confirmOne = computed(() => {
+  if (cultivateContactForms.value[0].confirm) {
+    return cultivateContactForms.value[0].confirm
+  } else return -2
+})
+const confirmTwo = computed(() => {
+  if (cultivateContactForms.value[1].confirm) {
+    return cultivateContactForms.value[1].confirm
+  } else return -2
+})
+
+// 修改建议
+const returnTextOne = computed(() => cultivateContactForms.value[0].returnText)
+
+// 表单禁用状态
+const FormDisabled = computed(() => confirmOne.value === 1 && confirmTwo.value === 1)
 
 // 表单引用数组
 const formRefs = ref([])
@@ -147,9 +167,12 @@ const cultivateContactSubmnit = async () => {
 
     // 并行提交所有表单
     let submitPromises
+    // 如果是第一次提交
     if (confirmOne.value === -2 && confirmTwo.value === -2) {
       submitPromises = cultivateContactForms.map((form) => addNurtureContacts(form))
-    } else {
+    }
+    // 如果是重新提交
+    else {
       submitPromises = cultivateContactForms.map((form) => updateNurtureContacts(form))
     }
     const results = await Promise.all(submitPromises)
@@ -158,13 +181,27 @@ const cultivateContactSubmnit = async () => {
     const allSuccess = results.every((res) => res.data.code === 1)
     if (allSuccess) {
       ElMessage.success('提交成功')
-      fileStore.updateNurtureContacts([...cultivateContactForms])
-    } else {
-      results.forEach((res, index) => {
-        if (res.data.code !== 1) {
-          ElMessage.error(`联系人${index + 1}失败：${res.data.msg}`)
+      // 如果是第一次提交成功，待提交状态-2
+      if (confirmOne.value === -2 && confirmTwo.value === -2) {
+        const array = cultivateContactForms.value
+        // 转换成待审核
+        cultivateContactForms.value = [
+          Object.assign({}, updateContactForm),
+          Object.assign({}, updateContactForm),
+        ]
+        for (let i = 0; i < array.length; i++) {
+          cultivateContactForms.value[i] = { ...cultivateContactForms.value[i], ...array[i] }
         }
-      })
+      }
+      // 如果是审核失败的重新提交成功
+      else if (confirmOne.value === -1 && confirmTwo.value === -1) {
+        for (let i = 0; i < cultivateContactForms.value.length; i++) {
+          // 则改为待审核状态
+          cultivateContactForms.value[i].confirm = 0
+        }
+      }
+    } else {
+      ElMessage.error('提交失败，请重试')
     }
   } catch (error) {
     console.log(error)
