@@ -75,8 +75,8 @@
                     accept=".pdf"
                     :limit="1"
                     :on-exceed="singleUploadExceed"
-                    :on-remove="singleFileRemove"
-                    :on-change="singleUploadChange"
+                    :on-remove="() => singleFileRemove(scope.row.fileId)"
+                    :on-change="(file) => singleUploadChange(file, scope.row.fileId)"
                   >
                     <template #trigger>
                       <el-button link type="info" size="small">点击选择文件</el-button>
@@ -86,7 +86,9 @@
                       type="danger"
                       size="small"
                       :loading="uploadLoading"
-                      @click="updateSingleFiles(scope.row)"
+                      @click="
+                        updateSingleFiles(updateFile[scope.row.fileId], scope.row, 'ThoughtReport')
+                      "
                       >确认重新提交
                     </el-button>
                   </el-upload>
@@ -114,10 +116,10 @@
 import ContentBox from '../../components/ContentBox.vue'
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
-import { fileUpload } from '@/api/general'
+import { fileUpload, getFileMetadata } from '@/api/general'
 import { useUserStore } from '@/stores'
+import { updateSingleFiles } from '@/utils/updateFile'
 import { handleDownload } from '@/utils/downloadFile'
-import { getFileMetadata, fileDelete } from '@/api/general'
 
 const userStore = useUserStore()
 
@@ -265,61 +267,21 @@ const openDialog = async () => {
 }
 
 //重新上传单文件
-const updateFile = ref(null)
+const updateFile = reactive({})
 
 const singleUploadExceed = () => {
   ElMessage.warning('最多上传1个文件')
 }
 
-const singleUploadChange = (file) => {
+const singleUploadChange = (file, fileId) => {
   const isValid = fileValidate(file)
-  if (isValid) updateFile.value = file
-  console.log('singleUploadChange:', updateFile.value)
+  if (isValid) updateFile[fileId] = file
+  console.log('singleUploadChange:', updateFile[fileId])
 }
 
-const singleFileRemove = () => {
-  updateFile.value = null
-  console.log('singleFileRemove:', updateFile.value)
-}
-const updateSingleFiles = async (fileData) => {
-  console.log(fileData)
-  if (!updateFile.value) {
-    ElMessage.error('请选择需要上传的文件')
-    return
-  }
-  try {
-    //重新上传先删除
-    const { data: deletData } = await fileDelete(fileData.fileId)
-    if (deletData.code === 0) {
-      ElMessage.error(deletData.msg || '文件删除失败')
-      return
-    }
-  } catch (err) {
-    console.log(err)
-    ElMessage.error('文件上传失败，请重试')
-  }
-  try {
-    let formdata = new FormData()
-    formdata.append('fileType', 'ThoughtReport')
-    formdata.append('userId', userStore.userId)
-    formdata.append('attachTime', fileData.attachTime)
-    formdata.append('attachText', fileData.attachText)
-    formdata.append('file', updateFile)
-    const { data: uploadData } = await fileUpload(formdata)
-    if (uploadData.code === 1) {
-      if (fileData.status === -1) fileData.status = 0
-      ElMessage.success('文件上传成功！')
-    } else {
-      updateFile.value = null
-      fileData.status = -2
-      ElMessage.error(uploadData.msg)
-    }
-  } catch (err) {
-    updateFile.value = null
-    fileData.status = -2
-    console.log(err)
-    ElMessage.error('文件上传失败，请重试')
-  }
+const singleFileRemove = (fileId) => {
+  delete updateFile[fileId]
+  console.log('singleFileRemove:', updateFile[fileId])
 }
 </script>
 

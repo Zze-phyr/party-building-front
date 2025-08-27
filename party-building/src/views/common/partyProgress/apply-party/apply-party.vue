@@ -177,12 +177,13 @@ const fileRemove = () => {
 }
 
 const onSubmit = async () => {
+  console.log(form.file)
   if (!form.attachTime) {
     ElMessage.error('请填写申请入党日期')
     return
   }
   if (!form.file) {
-    ElMessage.error('请上传文件')
+    ElMessage.error('请选择需要上传的文件')
     return
   }
   loading.value = true
