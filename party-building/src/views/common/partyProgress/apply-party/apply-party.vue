@@ -112,7 +112,7 @@ const fileMetadataParams = reactive({
 // 页面表单数据
 const form = reactive({
   attachTime: '',
-  file: '',
+  file: null,
 })
 
 // 组件挂载后
@@ -186,6 +186,7 @@ const onSubmit = async () => {
     return
   }
   loading.value = true
+  const shouldDelete = fileMetadataParams.status !== -2 && fileMetadataParams.status !== 1
   let formdata = new FormData()
   formdata.append('fileType', 'JoinPartyApplication')
   formdata.append('creatorId', userStore.userId)
@@ -194,14 +195,20 @@ const onSubmit = async () => {
   formdata.append('file', form.file)
   try {
     //重新上传先删除
-    const shouldDelete = fileMetadataParams.status !== -2 && fileMetadataParams.status !== 1
     if (shouldDelete) {
       const { data: deletData } = await fileDelete(fileMetadataParams.fileId)
       if (deletData.code === 0) {
-        ElMessage.error('文件删除失败')
+        ElMessage.error(deletData.msg || '文件删除失败')
+        loading.value = false
         return
       }
     }
+  } catch (err) {
+    console.log(err)
+    loading.value = false
+    ElMessage.error('文件上传失败，请重试')
+  }
+  try {
     // 上传请求
     const { data: uploadData } = await fileUpload(formdata)
     if (uploadData.code === 1) {
@@ -209,10 +216,20 @@ const onSubmit = async () => {
       if (fileMetadataParams.status !== 0) fileMetadataParams.status = 0
       ElMessage.success('文件上传成功！')
     } else {
+      if (shouldDelete) {
+        fileMetadataParams.status = -2
+        form.attachTime = ''
+        form.file = null
+      }
       ElMessage.error(uploadData.msg)
     }
   } catch (err) {
     console.log(err)
+    if (shouldDelete) {
+      fileMetadataParams.status = -2
+      form.attachTime = ''
+      form.file = null
+    }
     ElMessage.error('文件上传失败，请重试')
   } finally {
     loading.value = false
