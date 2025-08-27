@@ -95,6 +95,20 @@ body {
   color: #f56c6c;
 }
 
+/* 警告消息样式 */
+.el-message--warning {
+  background-color: #fdf6ec;
+  border-color: #faecd8;
+}
+
+.el-message--warning .el-message__content {
+  color: #e6a23c;
+}
+
+.el-message--warning .el-message__icon {
+  color: #e6a23c;
+}
+
 /* 消息动画 - 进入 */
 .el-message-fade-enter-from {
   opacity: 0;

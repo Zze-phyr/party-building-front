@@ -31,6 +31,6 @@ export const handleDownload = async (fileId) => {
     ElMessage.success('文件下载成功')
   } catch (error) {
     console.error('下载失败:', error)
-    ElMessage.error('下载失败')
+    ElMessage.error('文件下载失败')
   }
 }
