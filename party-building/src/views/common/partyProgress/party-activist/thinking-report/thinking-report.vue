@@ -137,7 +137,6 @@ const uploadExceed = () => {
 const fileValidate = (file) => {
   const isPDF = file.raw.type === 'application/pdf'
   const isLt10M = file.raw.size / 1024 / 1024 < 10
-
   if (!isPDF) {
     ElMessage.warning('只能上传PDF格式文件!')
     return false
@@ -158,7 +157,7 @@ const uploadChange = (file) => {
   if (!isValid) fileList.value = fileList.value.filter((f) => f.uid !== file.uid)
 }
 
-// 文件上传
+// 多文件上传
 const uploadFiles = async () => {
   if (fileList.value.length <= 0) {
     ElMessage.error('请先选择您要上传的文件')
@@ -276,12 +275,10 @@ const singleUploadExceed = () => {
 const singleUploadChange = (file, fileId) => {
   const isValid = fileValidate(file)
   if (isValid) updateFile[fileId] = file
-  console.log('singleUploadChange:', updateFile[fileId])
 }
 
 const singleFileRemove = (fileId) => {
   delete updateFile[fileId]
-  console.log('singleFileRemove:', updateFile[fileId])
 }
 </script>
 

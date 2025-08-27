@@ -13,7 +13,7 @@ function getFileNameFromDisposition(disposition) {
 export const handleDownload = async (fileId) => {
   try {
     if (!fileId) {
-      ElMessage.error('文件ID不存在')
+      ElMessage.error('文件不存在，下载失败')
       return
     }
 
