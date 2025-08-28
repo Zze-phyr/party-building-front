@@ -52,22 +52,16 @@
       </div>
     </div>
     <!-- 手册二 -->
-    <div class="manual-box content-box">
-      <div class="title">手册二</div>
-      <div class="manual-content">
-        <div class="content manual-download-box">
-          <span class="download-title">手册二模板</span>
-          <span class="download">点击下载模板到本地</span>
-        </div>
-        <div class="content manual-upload-box">
-          <span class="upload">点击上传写好的手册二PDF扫描文件</span>
-        </div>
-      </div>
-    </div>
+    <HandBook
+      :name="'手册二'"
+      :file-types="['HandbookSecondTemplateFull', 'HandbookSecond']"
+    ></HandBook>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import HandBook from '../components/HandBook.vue'
+</script>
 
 <style lang="scss" scoped>
 .develop-candidate-container {
@@ -169,38 +163,6 @@
         .load:hover {
           color: #bc0000a8;
         }
-      }
-    }
-  }
-  // 手册二
-  .manual-box {
-    flex: 9;
-    .manual-content {
-      padding: 30px;
-      .content {
-        display: flex;
-        font-size: 14px;
-        &::before {
-          display: block;
-          margin-right: 10px;
-          content: '';
-          width: 3px;
-          height: 25px;
-          background-color: #bc0000c0;
-        }
-      }
-      .manual-download-box {
-        margin-bottom: 15px;
-        .download {
-          margin-left: 5px;
-          color: #999;
-        }
-        .download:hover {
-          color: #bc0000c0;
-        }
-      }
-      .manual-upload-box .upload:hover {
-        color: #bc0000c0;
       }
     }
   }

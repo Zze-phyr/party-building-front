@@ -1,11 +1,11 @@
 <!-- 手册组件 -->
 <template>
   <ContentBox :confirm="fileMetadata.status" :proposed-changes="fileMetadata.returnText">
-    <template #title> 手册一 </template>
+    <template #title> {{ name }} </template>
     <div class="manual-content">
       <!-- 模板 -->
       <div class="content manual-download-box">
-        <el-button link disabled class="download-title">手册一模板</el-button>
+        <el-button link disabled class="download-title">{{ name }}模板</el-button>
         <el-button
           link
           :disabled="fileTemplateMetadata.status !== 1"
@@ -68,7 +68,7 @@
 <script setup>
 import ContentBox from './ContentBox.vue'
 import { useUserStore } from '@/stores'
-import { reactive, onMounted, ref } from 'vue'
+import { reactive, onMounted, ref, defineProps } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getFileMetadata } from '@/api/general'
 import { downloadFile } from '@/utils/file/downloadFile'
@@ -76,15 +76,25 @@ import { updateSingleFiles } from '@/utils/file/updateFile'
 import { uploadSingleFiles } from '@/utils/file/uploadFile'
 
 const userStore = useUserStore()
+const props = defineProps({
+  name: {
+    type: String,
+    default: '手册一',
+  },
+  fileTypes: {
+    type: Array,
+    default: () => ['HandbookFirstTemplate', 'HandbookFirst'],
+  },
+})
 
 // 获取文件元数据请求参数
 const fileTemplateMetadataRequestParams = reactive({
   userId: '-1',
-  fileType: 'HandbookFirstTemplate',
+  fileType: props.fileTypes[0],
 })
 const fileMetadataRequestParams = reactive({
   userId: userStore.userId,
-  fileType: 'HandbookFirst',
+  fileType: props.fileTypes[1],
 })
 
 // 文件元数据
@@ -170,7 +180,7 @@ const uploadLoading = ref(false)
 const handleUpdateFile = async () => {
   try {
     uploadLoading.value = true
-    await updateSingleFiles(selectFile.value, fileMetadata, 'HandbookFirst')
+    await updateSingleFiles(selectFile.value, fileMetadata, props.fileTypes[1])
   } finally {
     uploadLoading.value = false
   }
@@ -180,7 +190,7 @@ const handleUpdateFile = async () => {
 const handleUploadFile = async () => {
   try {
     uploadLoading.value = true
-    await uploadSingleFiles(selectFile.value, fileMetadata, 'HandbookFirst')
+    await uploadSingleFiles(selectFile.value, fileMetadata, props.fileTypes[1])
   } finally {
     uploadLoading.value = false
   }
