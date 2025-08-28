@@ -118,8 +118,8 @@ import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { fileUpload, getFileMetadata } from '@/api/general'
 import { useUserStore } from '@/stores'
-import { updateSingleFiles } from '@/utils/updateFile'
-import { downloadFile } from '@/utils/downloadFile'
+import { updateSingleFiles } from '@/utils/file/updateFile'
+import { downloadFile } from '@/utils/file/downloadFile'
 
 const userStore = useUserStore()
 

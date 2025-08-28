@@ -89,7 +89,7 @@ import { ElMessage } from 'element-plus'
 import { fileUpload, getFileMetadata, fileDelete } from '@/api/general'
 import BigTitle from '../components/BigTitle.vue'
 import ContentBox from '../components/ContentBox.vue'
-import { downloadFile } from '@/utils/downloadFile'
+import { downloadFile } from '@/utils/file/downloadFile'
 
 const userStore = useUserStore()
 

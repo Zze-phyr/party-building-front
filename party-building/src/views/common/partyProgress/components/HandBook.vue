@@ -35,7 +35,7 @@
             link
             class="upload btn"
             :loading="uploadLoading"
-            @handleUploadFile="uploadFile()"
+            @click="handleUploadFile()"
             v-if="fileMetadata.status === -2"
           >
             确认提交
@@ -70,9 +70,10 @@ import ContentBox from './ContentBox.vue'
 import { useUserStore } from '@/stores'
 import { reactive, onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { getFileMetadata, fileUpload } from '@/api/general'
-import { downloadFile } from '@/utils/downloadFile'
-import { updateSingleFiles } from '@/utils/updateFile'
+import { getFileMetadata } from '@/api/general'
+import { downloadFile } from '@/utils/file/downloadFile'
+import { updateSingleFiles } from '@/utils/file/updateFile'
+import { uploadSingleFiles } from '@/utils/file/uploadFile'
 
 const userStore = useUserStore()
 
@@ -165,6 +166,7 @@ const uploadChange = (file) => {
 
 const uploadLoading = ref(false)
 
+// 单文件重新上传
 const handleUpdateFile = async () => {
   try {
     uploadLoading.value = true
@@ -174,30 +176,11 @@ const handleUpdateFile = async () => {
   }
 }
 
-const uploadFile = async () => {
-  if (!selectFile.value) {
-    ElMessage.error('请选择需要上传的文件')
-    return
-  }
-  let formdata = new FormData()
-  formdata.append('fileType', 'HandbookFirst')
-  formdata.append('userId', userStore.userId)
-  formdata.append('attachTime', fileMetadata.attachTime)
-  formdata.append('attachText', fileMetadata.attachText)
-  formdata.append('file', selectFile.value.raw)
+// 单文件上传
+const handleUploadFile = async () => {
   try {
     uploadLoading.value = true
-    const { data } = await fileUpload(formdata)
-    if (data.code === 1) {
-      fileMetadata.status = 1
-      fileMetadata.fileId = data.data.fileId
-      ElMessage.success('文件上传成功！')
-    } else {
-      ElMessage.error(data.msg)
-    }
-  } catch (err) {
-    console.log(err)
-    ElMessage.error('文件上传失败，请重试')
+    await uploadSingleFiles(selectFile.value, fileMetadata, 'HandbookFirst')
   } finally {
     uploadLoading.value = false
   }
