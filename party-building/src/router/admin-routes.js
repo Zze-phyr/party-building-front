@@ -304,9 +304,9 @@ export const branchCommitteeRoutes = [
 ]
 
 // 获取管理员完整路由
-export const getAdminRoutes = (secondaryRole) => {
+export const getAdminRoutes = (thirdRole) => {
   const routes = [...adminBaseRoutes]
-  switch (secondaryRole) {
+  switch (thirdRole) {
     case 'BranchCommittee':
       routes.push(...branchCommitteeRoutes)
       break
@@ -320,7 +320,7 @@ export const getAdminRoutes = (secondaryRole) => {
       routes.push(...administratorRoutes)
       break
     default:
-      console.warn('未知的普通用户类型:', secondaryRole)
+      console.log('未知的普通用户类型:', thirdRole)
       return []
   }
   return routes

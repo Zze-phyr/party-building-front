@@ -82,22 +82,22 @@ export const applicantRoutes = [
 ]
 
 // 获取普通用户完整路由
-export const getCommonRoutes = (secondaryRole) => {
+export const getCommonRoutes = (thirdRole) => {
   const routes = [...commonBaseRoutes]
-
-  switch (secondaryRole) {
-    case 'Applicant':
-      routes.push(...applicantRoutes)
-      break
-    case 'Student':
-      routes.push(...studentRoutes)
-      break
-    case 'Teacher':
-      routes.push(...teacherRoutes)
-      break
-    default:
-      console.warn('未知的普通用户类型:', secondaryRole)
-      return []
+  if (
+    thirdRole === 'Applicant' ||
+    thirdRole === 'PartyActivities' ||
+    thirdRole === 'Development' ||
+    thirdRole === 'ReservePartyMenbers'
+  ) {
+    routes.push(...applicantRoutes)
+  } else if (thirdRole === 'Student') {
+    routes.push(...studentRoutes)
+  } else if (thirdRole === 'Teacher') {
+    routes.push(...teacherRoutes)
+  } else {
+    console.log('未知的普通用户类型:', thirdRole)
+    return []
   }
 
   return routes

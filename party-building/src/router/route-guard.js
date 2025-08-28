@@ -19,7 +19,7 @@ export const setupRouteGuard = (router) => {
       try {
         const permissions = userStore.getPermission
         const primaryRole = permissions[0]
-        const secondaryRole = permissions[1]
+        const thirdRole = permissions[2]
 
         let dynamicRoutes = []
         let layoutRoute = null
@@ -32,7 +32,7 @@ export const setupRouteGuard = (router) => {
           router.addRoute(layoutRoute)
 
           // 获取用户子路由
-          dynamicRoutes = getCommonRoutes(secondaryRole)
+          dynamicRoutes = getCommonRoutes(thirdRole)
           redirectPath = '/common/index'
         } else if (primaryRole === 'Admin') {
           // 添加管理员布局路由
@@ -40,16 +40,14 @@ export const setupRouteGuard = (router) => {
           router.addRoute(layoutRoute)
 
           // 获取管理子路由
-          dynamicRoutes = getAdminRoutes(secondaryRole)
-          console.log(dynamicRoutes)
+          dynamicRoutes = getAdminRoutes(thirdRole)
+
           redirectPath = '/admin/joinParty/reviewUpload'
         }
-
         // 未知身份异常处理
         if (dynamicRoutes.length === 0) {
-          throw new Error(`未知角色: ${secondaryRole}`)
+          throw new Error(`未知角色: ${thirdRole}`)
         }
-
         // 添加动态子路由
         if (layoutRoute) {
           dynamicRoutes.forEach((route) => {

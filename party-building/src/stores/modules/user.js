@@ -9,9 +9,26 @@ export const useUserStore = defineStore(
   () => {
     // 认证状态
     const token = ref('Bearer 111')
-    const permission = ref(['Common', 'Applicant', 'DevelopmentOver'])
-    // const permission = ref(['Admin', 'Administrator'])
-    // const permission = ref(['Admin', 'BranchCommittee'])
+    // const permission = ref(['Common', 'Teacher', 'Teacher'])
+    // const permission = ref(['Common', 'Student', 'Student'])
+    // 申请入党
+    const permission = ref(['Common', 'Student', 'Applicant'])
+    // 入党积极分子
+    // const permission = ref(['Common', 'Student', 'PartyActivities'])
+    // 发展对象
+    // const permission = ref(['Common', 'Student', 'Development'])
+    // 预备党员
+    // const permission = ref(['Common', 'Student', 'ReservePartyMenbers'])
+    //
+    //
+    // 系统管理员
+    // const permission = ref(['Admin', 'Administrator', 'Administrator'])
+    // 组织员、副书记、书记
+    // const permission = ref(['Admin', 'Organizers', 'Organizers'])
+    // 支部书记
+    // const permission = ref(['Admin', 'BranchSecretary', 'BranchSecretary'])
+    // 支委、支部副书记
+    // const permission = ref(['Admin', 'BranchCommittee', 'BranchCommittee'])
     const userId = ref('222')
     const hasAddedRoutes = ref(false) // 是否动态添加路由
     const dynamicRoutes = ref([]) // 存储动态路由信息
