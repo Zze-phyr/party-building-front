@@ -7,7 +7,14 @@ export const commonLayoutRoute = {
   redirect: '/common/index',
   meta: {
     requiresAuth: true,
-    roles: ['Student', 'Teacher', 'Applicant'],
+    roles: [
+      'Student',
+      'Teacher',
+      'Applicant',
+      'PartyActivities',
+      'Development',
+      'ReservePartyMenbers',
+    ],
   },
   children: [], // 动态添加子路由
 }
@@ -20,7 +27,14 @@ export const commonBaseRoutes = [
     component: () => import('@/views/common/indexPage/index-page.vue'),
     meta: {
       title: '首页',
-      roles: ['Student', 'Teacher', 'Applicant'],
+      roles: [
+        'Student',
+        'Teacher',
+        'Applicant',
+        'PartyActivities',
+        'Development',
+        'ReservePartyMenbers',
+      ],
     },
   },
   {
@@ -29,7 +43,14 @@ export const commonBaseRoutes = [
     component: () => import('@/views/common/branchConstruction/branch-construction.vue'),
     meta: {
       title: '支部建设',
-      roles: ['Student', 'Teacher', 'Applicant'],
+      roles: [
+        'Student',
+        'Teacher',
+        'Applicant',
+        'PartyActivities',
+        'Development',
+        'ReservePartyMenbers',
+      ],
     },
   },
   {
@@ -38,7 +59,14 @@ export const commonBaseRoutes = [
     component: () => import('@/views/common/partyBuildingStyle/party-building-style.vue'),
     meta: {
       title: '党建风采',
-      roles: ['Student', 'Teacher', 'Applicant'],
+      roles: [
+        'Student',
+        'Teacher',
+        'Applicant',
+        'PartyActivities',
+        'Development',
+        'ReservePartyMenbers',
+      ],
     },
   },
   {
@@ -47,7 +75,14 @@ export const commonBaseRoutes = [
     component: () => import('@/views/common/notificationCenter/notification-center.vue'),
     meta: {
       title: '通知中心',
-      roles: ['Student', 'Teacher', 'Applicant'],
+      roles: [
+        'Student',
+        'Teacher',
+        'Applicant',
+        'PartyActivities',
+        'Development',
+        'ReservePartyMenbers',
+      ],
     },
   },
   {
@@ -56,7 +91,14 @@ export const commonBaseRoutes = [
     component: () => import('@/views/common/personalCenter/personal-center.vue'),
     meta: {
       title: '个人中心',
-      roles: ['Student', 'Teacher', 'Applicant'],
+      roles: [
+        'Student',
+        'Teacher',
+        'Applicant',
+        'PartyActivities',
+        'Development',
+        'ReservePartyMenbers',
+      ],
       hidden: true, // 不在主导航显示
     },
   },
@@ -76,7 +118,7 @@ export const applicantRoutes = [
     component: () => import('@/views/common/partyProgress/party-progress.vue'),
     meta: {
       title: '入党流程',
-      roles: ['Applicant'],
+      roles: ['Applicant', 'PartyActivities', 'Development', 'ReservePartyMenbers'],
     },
   },
 ]

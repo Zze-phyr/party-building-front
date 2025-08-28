@@ -72,7 +72,7 @@ export const setupRouteGuard = (router) => {
         console.error('路由加载失败:', error)
         // localStorage.setItem(
         //   'user',
-        //   '{"token":"111","permission":["Common", "Applicant", "DevelopmentOver"],"userId":123,"name":"张三","hasAddedRoutes":false,"dynamicRoutes":[]}',
+        //   '{"token":"111","permission":["Common", "Student", "Applicant"],"userId":123,"name":"张三","hasAddedRoutes":false,"dynamicRoutes":[]}',
         // )
         userStore.logout()
         next('/login')
@@ -81,11 +81,11 @@ export const setupRouteGuard = (router) => {
 
     // 检查路由权限
     const permissions = userStore.getPermission
-    const secondaryRole = permissions[1]
+    const thirdRole = permissions[2]
     const routeRoles = to.meta.roles
 
     // 检查是否无权限
-    if (!routeRoles.includes(secondaryRole)) {
+    if (!routeRoles.includes(thirdRole)) {
       next('/404')
       return
     }
