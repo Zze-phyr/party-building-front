@@ -20,6 +20,7 @@ export const updateSingleFiles = async (file, fileData, fileType) => {
   } catch (err) {
     console.log(err)
     ElMessage.error('文件上传失败，请重试')
+    return
   }
   try {
     let formdata = new FormData()
@@ -31,6 +32,7 @@ export const updateSingleFiles = async (file, fileData, fileType) => {
     const { data: uploadData } = await fileUpload(formdata)
     if (uploadData.code === 1) {
       if (fileData.status === -1) fileData.status = 0
+      fileData.fileId = uploadData.data.fileId
       ElMessage.success('文件上传成功！')
     } else {
       file = null

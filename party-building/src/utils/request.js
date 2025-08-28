@@ -9,7 +9,7 @@ const instance = axios.create({
   //基础地址
   baseURL: '/api',
   //超时时间
-  timeout: 60000,
+  timeout: 1000,
 })
 
 // 请求拦截器

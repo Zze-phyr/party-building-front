@@ -73,7 +73,7 @@
           </div>
           <div class="text">恭喜你，你的入党申请书已通过！</div>
           <div class="btn-box">
-            <el-button :loading="loading" @click="handleDownloadClick()">下载入党申请书</el-button>
+            <el-button :loading="loading" @click="handleDownloadFile()">下载入党申请书</el-button>
           </div>
         </div>
       </ContentBox>
@@ -89,7 +89,7 @@ import { ElMessage } from 'element-plus'
 import { fileUpload, getFileMetadata, fileDelete } from '@/api/general'
 import BigTitle from '../components/BigTitle.vue'
 import ContentBox from '../components/ContentBox.vue'
-import { handleDownload } from '@/utils/downloadFile'
+import { downloadFile } from '@/utils/downloadFile'
 
 const userStore = useUserStore()
 
@@ -237,10 +237,10 @@ const onSubmit = async () => {
   }
 }
 
-const handleDownloadClick = async () => {
+const handleDownloadFile = async () => {
   try {
     loading.value = true
-    await handleDownload(fileMetadataParams.fileId)
+    await downloadFile(fileMetadataParams.fileId)
   } finally {
     loading.value = false
   }

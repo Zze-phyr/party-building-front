@@ -1,6 +1,6 @@
 <!-- 手册组件 -->
 <template>
-  <ContentBox>
+  <ContentBox :confirm="fileMetadata.status" :proposed-changes="fileMetadata.returnText">
     <template #title> 手册一 </template>
     <div class="manual-content">
       <!-- 模板 -->
@@ -11,7 +11,7 @@
           :disabled="fileTemplateMetadata.status !== 1"
           class="download"
           :class="{ 'download-btn': fileTemplateMetadata.status === 1 }"
-          @click="handleDownload(fileTemplateMetadata.fileId)"
+          @click="downloadFile(fileTemplateMetadata.fileId)"
         >
           {{ fileTemplateMetadata.status === 1 ? '点击下载模板到本地' : '等待管理员上传中' }}
         </el-button>
@@ -30,19 +30,31 @@
           <template #trigger>
             <el-button link type="info" v-if="fileMetadata.status !== 1">点击选择文件</el-button>
           </template>
+          <!-- 首次上传 -->
           <el-button
             link
             class="upload btn"
             :loading="uploadLoading"
-            v-if="fileMetadata.status !== 1"
+            @handleUploadFile="uploadFile()"
+            v-if="fileMetadata.status === -2"
           >
-            {{ fileMetadata.status === -2 ? '确认提交' : '确认重新提交' }}
+            确认提交
+          </el-button>
+          <!-- 重新上传 -->
+          <el-button
+            link
+            class="upload btn"
+            :loading="uploadLoading"
+            @click="handleUpdateFile()"
+            v-else-if="fileMetadata.status === -1 || fileMetadata.status === 0"
+          >
+            确认重新提交
           </el-button>
           <el-button
             link
             type="info"
             class="upload btn"
-            @click="handleDownload(fileMetadata.fileId)"
+            @click="downloadFile(fileMetadata.fileId)"
             v-if="fileMetadata.status !== -2"
           >
             下载文件
@@ -58,8 +70,9 @@ import ContentBox from './ContentBox.vue'
 import { useUserStore } from '@/stores'
 import { reactive, onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { getFileMetadata } from '@/api/general'
-import { handleDownload } from '@/utils/downloadFile'
+import { getFileMetadata, fileUpload } from '@/api/general'
+import { downloadFile } from '@/utils/downloadFile'
+import { updateSingleFiles } from '@/utils/updateFile'
 
 const userStore = useUserStore()
 
@@ -76,17 +89,17 @@ const fileMetadataRequestParams = reactive({
 // 文件元数据
 const fileTemplateMetadata = reactive({
   fileId: null,
-  status: 1,
+  status: -2,
   attachText: '',
   attachTime: '',
   fileName: '',
 })
 const fileMetadata = reactive({
   fileId: null,
-  status: -1,
+  status: -2,
   attachText: '',
   attachTime: '',
-  returnText: '',
+  returnText: '手册一错误',
   fileName: '',
 })
 
@@ -116,7 +129,7 @@ onMounted(async () => {
 })
 
 // 上传文件
-const updateFile = ref(null)
+const selectFile = ref(null)
 const fileList = ref([])
 
 // 文件验证逻辑保持不变
@@ -143,11 +156,51 @@ const uploadExceed = () => {
 }
 //文件变化
 const fileRemove = () => {
-  updateFile.value = null
+  selectFile.value = null
 }
 const uploadChange = (file) => {
   const isValid = fileValidate(file)
-  if (isValid) updateFile.value = file
+  if (isValid) selectFile.value = file
+}
+
+const uploadLoading = ref(false)
+
+const handleUpdateFile = async () => {
+  try {
+    uploadLoading.value = true
+    await updateSingleFiles(selectFile.value, fileMetadata, 'HandbookFirst')
+  } finally {
+    uploadLoading.value = false
+  }
+}
+
+const uploadFile = async () => {
+  if (!selectFile.value) {
+    ElMessage.error('请选择需要上传的文件')
+    return
+  }
+  let formdata = new FormData()
+  formdata.append('fileType', 'HandbookFirst')
+  formdata.append('userId', userStore.userId)
+  formdata.append('attachTime', fileMetadata.attachTime)
+  formdata.append('attachText', fileMetadata.attachText)
+  formdata.append('file', selectFile.value.raw)
+  try {
+    uploadLoading.value = true
+    const { data } = await fileUpload(formdata)
+    if (data.code === 1) {
+      fileMetadata.status = 1
+      fileMetadata.fileId = data.data.fileId
+      ElMessage.success('文件上传成功！')
+    } else {
+      ElMessage.error(data.msg)
+    }
+  } catch (err) {
+    console.log(err)
+    ElMessage.error('文件上传失败，请重试')
+  } finally {
+    uploadLoading.value = false
+  }
 }
 </script>
 

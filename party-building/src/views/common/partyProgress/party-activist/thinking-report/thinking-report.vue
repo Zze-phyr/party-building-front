@@ -64,7 +64,7 @@
                     link
                     type="primary"
                     size="small"
-                    @click="handleDownload(scope.row.fileId)"
+                    @click="downloadFile(scope.row.fileId)"
                     v-if="scope.row.status !== -2"
                   >
                     下载
@@ -119,7 +119,7 @@ import { ElMessage } from 'element-plus'
 import { fileUpload, getFileMetadata } from '@/api/general'
 import { useUserStore } from '@/stores'
 import { updateSingleFiles } from '@/utils/updateFile'
-import { handleDownload } from '@/utils/downloadFile'
+import { downloadFile } from '@/utils/downloadFile'
 
 const userStore = useUserStore()
 
