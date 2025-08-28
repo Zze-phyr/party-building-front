@@ -6,6 +6,7 @@ const userStore = useUserStore()
 
 export const uploadSingleFiles = async (file, fileData, fileType) => {
   console.log('updateSingleFiles:', file, fileData, fileType)
+  fileData.status = 1
   if (!file) {
     ElMessage.error('请选择需要上传的文件')
     return
@@ -19,7 +20,7 @@ export const uploadSingleFiles = async (file, fileData, fileType) => {
   try {
     const { data: uploadData } = await fileUpload(formdata)
     if (uploadData.code === 1) {
-      if (fileData.status === -1) fileData.status = 0
+      if (fileData.status === -2) fileData.status = 0
       fileData.fileId = uploadData.data.fileId
       ElMessage.success('文件上传成功！')
     } else {

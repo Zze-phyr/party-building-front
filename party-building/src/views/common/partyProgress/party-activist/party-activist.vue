@@ -26,7 +26,10 @@
       </div>
       <!-- 手册一 -->
       <div class="manual-box">
-        <HandBook></HandBook>
+        <HandBook
+          :file-template-metadata="fileTemplateMetadata"
+          :file-metadata="fileMetadata"
+        ></HandBook>
       </div>
     </div>
   </div>
@@ -38,6 +41,64 @@ import cultivateContacts from './cultivate-contacts/cultivate-contacts.vue'
 import ContentBox from '../components/ContentBox.vue'
 import thinkingReport from './thinking-report/thinking-report.vue'
 import HandBook from '../components/HandBook.vue'
+import { useUserStore } from '@/stores'
+import { reactive, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
+import { getFileMetadata } from '@/api/general'
+
+const userStore = useUserStore()
+
+// 获取文件元数据请求参数
+const fileTemplateMetadataRequestParams = reactive({
+  userId: '-1',
+  fileType: 'HandbookFirstTemplate',
+})
+const fileMetadataRequestParams = reactive({
+  userId: userStore.userId,
+  fileType: 'HandbookFirst',
+})
+
+// 文件元数据
+const fileTemplateMetadata = reactive({
+  fileId: null,
+  status: 1,
+  attachText: '',
+  attachTime: '',
+  fileName: '',
+})
+const fileMetadata = reactive({
+  fileId: null,
+  status: -1,
+  attachText: '',
+  attachTime: '',
+  returnText: '手册一错误',
+  fileName: '',
+})
+
+// 组件挂载后
+onMounted(async () => {
+  try {
+    const { data: fileTemplateGetData } = await getFileMetadata(fileTemplateMetadataRequestParams)
+    if (fileTemplateGetData.code === 1) {
+      if (fileTemplateGetData.data.length > 0) {
+        Object.assign(fileTemplateMetadata, fileTemplateGetData.data[0])
+      }
+    } else {
+      ElMessage.error(fileTemplateGetData.msg)
+    }
+    const { data: fileGetData } = await getFileMetadata(fileMetadataRequestParams)
+    if (fileGetData.code === 1) {
+      if (fileGetData.data.length > 0) {
+        Object.assign(fileMetadata, fileGetData.data[0])
+      }
+    } else {
+      ElMessage.error(fileGetData.msg)
+    }
+  } catch (error) {
+    console.log(error)
+    ElMessage.error('数据获取失败')
+  }
+})
 </script>
 
 <style lang="scss" scoped>

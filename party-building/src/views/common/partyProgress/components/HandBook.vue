@@ -67,15 +67,12 @@
 
 <script setup>
 import ContentBox from './ContentBox.vue'
-import { useUserStore } from '@/stores'
-import { reactive, onMounted, ref, defineProps } from 'vue'
+import { ref, defineProps } from 'vue'
 import { ElMessage } from 'element-plus'
-import { getFileMetadata } from '@/api/general'
 import { downloadFile } from '@/utils/file/downloadFile'
 import { updateSingleFiles } from '@/utils/file/updateFile'
 import { uploadSingleFiles } from '@/utils/file/uploadFile'
 
-const userStore = useUserStore()
 const props = defineProps({
   name: {
     type: String,
@@ -85,58 +82,27 @@ const props = defineProps({
     type: Array,
     default: () => ['HandbookFirstTemplate', 'HandbookFirst'],
   },
-})
-
-// 获取文件元数据请求参数
-const fileTemplateMetadataRequestParams = reactive({
-  userId: '-1',
-  fileType: props.fileTypes[0],
-})
-const fileMetadataRequestParams = reactive({
-  userId: userStore.userId,
-  fileType: props.fileTypes[1],
-})
-
-// 文件元数据
-const fileTemplateMetadata = reactive({
-  fileId: null,
-  status: -2,
-  attachText: '',
-  attachTime: '',
-  fileName: '',
-})
-const fileMetadata = reactive({
-  fileId: null,
-  status: -2,
-  attachText: '',
-  attachTime: '',
-  returnText: '手册一错误',
-  fileName: '',
-})
-
-// 组件挂载后
-onMounted(async () => {
-  try {
-    const { data: fileTemplateGetData } = await getFileMetadata(fileTemplateMetadataRequestParams)
-    if (fileTemplateGetData.code === 1) {
-      if (fileTemplateGetData.data.length > 0) {
-        Object.assign(fileTemplateMetadata, fileTemplateGetData.data[0])
-      }
-    } else {
-      ElMessage.error(fileTemplateGetData.msg)
-    }
-    const { data: fileGetData } = await getFileMetadata(fileMetadataRequestParams)
-    if (fileGetData.code === 1) {
-      if (fileGetData.data.length > 0) {
-        Object.assign(fileMetadata, fileGetData.data[0])
-      }
-    } else {
-      ElMessage.error(fileGetData.msg)
-    }
-  } catch (error) {
-    console.log(error)
-    ElMessage.error('数据获取失败')
-  }
+  fileTemplateMetadata: {
+    type: Object,
+    default: () => ({
+      fileId: null,
+      status: -2,
+      attachText: '',
+      attachTime: '',
+      fileName: '',
+    }),
+  },
+  fileMetadata: {
+    type: Object,
+    default: () => ({
+      fileId: null,
+      status: -2,
+      attachText: '',
+      attachTime: '',
+      returnText: '',
+      fileName: '',
+    }),
+  },
 })
 
 // 上传文件
@@ -180,7 +146,7 @@ const uploadLoading = ref(false)
 const handleUpdateFile = async () => {
   try {
     uploadLoading.value = true
-    await updateSingleFiles(selectFile.value, fileMetadata, props.fileTypes[1])
+    await updateSingleFiles(selectFile.value, props.fileMetadatafileMetadata, props.fileTypes[1])
   } finally {
     uploadLoading.value = false
   }
@@ -190,7 +156,7 @@ const handleUpdateFile = async () => {
 const handleUploadFile = async () => {
   try {
     uploadLoading.value = true
-    await uploadSingleFiles(selectFile.value, fileMetadata, props.fileTypes[1])
+    await uploadSingleFiles(selectFile.value, props.fileMetadata, props.fileTypes[1])
   } finally {
     uploadLoading.value = false
   }
