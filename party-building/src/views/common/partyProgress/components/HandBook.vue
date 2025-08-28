@@ -4,7 +4,10 @@
     <template #title> {{ name }} </template>
     <div class="manual-content">
       <!-- 模板 -->
-      <div class="content manual-download-box">
+      <div class="content manual-download-box" :class="{ line: !isPicShow }">
+        <div class="img-box" v-if="isPicShow">
+          <img class="img" src="../../../../assets/images/partyProgress/word-pic.png" alt="" />
+        </div>
         <el-button link disabled class="download-title">{{ name }}模板</el-button>
         <el-button
           link
@@ -17,7 +20,10 @@
         </el-button>
       </div>
       <!-- 手册 -->
-      <div class="content manual-upload-box">
+      <div class="content manual-upload-box" :class="{ line: !isPicShow }">
+        <div class="img-box" v-if="isPicShow">
+          <img class="img" src="../../../../assets/images/partyProgress/pdf.png" alt="" />
+        </div>
         <el-upload
           v-model:file-list="fileList"
           accept=".pdf"
@@ -81,6 +87,10 @@ const props = defineProps({
   fileTypes: {
     type: Array,
     default: () => ['HandbookFirstTemplate', 'HandbookFirst'],
+  },
+  isPicShow: {
+    type: Boolean,
+    default: false,
   },
   fileTemplateMetadata: {
     type: Object,
@@ -169,14 +179,21 @@ const handleUploadFile = async () => {
   padding: 30px 30px 20px;
   .content {
     display: flex;
-    &::before {
-      display: block;
+    .img-box {
       margin-right: 10px;
-      content: '';
-      width: 3px;
-      height: 18px;
-      background-color: #bc0000c0;
+      .img {
+        width: 25px;
+        height: 25px;
+      }
     }
+  }
+  .line::before {
+    display: block;
+    margin-right: 10px;
+    content: '';
+    width: 3px;
+    height: 18px;
+    background-color: #bc0000c0;
   }
   .manual-download-box {
     margin-bottom: 15px;

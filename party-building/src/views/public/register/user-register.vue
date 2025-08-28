@@ -72,7 +72,7 @@
 import { reactive, ref } from 'vue'
 import { userRegister, userVerification } from '@/api/public'
 import { ElMessage } from 'element-plus'
-import { clearForm } from '@/composables/useFormUtils'
+// import { clearForm } from '@/composables/useFormUtils'
 import { validatePhone, validateIdCard } from '@/utils/validators'
 import { useCountdown } from '@/composables/useCountdown'
 
@@ -167,7 +167,7 @@ const countdownChange = async () => {
 }
 
 //提交表单
-const submitRegister = async (formRef, formData) => {
+const submitRegister = async (formRef) => {
   if (!formRef) return
   //手动触发校验
   try {
@@ -180,7 +180,7 @@ const submitRegister = async (formRef, formData) => {
     }
   } catch (error) {
     console.log(error)
-    clearForm(formRef, formData)
+    // clearForm(formRef, formData)
     ElMessage.error('注册失败，请重试')
   }
 }

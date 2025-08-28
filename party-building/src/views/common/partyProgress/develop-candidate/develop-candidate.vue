@@ -3,25 +3,9 @@
     <!-- 入党流程标题 -->
     <div class="big-title">发展对象的确定和考察</div>
     <!-- 自传&结业证书 -->
-    <!-- 自传 -->
     <div class="autobiography-certificate-box">
-      <div class="autobiography-box content-box">
-        <div class="title">上传自传</div>
-        <div class="content">
-          <div class="load-box">
-            <div class="img-box">
-              <img class="img" src="../../../../assets/images/partyProgress/pdf.png" alt="" />
-            </div>
-            <div class="load">点击下载自传填写要求</div>
-          </div>
-          <div class="load-box">
-            <div class="img-box">
-              <img class="img" src="../../../../assets/images/partyProgress/pdf.png" alt="" />
-            </div>
-            <div class="load">点击上传我的自传（需上传PDF扫描版）</div>
-          </div>
-        </div>
-      </div>
+      <!-- 自传 -->
+      <div class="autobiography-box content-box"></div>
       <!-- 结业证书 -->
       <div class="certificate-box content-box">
         <div class="title">发展对象结业证书</div>
@@ -34,23 +18,13 @@
       </div>
     </div>
     <!-- 入党志愿书 -->
-    <div class="party-application-box content-box">
-      <div class="title">上传入党志愿书（部分）</div>
-      <div class="content">
-        <div class="load-box">
-          <div class="img-box">
-            <img class="img" src="../../../../assets/images/partyProgress/word-pic.png" alt="" />
-          </div>
-          <div class="load">点击下载入党志愿书填写模板</div>
-        </div>
-        <div class="load-box">
-          <div class="img-box">
-            <img class="img" src="../../../../assets/images/partyProgress/pdf.png" alt="" />
-          </div>
-          <div class="load">点击上传我的入党志愿书（需上传PDF扫描版）</div>
-        </div>
-      </div>
-    </div>
+    <HandBook
+      :name="'入党志愿书（部分）'"
+      :is-pic-show="true"
+      :file-types="['HandbookSecondTemplateFull', 'HandbookSecond']"
+      :file-template-metadata="fileTemplateMetadata"
+      :file-metadata="fileMetadata"
+    ></HandBook>
     <!-- 手册二 -->
     <HandBook
       :name="'手册二'"
