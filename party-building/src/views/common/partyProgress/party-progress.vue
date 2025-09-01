@@ -2,27 +2,27 @@
   <div class="bg-container"></div>
   <div class="party-progress-container">
     <div class="step-container">
-      <!-- 预备党员的教育考察和转正 -->
+      <!-- 预备党员 -->
       <div class="step-item">
         <div
           class="step-dot"
-          :class="{ 'dot-finished': status === 'DevelopmentOver' }"
-          @click="checkFive()"
+          :class="{ 'dot-finished': status === 'ReservePartyMenbers' }"
+          @click="checkFour()"
         ></div>
         <div
           class="step-connector"
-          :class="{ 'connector-finished': status === 'DevelopmentOver' }"
+          :class="{ 'connector-finished': status === 'ReservePartyMenbers' }"
         ></div>
         <div
           class="step-content"
-          :class="{ 'content-finished': status === 'DevelopmentOver' }"
-          @click="checkFive()"
+          :class="{ 'content-finished': status === 'ReservePartyMenbers' }"
+          @click="checkFour()"
         >
-          预备党员的教育考察和转正
+          预备党员的接收、教育考察和转正
         </div>
       </div>
       <!-- 预备党员的接收 -->
-      <div class="step-item">
+      <!-- <div class="step-item">
         <div
           class="step-dot"
           :class="{ 'dot-finished': status === 'Development' || status === 'DevelopmentOver' }"
@@ -41,28 +41,26 @@
         >
           预备党员的接收
         </div>
-      </div>
+      </div> -->
       <!-- 发展对象的确定和考察 -->
       <div class="step-item">
         <div
           class="step-dot"
           :class="{
-            'dot-finished': status !== 'ApplicationPartyMembership' && status !== 'PartyActivities',
+            'dot-finished': status !== 'Applicant' && status !== 'PartyActivities',
           }"
           @click="checkThree()"
         ></div>
         <div
           class="step-connector"
           :class="{
-            'connector-finished':
-              status !== 'ApplicationPartyMembership' && status !== 'PartyActivities',
+            'connector-finished': status !== 'Applicant' && status !== 'PartyActivities',
           }"
         ></div>
         <div
           class="step-content"
           :class="{
-            'content-finished':
-              status !== 'ApplicationPartyMembership' && status !== 'PartyActivities',
+            'content-finished': status !== 'Applicant' && status !== 'PartyActivities',
           }"
           @click="checkThree()"
         >
@@ -74,19 +72,14 @@
         <div
           class="step-dot"
           :class="{
-            'dot-finished': status !== 'ApplicationPartyMembership',
+            'dot-finished': status !== 'Applicant',
           }"
           @click="checkTwo()"
         ></div>
-        <div
-          class="step-connector"
-          :class="{ 'connector-finished': status !== 'ApplicationPartyMembership' }"
-        ></div>
+        <div class="step-connector" :class="{ 'connector-finished': status !== 'Applicant' }"></div>
         <div
           class="step-content"
-          :class="{
-            'content-finished': status !== 'ApplicationPartyMembership',
-          }"
+          :class="{ 'content-finished': status !== 'Applicant' }"
           @click="checkTwo()"
         >
           入党积极分子的确定和培养教育
@@ -101,11 +94,10 @@
       <div class="tips">Tips:可点击圆点查看历史上传记录</div>
     </div>
     <div class="task-container">
-      <applyParty v-if="checkState === 'ApplicationPartyMembership'" />
+      <applyParty v-if="checkState === 'Applicant'" />
       <partyActivist v-else-if="checkState === 'PartyActivities'" />
-      <developCandidate v-else-if="checkState === 'PartyActivitiesOver'" />
-      <probationMember v-else-if="checkState === 'Development'" />
-      <fullPartyMember v-else-if="checkState === 'DevelopmentOver'" />
+      <developCandidate v-else-if="checkState === 'Development'" />
+      <probationMember v-else-if="checkState === 'ReservePartyMenbers'" />
     </div>
   </div>
 </template>
@@ -117,7 +109,6 @@ import applyParty from './apply-party/apply-party.vue'
 import partyActivist from './party-activist/party-activist.vue'
 import developCandidate from './develop-candidate/develop-candidate.vue'
 import probationMember from './probation-member/probation-member.vue'
-import fullPartyMember from './full-party-member/full-party-member.vue'
 
 const userStore = useUserStore()
 const status = userStore.getPermission[2]
@@ -126,24 +117,19 @@ const checkState = ref(status)
 
 //点击查看过往入党流程
 const checkOne = () => {
-  checkState.value = 'ApplicationPartyMembership'
+  checkState.value = 'Applicant'
 }
 
 const checkTwo = () => {
-  if (status !== 'ApplicationPartyMembership') checkState.value = 'PartyActivities'
+  if (status !== 'Applicant') checkState.value = 'PartyActivities'
 }
 
 const checkThree = () => {
-  if (status !== 'ApplicationPartyMembership' && status !== 'PartyActivities')
-    checkState.value = 'PartyActivitiesOver'
+  if (status !== 'Applicant' && status !== 'PartyActivities') checkState.value = 'Development'
 }
 
 const checkFour = () => {
-  if (status === 'Development' || status === 'DevelopmentOver') checkState.value = 'Development'
-}
-
-const checkFive = () => {
-  if (status === 'DevelopmentOver') checkState.value = 'DevelopmentOver'
+  if (status === 'ReservePartyMenbers') checkState.value = 'ReservePartyMenbers'
 }
 </script>
 
@@ -166,7 +152,7 @@ const checkFive = () => {
     width: 22%;
     min-width: 280px; // 设置最小宽度
     max-width: 320px;
-    height: 640px;
+    height: 510px;
     background-color: rgba(255, 255, 255, 0.9);
     padding: 20px 35px;
     border-radius: 8px;

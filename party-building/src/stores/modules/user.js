@@ -12,13 +12,13 @@ export const useUserStore = defineStore(
     // const permission = ref(['Common', 'Teacher', 'Teacher'])
     // const permission = ref(['Common', 'Student', 'Student'])
     // 申请入党
-    const permission = ref(['Common', 'Student', 'Applicant'])
+    // const permission = ref(['Common', 'Student', 'Applicant'])
     // 入党积极分子
     // const permission = ref(['Common', 'Student', 'PartyActivities'])
     // 发展对象
     // const permission = ref(['Common', 'Student', 'Development'])
     // 预备党员
-    // const permission = ref(['Common', 'Student', 'ReservePartyMenbers'])
+    const permission = ref(['Common', 'Student', 'ReservePartyMenbers'])
     //
     //
     // 系统管理员
