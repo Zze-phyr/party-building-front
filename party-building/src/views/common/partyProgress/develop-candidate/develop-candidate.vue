@@ -2,10 +2,18 @@
   <div class="develop-candidate-container">
     <!-- 入党流程标题 -->
     <div class="big-title">发展对象的确定和考察</div>
-    <!-- 自传&结业证书 -->
+    <!-- 入党志愿书&结业证书 -->
     <div class="autobiography-certificate-box">
-      <!-- 自传 -->
-      <div class="autobiography-box content-box"></div>
+      <!-- 入党志愿书（一） -->
+      <div class="volunteer-letter-box content-box">
+        <HandBook
+          :name="'入党志愿书（一）'"
+          :is-pic-show="true"
+          :file-types="['VolunteerLetterTemplateDev', 'VolunteerLetterDev']"
+          :file-template-metadata="volunteerFileTemplateDevMetadata"
+          :file-metadata="volunteerFileDevMetadata"
+        ></HandBook>
+      </div>
       <!-- 结业证书 -->
       <div class="certificate-box content-box">
         <div class="title">发展对象结业证书</div>
@@ -17,20 +25,12 @@
         </div>
       </div>
     </div>
-    <!-- 入党志愿书 -->
-    <HandBook
-      :name="'入党志愿书（部分）'"
-      :is-pic-show="true"
-      :file-types="['HandbookSecondTemplateFull', 'HandbookSecond']"
-      :file-template-metadata="fileTemplateMetadata"
-      :file-metadata="fileMetadata"
-    ></HandBook>
     <!-- 手册二 -->
     <HandBook
-      :name="'手册二'"
-      :file-types="['HandbookSecondTemplateFull', 'HandbookSecond']"
-      :file-template-metadata="fileTemplateMetadata"
-      :file-metadata="fileMetadata"
+      :name="'手册二（一）'"
+      :file-types="['HandbookSecondTemplateDev', 'HandbookSecondDev']"
+      :file-template-metadata="handbookSecondFileTemplateDevMetadata"
+      :file-metadata="handbookSecondFileDevMetadata"
     ></HandBook>
   </div>
 </template>
@@ -40,56 +40,80 @@ import HandBook from '../components/HandBook.vue'
 import { useUserStore } from '@/stores'
 import { reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { getFileMetadata } from '@/api/general'
+import { getFileMetadata } from '@/utils/file/getFileMetadata'
 
 const userStore = useUserStore()
 
 // 获取文件元数据请求参数
-const fileTemplateMetadataRequestParams = reactive({
+// 志愿书模板请求参数
+const volunteerFileTemplateDevMetadataRequestParams = reactive({
   userId: '-1',
-  fileType: 'HandbookSecondTemplateFull',
+  fileType: 'VolunteerLetterTemplateDev',
 })
-const fileMetadataRequestParams = reactive({
+// 志愿书请求参数
+const volunteerDevFileMetadataRequestParams = reactive({
   userId: userStore.userId,
-  fileType: 'HandbookSecond',
+  fileType: 'VolunteerLetterDev',
+})
+// 手册二模板请求参数
+const handbookSecondFileTemplateDevMetadataRequestParams = reactive({
+  userId: '-1',
+  fileType: 'HandbookSecondTemplateDev',
+})
+// 手册二请求参数
+const handbookSecondDevFileMetadataRequestParams = reactive({
+  userId: userStore.userId,
+  fileType: 'HandbookSecondDev',
 })
 
 // 文件元数据
-const fileTemplateMetadata = reactive({
+const volunteerFileTemplateDevMetadata = reactive({
   fileId: null,
   status: -2,
   attachText: '',
   attachTime: '',
   fileName: '',
 })
-const fileMetadata = reactive({
+const volunteerFileDevMetadata = reactive({
   fileId: null,
   status: -2,
   attachText: '',
   attachTime: '',
-  returnText: '手册一错误',
+  returnText: '错误',
+  fileName: '',
+})
+
+const handbookSecondFileTemplateDevMetadata = reactive({
+  fileId: null,
+  status: -2,
+  attachText: '',
+  attachTime: '',
+  fileName: '',
+})
+const handbookSecondFileDevMetadata = reactive({
+  fileId: null,
+  status: -2,
+  attachText: '',
+  attachTime: '',
+  returnText: '错误',
   fileName: '',
 })
 
 // 组件挂载后
 onMounted(async () => {
   try {
-    const { data: fileTemplateGetData } = await getFileMetadata(fileTemplateMetadataRequestParams)
-    if (fileTemplateGetData.code === 1) {
-      if (fileTemplateGetData.data.length > 0) {
-        Object.assign(fileTemplateMetadata, fileTemplateGetData.data[0])
-      }
-    } else {
-      ElMessage.error(fileTemplateGetData.msg)
-    }
-    const { data: fileGetData } = await getFileMetadata(fileMetadataRequestParams)
-    if (fileGetData.code === 1) {
-      if (fileGetData.data.length > 0) {
-        Object.assign(fileMetadata, fileGetData.data[0])
-      }
-    } else {
-      ElMessage.error(fileGetData.msg)
-    }
+    await Promise.all([
+      getFileMetadata(
+        volunteerFileTemplateDevMetadataRequestParams,
+        volunteerFileTemplateDevMetadata,
+      ),
+      getFileMetadata(volunteerDevFileMetadataRequestParams, volunteerFileDevMetadata),
+      getFileMetadata(
+        handbookSecondFileTemplateDevMetadataRequestParams,
+        handbookSecondFileTemplateDevMetadata,
+      ),
+      getFileMetadata(handbookSecondDevFileMetadataRequestParams, handbookSecondFileDevMetadata),
+    ])
   } catch (error) {
     console.log(error)
     ElMessage.error('数据获取失败')
@@ -124,11 +148,11 @@ onMounted(async () => {
       background-color: #fbfbfb;
     }
   }
-  // 自传&结业证书
+  // 入党志愿书&结业证书
   .autobiography-certificate-box {
     display: flex;
-    // 自传
-    .autobiography-box {
+    // 入党志愿书
+    .volunteer-letter-box {
       flex: 5;
       margin-right: 20px;
       .content {

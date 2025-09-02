@@ -86,7 +86,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { reactive, ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores'
 import { ElMessage } from 'element-plus'
-import { fileUpload, getFileMetadata, fileDelete } from '@/api/general'
+import { fileUpload, fileMetadataGet, fileDelete } from '@/api/general'
 import BigTitle from '../components/BigTitle.vue'
 import ContentBox from '../components/ContentBox.vue'
 import { downloadFile } from '@/utils/file/downloadFile'
@@ -120,7 +120,7 @@ onMounted(async () => {
   try {
     fileMetadataRequestParams.userId = userStore.userId
     fileMetadataRequestParams.fileType = 'JoinPartyApplication'
-    const { data } = await getFileMetadata(fileMetadataRequestParams)
+    const { data } = await fileMetadataGet(fileMetadataRequestParams)
     if (data.code === 1) {
       if (data.data.length > 0) {
         Object.assign(fileMetadataParams, data.data[0])

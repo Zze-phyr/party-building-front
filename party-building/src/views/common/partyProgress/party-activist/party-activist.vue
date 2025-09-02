@@ -44,7 +44,7 @@ import HandBook from '../components/HandBook.vue'
 import { useUserStore } from '@/stores'
 import { reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { getFileMetadata } from '@/api/general'
+import { getFileMetadata } from '@/utils/file/getFileMetadata'
 
 const userStore = useUserStore()
 
@@ -78,22 +78,8 @@ const fileMetadata = reactive({
 // 组件挂载后
 onMounted(async () => {
   try {
-    const { data: fileTemplateGetData } = await getFileMetadata(fileTemplateMetadataRequestParams)
-    if (fileTemplateGetData.code === 1) {
-      if (fileTemplateGetData.data.length > 0) {
-        Object.assign(fileTemplateMetadata, fileTemplateGetData.data[0])
-      }
-    } else {
-      ElMessage.error(fileTemplateGetData.msg)
-    }
-    const { data: fileGetData } = await getFileMetadata(fileMetadataRequestParams)
-    if (fileGetData.code === 1) {
-      if (fileGetData.data.length > 0) {
-        Object.assign(fileMetadata, fileGetData.data[0])
-      }
-    } else {
-      ElMessage.error(fileGetData.msg)
-    }
+    await getFileMetadata(fileTemplateMetadataRequestParams, fileTemplateMetadata)
+    await getFileMetadata(fileMetadataRequestParams, fileMetadata)
   } catch (error) {
     console.log(error)
     ElMessage.error('数据获取失败')

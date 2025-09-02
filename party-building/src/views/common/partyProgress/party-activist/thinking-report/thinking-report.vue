@@ -116,7 +116,7 @@
 import ContentBox from '../../components/ContentBox.vue'
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
-import { fileUpload, getFileMetadata } from '@/api/general'
+import { fileUpload, fileMetadataGet } from '@/api/general'
 import { useUserStore } from '@/stores'
 import { updateSingleFiles } from '@/utils/file/updateFile'
 import { downloadFile } from '@/utils/file/downloadFile'
@@ -253,7 +253,7 @@ const openDialog = async () => {
   try {
     fileMetadataRequestParams.userId = userStore.userId
     fileMetadataRequestParams.fileType = 'ThoughtReport'
-    const { data } = await getFileMetadata(fileMetadataRequestParams)
+    const { data } = await fileMetadataGet(fileMetadataRequestParams)
     if (data.code === 1) {
       fileMetadataData.value = data.data
     } else {
