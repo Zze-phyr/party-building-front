@@ -7,7 +7,12 @@
       <div class="card small-card">
         <div class="title">个人信息</div>
         <div class="avatar-container">
-          <img src="../../../assets/images/common/profile-photo.png" alt="" />
+          <el-upload>
+            <img
+              style="width: 100px; height: 140px"
+              src="../../../assets/images/common/profile-photo.png"
+              fit="fill"
+          /></el-upload>
         </div>
         <div class="info-item">
           <img src="../../../assets/images/icons/number.png" alt="" class="icon" />
@@ -71,9 +76,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import systemSet from '@/components/common/personal-center/system-set/system-set.vue'
-import userData from '@/components/common/personal-center/user-data/user-data.vue'
-import userInfoDialog from '@/components/common/personal-center/user-info-dialog/user-info-dialog.vue'
+import systemSet from '@/views/common/personalCenter/system-set/system-set.vue'
+import userData from '@/views/common/personalCenter/user-data/user-data.vue'
+import userInfoDialog from '@/views/common/personalCenter/user-info-dialog/user-info-dialog.vue'
 import { getCommonUserDetail } from '@/api/common'
 import { ElMessage } from 'element-plus'
 import { useInfoStore, useUserStore } from '@/stores'
@@ -137,10 +142,6 @@ const openUserInfoDialog = () => {
       .avatar-container {
         text-align: center;
         margin: 5px 0 8px 0;
-        img {
-          width: 100px;
-          height: 140px;
-        }
       }
       .info-item {
         display: flex;
