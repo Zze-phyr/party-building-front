@@ -95,7 +95,6 @@ onMounted(async () => {
     if (!infoStore.hasGetInfo) {
       const { data } = await getCommonUserDetail(userStore.userId)
       infoStore.userInfo = data.data
-      console.log(infoStore.userInfo)
     }
   } catch (error) {
     console.log(error)
