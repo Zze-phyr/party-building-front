@@ -32,8 +32,7 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue'
-import { ref } from 'vue'
+import { defineProps, ref } from 'vue'
 
 /* eslint-disable-next-line no-unused-vars */
 const props = defineProps({

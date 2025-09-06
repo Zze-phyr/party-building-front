@@ -3,8 +3,8 @@
     <!-- 筛选表单 - 使用动态筛选表单组件 -->
     <DynamicFilterForm
       v-model:model="filterForm"
-      :form-items="formItems"
-      :search-placeholder="'请输入姓名或者学号查询'"
+      :formItems="formItems"
+      :searchPlaceholder="'请输入姓名或者学号查询'"
       :loading="loading"
       @search="handleSeach"
       @submit="onSubmit"

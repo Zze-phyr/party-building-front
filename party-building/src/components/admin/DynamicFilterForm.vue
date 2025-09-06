@@ -60,7 +60,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, computed, watch } from 'vue'
+import { ref, defineProps, defineEmits, computed } from 'vue'
 import { Search } from '@element-plus/icons-vue'
 
 // 定义组件 props
@@ -127,20 +127,20 @@ const formModel = computed({
 const searchValue = ref('')
 
 // 监听模型变化，确保 formModel 中包含所有表单项的属性
-watch(
-  () => props.formItems,
-  (newItems) => {
-    newItems.forEach((item) => {
-      if (item.prop && !(item.prop in formModel.value)) {
-        // 使用 nextTick 避免在计算属性中直接修改
-        setTimeout(() => {
-          formModel.value[item.prop] = ''
-        }, 0)
-      }
-    })
-  },
-  { immediate: true, deep: true },
-)
+// watch(
+//   () => props.formItems,
+//   (newItems) => {
+//     newItems.forEach((item) => {
+//       if (item.prop && !(item.prop in formModel.value)) {
+//         // 使用 nextTick 避免在计算属性中直接修改
+//         setTimeout(() => {
+//           formModel.value[item.prop] = ''
+//         }, 0)
+//       }
+//     })
+//   },
+//   { immediate: true, deep: true },
+// )
 
 // 处理搜索点击事件
 const handleSearchClick = () => {
@@ -163,29 +163,8 @@ const getOptions = (options) => {
   return Array.isArray(options) ? options : []
 }
 
-/**
- * 重置表单到初始状态
- */
-const resetForm = () => {
-  // 重置模型中的所有字段
-  Object.keys(formModel.value).forEach((key) => {
-    formModel.value[key] = ''
-  })
-  // 重置搜索值
-  searchValue.value = ''
-}
-
-/**
- * 清除搜索框内容
- */
-const clearSearch = () => {
-  searchValue.value = ''
-}
-
 // 暴露方法给父组件
 defineExpose({
-  resetForm,
-  clearSearch,
   formRef,
   getOptions,
 })
