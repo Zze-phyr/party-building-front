@@ -2,211 +2,240 @@
   <!-- 修改信息对话框 -->
   <el-dialog v-model="dialogVisible" fullscreen center>
     <el-form ref="userInfoFormRef" :rules="rules" :model="userInfoForm" class="form">
-      <el-row :gutter="120">
-        <el-col :span="12">
-          <el-form-item prop="name" label="姓名">
-            <el-input v-model="userInfoForm.name" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item prop="idCard" label="身份证号">
-            <el-input v-model="userInfoForm.idCard" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="120">
-        <el-col :span="12">
-          <el-form-item prop="ethnicity" label="民族">
-            <el-input v-model="userInfoForm.ethnicity" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item prop="educationLevel" label="文化程度">
-            <el-select v-model="userInfoForm.educationLevel" placeholder="请选择文化程度">
-              <el-option label="小学" value="小学" />
-              <el-option label="初中" value="初中" />
-              <el-option label="高中" value="高中" />
-              <el-option label="大专" value="大专" />
-              <el-option label="本科" value="本科" />
-              <el-option label="硕士研究生" value="硕士研究生" />
-              <el-option label="博士研究生" value="博士研究生" />
-              <el-option label="博士后" value="博士后" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="120">
-        <el-col :span="12">
-          <el-form-item prop="originPlace" label="籍贯">
-            <el-input v-model="userInfoForm.originPlace" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item prop="birthplace" label="出生地">
-            <el-input v-model="userInfoForm.birthplace" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="120">
-        <el-col :span="12">
-          <el-form-item prop="politicalStatus" label="政治面貌">
-            <el-select v-model="userInfoForm.politicalStatus" placeholder="请选择政治面貌">
-              <el-option label="群众" value="群众" />
-              <el-option label="共青团员" value="共青团员" />
-              <el-option label="中共党员" value="中共党员" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item prop="joinLeagueDate" label="入团时间">
-            <el-date-picker
-              v-model="userInfoForm.joinLeagueDate"
-              type="date"
-              placeholder="请选择入团时间"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="120">
-        <el-col :span="12">
-          <el-form-item prop="number" label="学号">
-            <el-input v-model="userInfoForm.number" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item prop="qq" label="QQ">
-            <el-input v-model="userInfoForm.qq" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="120">
-        <el-col :span="12">
-          <el-form-item label="邮箱">
-            <el-input v-model="userInfoForm.email" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item prop="phone" label="电话">
-            <el-input v-model="userInfoForm.phone" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="120">
-        <el-col :span="12">
-          <el-form-item prop="gender" label="性别">
-            <el-radio-group v-model="userInfoForm.gender">
-              <el-radio-button label="女" :value="1" />
-              <el-radio-button label="男" :value="0" />
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item prop="age" label="年龄">
-            <el-input-number
-              v-model="userInfoForm.age"
-              :min="1"
-              :max="150"
-              controls-position="right"
-            />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="120">
-        <el-col :span="12">
-          <el-form-item prop="grade" label="年级">
-            <el-input v-model="userInfoForm.grade" placeholder="例：23级" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item prop="major" label="专业">
-            <el-input v-model="userInfoForm.major" placeholder="例：软件工程" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="120">
-        <el-col :span="12">
-          <el-form-item prop="sclass" label="班级">
-            <el-input v-model="userInfoForm.sclass" placeholder="例：三班" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item prop="branch" label="所属支部">
-            <el-input v-model="userInfoForm.branch" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-table :data="userInfoForm.mainRelationships" border style="width: 100%">
-        <el-table-column prop="name" label="姓名">
-          <template #default="scope">
-            <el-form-item
-              :prop="`mainRelationships[${scope.$index}].name`"
-              :rules="{ required: true, message: '姓名必填', trigger: 'blur' }"
-            >
-              <el-input v-model="scope.row.name" placeholder="请输入姓名" />
+      <!-- 基本信息 -->
+      <div class="part-card">
+        <div class="title">基本信息</div>
+        <el-row :gutter="120">
+          <el-col :span="12">
+            <el-form-item prop="name" label="姓名">
+              <el-input v-model="userInfoForm.name" />
             </el-form-item>
-          </template>
-        </el-table-column>
-        <el-table-column prop="relationship" label="关系">
-          <template #default="scope">
-            <el-form-item
-              :prop="`mainRelationships[${scope.$index}].relationship`"
-              :rules="{ required: true, message: '关系必填', trigger: 'blur' }"
-            >
-              <el-input v-model="scope.row.relationship" placeholder="例：母女" />
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="number" label="学号">
+              <el-input v-model="userInfoForm.number" />
             </el-form-item>
-          </template>
-        </el-table-column>
-        <el-table-column prop="visage" label="政治面貌">
-          <template #default="scope">
-            <el-form-item
-              :prop="`mainRelationships[${scope.$index}].visage`"
-              :rules="{ required: true, message: '政治面貌必填', trigger: 'blur' }"
-            >
-              <el-select v-model="scope.row.visage" placeholder="请选择政治面貌">
+          </el-col>
+        </el-row>
+        <el-row :gutter="120">
+          <el-col :span="12">
+            <el-form-item prop="idCard" label="身份证号">
+              <el-input v-model="userInfoForm.idCard" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="gender" label="性别">
+              <el-radio-group v-model="userInfoForm.gender">
+                <el-radio-button label="女" :value="1" />
+                <el-radio-button label="男" :value="0" />
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="120">
+          <el-col :span="12">
+            <el-form-item prop="age" label="年龄">
+              <el-input-number
+                v-model="userInfoForm.age"
+                :min="1"
+                :max="150"
+                controls-position="right"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="ethnicity" label="民族">
+              <el-input v-model="userInfoForm.ethnicity" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="120">
+          <el-col :span="12">
+            <el-form-item prop="originPlace" label="籍贯">
+              <el-input v-model="userInfoForm.originPlace" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="birthplace" label="出生地">
+              <el-input v-model="userInfoForm.birthplace" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </div>
+      <!-- 政治信息 -->
+      <div class="part-card">
+        <div class="title">政治信息</div>
+        <el-row :gutter="120">
+          <el-col :span="12">
+            <el-form-item prop="branch" label="所属支部">
+              <el-input v-model="userInfoForm.branch" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="politicalStatus" label="政治面貌">
+              <el-select v-model="userInfoForm.politicalStatus" placeholder="请选择政治面貌">
                 <el-option label="群众" value="群众" />
                 <el-option label="共青团员" value="共青团员" />
                 <el-option label="中共党员" value="中共党员" />
               </el-select>
             </el-form-item>
-          </template>
-        </el-table-column>
-        <el-table-column prop="unitOccupation" label="单位职务或职业">
-          <template #default="scope">
-            <el-form-item
-              :prop="`mainRelationships[${scope.$index}].unitOccupation`"
-              :rules="{ required: true, message: '必填', trigger: 'blur' }"
-            >
-              <el-input v-model="scope.row.unitOccupation" placeholder="请输入单位职务或职业" />
+          </el-col>
+        </el-row>
+        <el-row :gutter="120">
+          <el-col :span="12">
+            <el-form-item prop="joinLeagueDate" label="入团时间">
+              <el-date-picker
+                v-model="userInfoForm.joinLeagueDate"
+                type="date"
+                placeholder="请选择入团时间"
+              />
             </el-form-item>
-          </template>
-        </el-table-column>
-        <el-table-column prop="role" label="分类">
-          <template #default="scope">
-            <el-form-item
-              :prop="`mainRelationships[${scope.$index}].role`"
-              :rules="{ required: true, message: '必填', trigger: 'blur' }"
-            >
-              <el-select v-model="scope.row.role" placeholder="请选择分类">
-                <el-option label="主要社会关系" :value="0" />
-                <el-option label="家庭主要成员" :value="1" />
+          </el-col>
+        </el-row>
+      </div>
+      <!-- 教育信息 -->
+      <div class="part-card">
+        <div class="title">教育信息</div>
+        <el-row :gutter="120">
+          <el-col :span="12">
+            <el-form-item prop="grade" label="年级">
+              <el-input v-model="userInfoForm.grade" placeholder="例：23级" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="college" label="学院">
+              <el-input v-model="userInfoForm.college" placeholder="例：软件工程" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="120">
+          <el-col :span="12">
+            <el-form-item prop="major" label="专业">
+              <el-input v-model="userInfoForm.major" placeholder="例：软件工程" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="sclass" label="班级">
+              <el-input v-model="userInfoForm.sclass" placeholder="例：三班" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="120">
+          <el-col :span="12">
+            <el-form-item prop="educationLevel" label="文化程度">
+              <el-select v-model="userInfoForm.educationLevel" placeholder="请选择文化程度">
+                <el-option label="小学" value="小学" />
+                <el-option label="初中" value="初中" />
+                <el-option label="高中" value="高中" />
+                <el-option label="大专" value="大专" />
+                <el-option label="本科" value="本科" />
+                <el-option label="硕士研究生" value="硕士研究生" />
+                <el-option label="博士研究生" value="博士研究生" />
+                <el-option label="博士后" value="博士后" />
               </el-select>
             </el-form-item>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template #default="scope">
-            <el-button type="text" text-color="#ff4949" @click="handleDelete(scope.$index)">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-button type="success" @click="handleAdd" style="margin-top: 10px"> + 增加 </el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <!-- 联系信息 -->
+      <div class="part-card">
+        <div class="title">联系信息</div>
+        <el-row :gutter="120">
+          <el-col :span="12">
+            <el-form-item prop="qq" label="QQ">
+              <el-input v-model="userInfoForm.qq" /> </el-form-item
+          ></el-col>
+          <el-col :span="12">
+            <el-form-item label="邮箱">
+              <el-input v-model="userInfoForm.email" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="120">
+          <el-col :span="12">
+            <el-form-item prop="phone" label="电话">
+              <el-input v-model="userInfoForm.phone" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </div>
+      <!-- 家庭主要成员情况/主要社会关系情况 -->
+      <div class="part-card">
+        <div class="title">家庭主要成员情况/主要社会关系情况</div>
+        <el-table :data="userInfoForm.mainRelationships" border style="width: 100%">
+          <el-table-column prop="name" label="姓名">
+            <template #default="scope">
+              <el-form-item
+                :prop="`mainRelationships[${scope.$index}].name`"
+                :rules="{ required: true, message: '姓名必填', trigger: 'blur' }"
+              >
+                <el-input v-model="scope.row.name" placeholder="请输入姓名" />
+              </el-form-item>
+            </template>
+          </el-table-column>
+          <el-table-column prop="relationship" label="关系">
+            <template #default="scope">
+              <el-form-item
+                :prop="`mainRelationships[${scope.$index}].relationship`"
+                :rules="{ required: true, message: '关系必填', trigger: 'blur' }"
+              >
+                <el-input v-model="scope.row.relationship" placeholder="例：母女" />
+              </el-form-item>
+            </template>
+          </el-table-column>
+          <el-table-column prop="visage" label="政治面貌">
+            <template #default="scope">
+              <el-form-item
+                :prop="`mainRelationships[${scope.$index}].visage`"
+                :rules="{ required: true, message: '政治面貌必填', trigger: 'blur' }"
+              >
+                <el-select v-model="scope.row.visage" placeholder="请选择政治面貌">
+                  <el-option label="群众" value="群众" />
+                  <el-option label="共青团员" value="共青团员" />
+                  <el-option label="中共党员" value="中共党员" />
+                </el-select>
+              </el-form-item>
+            </template>
+          </el-table-column>
+          <el-table-column prop="unitOccupation" label="单位职务或职业">
+            <template #default="scope">
+              <el-form-item
+                :prop="`mainRelationships[${scope.$index}].unitOccupation`"
+                :rules="{ required: true, message: '必填', trigger: 'blur' }"
+              >
+                <el-input v-model="scope.row.unitOccupation" placeholder="请输入单位职务或职业" />
+              </el-form-item>
+            </template>
+          </el-table-column>
+          <el-table-column prop="role" label="分类">
+            <template #default="scope">
+              <el-form-item
+                :prop="`mainRelationships[${scope.$index}].role`"
+                :rules="{ required: true, message: '必填', trigger: 'blur' }"
+              >
+                <el-select v-model="scope.row.role" placeholder="请选择分类">
+                  <el-option label="主要社会关系" :value="0" />
+                  <el-option label="家庭主要成员" :value="1" />
+                </el-select>
+              </el-form-item>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template #default="scope">
+              <el-button type="text" text-color="#ff4949" @click="handleDelete(scope.$index)">
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-button color="#FFD700" @click="handleAdd" style="margin: 10px 0 18px; color: #666">
+          + 增加
+        </el-button>
+      </div>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <!-- <el-button type="primary" @click="dialogVisible = false"> 确认提交 </el-button> -->
-        <el-button type="primary" @click="submitUserInfo(userInfoFormRef)"> 确认提交 </el-button>
+        <el-button color="#d12626" @click="submitUserInfo(userInfoFormRef)"> 确认提交 </el-button>
       </div>
     </template>
   </el-dialog>
@@ -393,5 +422,14 @@ const submitUserInfo = async (formEl) => {
 <style lang="scss" scoped>
 .form {
   margin: 20px 50px 5px;
+  .part-card {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    .title {
+      margin-bottom: 5px;
+      color: #111;
+      font-size: 16px;
+    }
+  }
 }
 </style>
