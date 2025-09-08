@@ -1,11 +1,11 @@
 <template>
   <div class="develop-candidate-container">
     <!-- 入党流程标题 -->
-    <div class="big-title">发展对象的确定和考察</div>
+    <BigTitle>发展对象的确定和考察</BigTitle>
     <!-- 入党志愿书&结业证书 -->
     <div class="autobiography-certificate-box">
       <!-- 入党志愿书（一） -->
-      <div class="volunteer-letter-box content-box">
+      <div class="volunteer-letter-box">
         <HandBook
           :name="'入党志愿书（一）'"
           :is-pic-show="true"
@@ -15,7 +15,7 @@
         ></HandBook>
       </div>
       <!-- 结业证书 -->
-      <div class="certificate-box content-box">
+      <div class="certificate-box">
         <div class="title">发展对象结业证书</div>
         <div class="content">
           <div class="img-box">
@@ -36,6 +36,7 @@
 </template>
 
 <script setup>
+import BigTitle from '../components/BigTitle.vue'
 import HandBook from '../components/HandBook.vue'
 import { useUserStore } from '@/stores'
 import { reactive, onMounted } from 'vue'
@@ -123,31 +124,6 @@ onMounted(async () => {
 
 <style lang="scss" scoped>
 .develop-candidate-container {
-  .big-title {
-    margin-bottom: 20px;
-    width: 100%;
-    background-color: #f2c3b2;
-    border-radius: 8px;
-    height: 40px;
-    font-size: 20px;
-    line-height: 40px;
-    text-align: center;
-    color: #bc0000da;
-  }
-  .content-box {
-    width: 100%;
-    background-color: #fff;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    overflow: hidden;
-    .title {
-      padding-left: 20px;
-      height: 40px;
-      font-size: 18px;
-      line-height: 40px;
-      background-color: #fbfbfb;
-    }
-  }
   // 入党志愿书&结业证书
   .autobiography-certificate-box {
     display: flex;

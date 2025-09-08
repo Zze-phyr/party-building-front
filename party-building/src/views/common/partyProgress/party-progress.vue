@@ -84,7 +84,7 @@ import { useUserStore } from '@/stores'
 import applyParty from './apply-party/apply-party.vue'
 import partyActivist from './party-activist/party-activist.vue'
 import developCandidate from './develop-candidate/develop-candidate.vue'
-import probationMember from './probation-member/probation-member.vue'
+import probationMember from './probationary-member/probationary-member.vue'
 
 const userStore = useUserStore()
 const status = userStore.getPermission[2]
