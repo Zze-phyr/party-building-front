@@ -81,9 +81,8 @@ import userData from '@/views/common/personalCenter/user-data/user-data.vue'
 import userInfoDialog from '@/views/common/personalCenter/user-info-dialog/user-info-dialog.vue'
 import { getCommonUserDetail } from '@/api/common'
 import { ElMessage } from 'element-plus'
-import { useInfoStore, useUserStore } from '@/stores'
+import { useInfoStore } from '@/stores'
 
-const userStore = useUserStore()
 const infoStore = useInfoStore()
 
 const tabs = ['用户信息', '系统设置']
@@ -93,7 +92,7 @@ const activeTab = ref('用户信息')
 onMounted(async () => {
   try {
     if (!infoStore.hasGetInfo) {
-      const { data } = await getCommonUserDetail(userStore.userId)
+      const { data } = await getCommonUserDetail()
       infoStore.userInfo = data.data
     }
   } catch (error) {

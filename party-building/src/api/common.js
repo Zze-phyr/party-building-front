@@ -3,13 +3,13 @@
 import request from '@/utils/request'
 
 //获取个人信息
-export const getCommonUserDetail = (userId) => {
-  return request.get(`/common/getCommonUserDetail/${userId}`)
+export const getCommonUserDetail = () => {
+  return request.get('/common/self/getCommonUserDetail')
 }
 
 //修改个人信息
 export const reviseCommonUserDetail = (data) => {
-  return request.post('/common/revise', data)
+  return request.post('/common/self/revise', data)
 }
 
 //新增培养联系人

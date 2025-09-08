@@ -243,10 +243,11 @@
 
 <script setup>
 import { reactive, ref, watch } from 'vue'
-import { useInfoStore } from '@/stores'
+import { useInfoStore, useUserStore } from '@/stores'
 // import { ElMessage } from 'element-plus'
 
 const infoStore = useInfoStore()
+const userStore = useUserStore()
 
 //父子通信
 const emit = defineEmits(['update:modelValue'])
@@ -274,10 +275,12 @@ watch(dialogVisible, (newVal) => {
 
 //用户信息表单
 let userInfoForm = reactive({
+  id: userStore.userId, //用户ID
   name: '', //姓名
   number: '', //学号
   idCard: '', //身份证号
-  branch: '', //所属支部
+  committeeId: '', //所属党委id
+  branchId: '', //所属支部id
   ethnicity: '', //民族
   educationLevel: '', //文化程度
   originPlace: '', //籍贯
@@ -289,9 +292,10 @@ let userInfoForm = reactive({
   phone: '', //手机号
   gender: null, //性别0男1女
   age: null, //年龄
-  grade: '', //年级
-  major: '', //专业
-  sclass: '', //班级
+  gradeId: '', //年级id
+  collegeId: '', //学院id
+  majorId: '', //专业id
+  classId: '', //班级id
   status: null, //状态，-1为政审不通过
   mainRelationships: [],
 })
