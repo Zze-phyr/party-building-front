@@ -21,27 +21,6 @@
           预备党员的接收、教育考察和转正
         </div>
       </div>
-      <!-- 预备党员的接收 -->
-      <!-- <div class="step-item">
-        <div
-          class="step-dot"
-          :class="{ 'dot-finished': status === 'Development' || status === 'DevelopmentOver' }"
-          @click="checkFour()"
-        ></div>
-        <div
-          class="step-connector"
-          :class="{
-            'connector-finished': status === 'Development' || status === 'DevelopmentOver',
-          }"
-        ></div>
-        <div
-          class="step-content"
-          :class="{ 'content-finished': status === 'Development' || status === 'DevelopmentOver' }"
-          @click="checkFour()"
-        >
-          预备党员的接收
-        </div>
-      </div> -->
       <!-- 发展对象的确定和考察 -->
       <div class="step-item">
         <div
@@ -94,10 +73,7 @@
       <div class="tips">Tips:可点击圆点查看历史上传记录</div>
     </div>
     <div class="task-container">
-      <applyParty v-if="checkState === 'Applicant'" />
-      <partyActivist v-else-if="checkState === 'PartyActivities'" />
-      <developCandidate v-else-if="checkState === 'Development'" />
-      <probationMember v-else-if="checkState === 'ReservePartyMenbers'" />
+      <component :is="tabs[checkState]"></component>
     </div>
   </div>
 </template>
@@ -112,6 +88,13 @@ import probationMember from './probation-member/probation-member.vue'
 
 const userStore = useUserStore()
 const status = userStore.getPermission[2]
+
+const tabs = {
+  Applicant: applyParty,
+  PartyActivities: partyActivist,
+  Development: developCandidate,
+  ReservePartyMenbers: probationMember,
+}
 
 const checkState = ref(status)
 
