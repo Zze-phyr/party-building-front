@@ -68,7 +68,7 @@
         <el-row :gutter="120">
           <el-col :span="12">
             <el-form-item prop="branch" label="所属支部">
-              <el-input v-model="userInfoForm.branch" />
+              <el-input v-model="userInfoForm.branchId" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
