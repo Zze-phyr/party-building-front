@@ -101,7 +101,7 @@ const fileMetadataRequestParams = reactive({
 
 // 文件元数据
 const fileMetadataParams = reactive({
-  fileId: null,
+  fileId: '-1',
   status: -2,
   attachText: '',
   attachTime: '',

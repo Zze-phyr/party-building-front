@@ -2,8 +2,24 @@
   <div class="develop-candidate-container">
     <!-- 入党流程标题 -->
     <BigTitle>发展对象的确定和考察</BigTitle>
+    <!-- 手册二 -->
+    <HandBook
+      :name="'手册二（一）'"
+      :file-types="['HandbookSecondTemplateDev', 'HandbookSecondDev']"
+      :file-template-metadata="handbookSecondFileTemplateDevMetadata"
+      :file-metadata="handbookSecondFileDevMetadata"
+    />
     <!-- 入党志愿书&结业证书 -->
     <div class="autobiography-certificate-box">
+      <!-- 结业证书 -->
+      <div class="certificate-box">
+        <completionCertificate
+          name="发展对象结业证书"
+          :status="DevCertificateMetadata.status"
+          :date="DevCertificateMetadata.attachTime"
+          :img-url="certificateImgUrl"
+        />
+      </div>
       <!-- 入党志愿书（一） -->
       <div class="volunteer-letter-box">
         <HandBook
@@ -12,36 +28,21 @@
           :file-types="['VolunteerLetterTemplateDev', 'VolunteerLetterDev']"
           :file-template-metadata="volunteerFileTemplateDevMetadata"
           :file-metadata="volunteerFileDevMetadata"
-        ></HandBook>
-      </div>
-      <!-- 结业证书 -->
-      <div class="certificate-box">
-        <div class="title">发展对象结业证书</div>
-        <div class="content">
-          <div class="img-box">
-            <img class="img" src="../../../../assets/images/partyProgress/certificate.png" alt="" />
-          </div>
-          <div class="time-box">结业时间：2025-02-01</div>
-        </div>
+        />
       </div>
     </div>
-    <!-- 手册二 -->
-    <HandBook
-      :name="'手册二（一）'"
-      :file-types="['HandbookSecondTemplateDev', 'HandbookSecondDev']"
-      :file-template-metadata="handbookSecondFileTemplateDevMetadata"
-      :file-metadata="handbookSecondFileDevMetadata"
-    ></HandBook>
   </div>
 </template>
 
 <script setup>
 import BigTitle from '../components/BigTitle.vue'
 import HandBook from '../components/HandBook.vue'
+import completionCertificate from '../components/completionCertificate.vue'
 import { useUserStore } from '@/stores'
-import { reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getFileMetadata } from '@/utils/file/getFileMetadata'
+import { fileDownload } from '@/api/general'
 
 const userStore = useUserStore()
 
@@ -65,6 +66,11 @@ const handbookSecondFileTemplateDevMetadataRequestParams = reactive({
 const handbookSecondDevFileMetadataRequestParams = reactive({
   userId: userStore.userId,
   fileType: 'HandbookSecondDev',
+})
+// 发展对象结业证书请求参数
+const DevCertificateMetadataRequestParams = reactive({
+  userId: '-1',
+  fileType: 'DevelopmentCertificateCompletion',
 })
 
 // 文件元数据
@@ -100,6 +106,15 @@ const handbookSecondFileDevMetadata = reactive({
   fileName: '',
 })
 
+const DevCertificateMetadata = reactive({
+  fileId: null,
+  status: -2,
+  attachText: '',
+  attachTime: '',
+  returnText: '错误',
+  fileName: '',
+})
+
 // 组件挂载后
 onMounted(async () => {
   try {
@@ -114,11 +129,33 @@ onMounted(async () => {
         handbookSecondFileTemplateDevMetadata,
       ),
       getFileMetadata(handbookSecondDevFileMetadataRequestParams, handbookSecondFileDevMetadata),
+      getFileMetadata(DevCertificateMetadataRequestParams, DevCertificateMetadata),
     ])
   } catch (error) {
     console.log(error)
     ElMessage.error('数据获取失败')
   }
+})
+
+const certificateImgUrl = ref('')
+
+const generateImgUrl = async (fileId) => {
+  try {
+    const response = await fileDownload(fileId)
+    const blob = response.data
+    certificateImgUrl.value = URL.createObjectURL(blob)
+  } catch (error) {
+    console.error('下载失败:', error)
+    ElMessage.error('图片下载失败')
+  }
+}
+
+if (DevCertificateMetadata.fileId) {
+  generateImgUrl(DevCertificateMetadata.fileId)
+}
+
+onUnmounted(() => {
+  if (certificateImgUrl.value) URL.revokeObjectURL(certificateImgUrl.value)
 })
 </script>
 
@@ -130,74 +167,11 @@ onMounted(async () => {
     // 入党志愿书
     .volunteer-letter-box {
       flex: 5;
-      margin-right: 20px;
-      .content {
-        padding: 30px;
-        .load-box {
-          display: flex;
-          height: 60px;
-          align-items: center;
-          .img-box {
-            .img {
-              width: 35px;
-              height: 35px;
-            }
-          }
-          .load {
-            margin-left: 30px;
-            font-size: 14px;
-          }
-          .load:hover {
-            color: #bc0000a8;
-          }
-        }
-      }
     }
     // 结业证书
     .certificate-box {
       flex: 3;
-      .content {
-        .img-box {
-          margin: 10px 20px;
-          .img {
-            width: 100%;
-            aspect-ratio: 3/2; /* 宽:高 = 3:2 */
-            object-fit: cover; /* 图片填充方式 */
-          }
-        }
-        .time-box {
-          margin-bottom: 10px;
-          height: 20px;
-          line-height: 20px;
-          text-align: center;
-          font-size: 12px;
-          color: #333;
-        }
-      }
-    }
-  }
-  // 入党志愿书
-  .party-application-box {
-    .content {
-      padding: 20px 30px;
-      .load-box {
-        display: flex;
-        height: 60px;
-        align-items: center;
-        .img-box {
-          .img {
-            width: 35px;
-            height: 35px;
-          }
-        }
-        .load {
-          margin-left: 30px;
-          font-size: 14px;
-        }
-        .load:hover {
-          color: #bc0000a8;
-        }
-      }
+      margin-right: 20px;
     }
   }
 }

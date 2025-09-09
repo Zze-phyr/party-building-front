@@ -10,19 +10,12 @@
     <div class="certificate-manual-box">
       <!-- 结业证书 -->
       <div class="certificate-box">
-        <ContentBox>
-          <template #title> 入党积极分子结业证书 </template>
-          <div class="content">
-            <div class="img-box">
-              <img
-                class="img"
-                src="../../../../assets/images/partyProgress/certificate.png"
-                alt=""
-              />
-            </div>
-            <div class="time-box">结业时间：2025-02-01</div>
-          </div>
-        </ContentBox>
+        <completionCertificate
+          name="入党积极分子结业证书"
+          :status="partyActivityMetadata.status"
+          :date="partyActivityMetadata.attachTime"
+          :img-url="certificateImgUrl"
+        />
       </div>
       <!-- 手册一 -->
       <div class="manual-box">
@@ -38,13 +31,14 @@
 <script setup>
 import BigTitle from '../components/BigTitle.vue'
 import cultivateContacts from './cultivate-contacts/cultivate-contacts.vue'
-import ContentBox from '../components/ContentBox.vue'
 import thinkingReport from './thinking-report/thinking-report.vue'
 import HandBook from '../components/HandBook.vue'
+import completionCertificate from '../components/completionCertificate.vue'
 import { useUserStore } from '@/stores'
-import { reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getFileMetadata } from '@/utils/file/getFileMetadata'
+import { fileDownload } from '@/api/general'
 
 const userStore = useUserStore()
 
@@ -56,6 +50,11 @@ const fileTemplateMetadataRequestParams = reactive({
 const fileMetadataRequestParams = reactive({
   userId: userStore.userId,
   fileType: 'HandbookFirst',
+})
+// 入党积极分子结业证书请求参数
+const partyActivityMetadataRequestParams = reactive({
+  userId: '-1',
+  fileType: 'ActivitiesCertificateCompletion',
 })
 
 // 文件元数据
@@ -75,15 +74,46 @@ const fileMetadata = reactive({
   fileName: '',
 })
 
+const partyActivityMetadata = reactive({
+  fileId: null,
+  status: -2,
+  attachText: '',
+  attachTime: '',
+  returnText: '错误',
+  fileName: '',
+})
+
 // 组件挂载后
 onMounted(async () => {
   try {
     await getFileMetadata(fileTemplateMetadataRequestParams, fileTemplateMetadata)
     await getFileMetadata(fileMetadataRequestParams, fileMetadata)
+    await getFileMetadata(partyActivityMetadataRequestParams, partyActivityMetadata)
   } catch (error) {
     console.log(error)
     ElMessage.error('数据获取失败')
   }
+})
+
+const certificateImgUrl = ref('')
+
+const generateImgUrl = async (fileId) => {
+  try {
+    const response = await fileDownload(fileId)
+    const blob = response.data
+    certificateImgUrl.value = URL.createObjectURL(blob)
+  } catch (error) {
+    console.error('下载失败:', error)
+    ElMessage.error('图片下载失败')
+  }
+}
+
+if (partyActivityMetadata.fileId) {
+  generateImgUrl(partyActivityMetadata.fileId)
+}
+
+onUnmounted(() => {
+  if (certificateImgUrl.value) URL.revokeObjectURL(certificateImgUrl.value)
 })
 </script>
 
