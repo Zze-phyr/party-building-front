@@ -126,24 +126,6 @@ onUnmounted(() => {
     .certificate-box {
       flex: 7;
       margin-right: 20px;
-      .content {
-        .img-box {
-          margin: 10px 20px;
-          .img {
-            width: 100%;
-            aspect-ratio: 3/2; /* 宽:高 = 3:2 */
-            object-fit: cover; /* 图片填充方式 */
-          }
-        }
-        .time-box {
-          margin-bottom: 10px;
-          height: 20px;
-          line-height: 20px;
-          text-align: center;
-          font-size: 12px;
-          color: #333;
-        }
-      }
     }
     .manual-box {
       flex: 9;
