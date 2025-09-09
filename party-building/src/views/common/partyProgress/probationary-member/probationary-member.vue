@@ -3,7 +3,12 @@
     <!-- 入党流程标题 -->
     <BigTitle>预备党员的接收、教育考察和转正</BigTitle>
     <!-- 吸收大会会议记录 -->
-    <meetingRecord :name="'吸收大会会议记录'" :file-metadata="absorptionMeetingFileFullMetadata" />
+    <meetingRecord :name="'吸收大会会议记录'" :file-metadata="absorptionMeetingMetadata" />
+    <!-- 预备党员转正支部会议记录 -->
+    <meetingRecord
+      :name="'预备党员转正支部会议记录'"
+      :file-metadata="FullMemberConversionMetadata"
+    />
     <!-- 入党志愿书（二） -->
     <HandBook
       :name="'入党志愿书（二）'"
@@ -54,10 +59,15 @@ const handbookSecondFullFileMetadataRequestParams = reactive({
   userId: userStore.userId,
   fileType: 'HandbookSecondFull',
 })
-// 志愿书模板请求参数
+// 吸收大会请求参数
 const absorptionMeetingMetadataRequestParams = reactive({
   userId: '-1',
   fileType: 'AbsorptionMeetingMinutes',
+})
+// 预备党员转正支部会议请求参数
+const FullMemberConversionMetadataRequestParams = reactive({
+  userId: '-1',
+  fileType: 'FullMemberConversionMinutes',
 })
 
 // 文件元数据
@@ -93,9 +103,18 @@ const handbookSecondFileFullMetadata = reactive({
   fileName: '',
 })
 
-const absorptionMeetingFileFullMetadata = reactive({
+const absorptionMeetingMetadata = reactive({
   fileId: null,
   status: -2,
+  attachText: '张三|2025-3-8|李四|一教101|王五、李六、赵三...',
+  attachTime: '',
+  returnText: '错误',
+  fileName: '',
+})
+
+const FullMemberConversionMetadata = reactive({
+  fileId: null,
+  status: 1,
   attachText: '张三|2025-3-8|李四|一教101|王五、李六、赵三...',
   attachTime: '',
   returnText: '错误',
@@ -116,7 +135,8 @@ onMounted(async () => {
         handbookSecondFileTemplateFullMetadata,
       ),
       getFileMetadata(handbookSecondFullFileMetadataRequestParams, handbookSecondFileFullMetadata),
-      getFileMetadata(absorptionMeetingMetadataRequestParams, absorptionMeetingFileFullMetadata),
+      getFileMetadata(absorptionMeetingMetadataRequestParams, absorptionMeetingMetadata),
+      getFileMetadata(FullMemberConversionMetadataRequestParams, FullMemberConversionMetadata),
     ])
   } catch (error) {
     console.log(error)

@@ -2,6 +2,8 @@
   <div class="develop-candidate-container">
     <!-- 入党流程标题 -->
     <BigTitle>发展对象的确定和考察</BigTitle>
+    <!-- 确定发展对象会议记录 -->
+    <meetingRecord :name="'确定发展对象会议记录'" :file-metadata="DevConfirmationMetadata" />
     <!-- 手册二 -->
     <HandBook
       :name="'手册二（一）'"
@@ -38,6 +40,7 @@
 import BigTitle from '../components/BigTitle.vue'
 import HandBook from '../components/HandBook.vue'
 import completionCertificate from '../components/completionCertificate.vue'
+import meetingRecord from '../components/meetingRecord.vue'
 import { useUserStore } from '@/stores'
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
@@ -71,6 +74,11 @@ const handbookSecondDevFileMetadataRequestParams = reactive({
 const DevCertificateMetadataRequestParams = reactive({
   userId: '-1',
   fileType: 'DevelopmentCertificateCompletion',
+})
+// 确定发展对象请求参数
+const DevConfirmationMetadataRequestParams = reactive({
+  userId: '-1',
+  fileType: 'DevelopmentConfirmationMinutes',
 })
 
 // 文件元数据
@@ -115,6 +123,15 @@ const DevCertificateMetadata = reactive({
   fileName: '',
 })
 
+const DevConfirmationMetadata = reactive({
+  fileId: null,
+  status: -2,
+  attachText: '',
+  attachTime: '',
+  returnText: '错误',
+  fileName: '',
+})
+
 // 组件挂载后
 onMounted(async () => {
   try {
@@ -130,6 +147,7 @@ onMounted(async () => {
       ),
       getFileMetadata(handbookSecondDevFileMetadataRequestParams, handbookSecondFileDevMetadata),
       getFileMetadata(DevCertificateMetadataRequestParams, DevCertificateMetadata),
+      getFileMetadata(DevConfirmationMetadataRequestParams, DevConfirmationMetadata),
     ])
   } catch (error) {
     console.log(error)
