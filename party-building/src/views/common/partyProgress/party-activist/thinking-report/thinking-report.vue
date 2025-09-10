@@ -116,10 +116,10 @@
 import ContentBox from '../../components/ContentBox.vue'
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
-import { fileUpload, fileMetadataGet } from '@/api/general'
 import { useUserStore } from '@/stores'
 import { updateSingleFiles } from '@/utils/file/updateFile'
 import { downloadFile } from '@/utils/file/downloadFile'
+import { generalApi } from '@/api/general'
 
 const userStore = useUserStore()
 
@@ -179,7 +179,7 @@ const uploadFiles = async () => {
       formdata.append('file', file.raw)
       try {
         // 上传请求
-        const { data: uploadData } = await fileUpload(formdata)
+        const { data: uploadData } = await generalApi.fileUpload(formdata)
         if (uploadData.code === 1) {
           successResults.push(file.name)
         } else {
@@ -253,7 +253,7 @@ const openDialog = async () => {
   try {
     fileMetadataRequestParams.userId = userStore.userId
     fileMetadataRequestParams.fileType = 'ThoughtReport'
-    const { data } = await fileMetadataGet(fileMetadataRequestParams)
+    const { data } = await generalApi.fileMetadataGet(fileMetadataRequestParams)
     if (data.code === 1) {
       fileMetadataData.value = data.data
     } else {
