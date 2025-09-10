@@ -26,20 +26,20 @@
         <div
           class="step-dot"
           :class="{
-            'dot-finished': status !== 'Applicant' && status !== 'PartyActivities',
+            'dot-finished': allowDevelopment.includes(status),
           }"
           @click="checkThree()"
         ></div>
         <div
           class="step-connector"
           :class="{
-            'connector-finished': status !== 'Applicant' && status !== 'PartyActivities',
+            'connector-finished': allowDevelopment.includes(status),
           }"
         ></div>
         <div
           class="step-content"
           :class="{
-            'content-finished': status !== 'Applicant' && status !== 'PartyActivities',
+            'content-finished': allowDevelopment.includes(status),
           }"
           @click="checkThree()"
         >
@@ -51,14 +51,17 @@
         <div
           class="step-dot"
           :class="{
-            'dot-finished': status !== 'Applicant',
+            'dot-finished': allowPartyActivities.includes(status),
           }"
           @click="checkTwo()"
         ></div>
-        <div class="step-connector" :class="{ 'connector-finished': status !== 'Applicant' }"></div>
+        <div
+          class="step-connector"
+          :class="{ 'connector-finished': allowPartyActivities.includes(status) }"
+        ></div>
         <div
           class="step-content"
-          :class="{ 'content-finished': status !== 'Applicant' }"
+          :class="{ 'content-finished': allowPartyActivities.includes(status) }"
           @click="checkTwo()"
         >
           入党积极分子的确定和培养教育
@@ -97,6 +100,8 @@ const tabs = {
 }
 
 const checkState = ref(status)
+const allowPartyActivities = ['PartyActivities', 'Development', 'ReservePartyMenbers']
+const allowDevelopment = ['Development', 'ReservePartyMenbers']
 
 //点击查看过往入党流程
 const checkOne = () => {
@@ -104,11 +109,11 @@ const checkOne = () => {
 }
 
 const checkTwo = () => {
-  if (status !== 'Applicant') checkState.value = 'PartyActivities'
+  if (allowPartyActivities.includes(status)) checkState.value = 'PartyActivities'
 }
 
 const checkThree = () => {
-  if (status !== 'Applicant' && status !== 'PartyActivities') checkState.value = 'Development'
+  if (allowDevelopment.includes(status)) checkState.value = 'Development'
 }
 
 const checkFour = () => {
