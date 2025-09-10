@@ -53,7 +53,10 @@
             />
           </el-form-item>
           <el-form-item class="btn-box">
-            <el-button class="btn" @click="submitRegister(registerFormRef, registerForm)"
+            <el-button
+              class="btn"
+              color="#d12626"
+              @click="submitRegister(registerFormRef, registerForm)"
               >确认注册</el-button
             >
           </el-form-item>
@@ -70,11 +73,13 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import { userRegister, userVerification } from '@/api/public'
+import { publicApi } from '@/api/public'
+import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-// import { clearForm } from '@/composables/useFormUtils'
-import { validatePhone, validateIdCard } from '@/utils/validators'
+import { validateIdCard } from '@/utils/validation/validators'
 import { useCountdown } from '@/composables/useCountdown'
+
+const router = useRouter()
 
 //创建表单实例
 const registerFormRef = ref(null)
@@ -89,10 +94,12 @@ const registerForm = reactive({
 
 // 自定义二次验证密码函数
 const validateRepassword = (rule, value, callback) => {
-  if (value !== registerForm.password) {
-    callback(new Error('两次密码填写不一致'))
-  } else {
-    callback()
+  if (registerForm.password && registerForm.repassword) {
+    if (value !== registerForm.password || value !== registerForm.repassword) {
+      callback(new Error('两次密码填写不一致'))
+    } else {
+      callback()
+    }
   }
 }
 
@@ -120,11 +127,18 @@ const registerRules = reactive({
     { required: true, message: '请填写电话号码', trigger: 'blur' },
     {
       validator: (rule, value, callback) => {
-        const result = validatePhone(value)
-        if (!result) callback('请输入有效的11位手机号码')
-        else isDisabled.value = false
+        if (!value) {
+          isDisabled.value = true
+          callback(new Error('请填写手机号码'))
+        } else if (!/^1[3-9]\d{9}$/.test(value)) {
+          callback(new Error('请输入有效的11位手机号码'))
+          isDisabled.value = true
+        } else {
+          callback() // 验证成功
+          isDisabled.value = false
+        }
       },
-      trigger: 'blur',
+      trigger: ['change', 'blur'],
     },
   ],
   verify: [{ required: true, message: '请填写验证码', trigger: 'blur' }],
@@ -135,6 +149,7 @@ const registerRules = reactive({
       message: '密码必须为11-16位，且只能包含数字和英文',
       trigger: 'blur',
     },
+    { validator: validateRepassword, trigger: 'blur' },
   ],
   repassword: [
     { required: true, message: '请填写密码', trigger: 'blur' },
@@ -152,17 +167,18 @@ const { buttonText, isCounting, start } = useCountdown(60, '获取验证码')
 const countdownChange = async () => {
   if (isCounting.value) return
   try {
-    const { data } = await userVerification({ phone: registerForm.phone })
-    console.log(data)
+    const { data } = await publicApi.getVerification({ phone: registerForm.phone })
     if (data.code === 1) {
       ElMessage.success('短信成功发送')
       start() //开始倒计时
     } else {
       ElMessage.error('短信发送失败')
+      isCounting.value = false
     }
   } catch (error) {
     console.log(error)
     ElMessage.error('网络错误，请重试')
+    isCounting.value = false
   }
 }
 
@@ -172,15 +188,15 @@ const submitRegister = async (formRef) => {
   //手动触发校验
   try {
     await formRef.validate()
-    const { data } = await userRegister(registerForm)
+    const { data } = await publicApi.register(registerForm)
     if (data.code === 1) {
       ElMessage.success('注册成功，请登录')
+      router.push('/login')
     } else {
       ElMessage.error(data.msg)
     }
   } catch (error) {
     console.log(error)
-    // clearForm(formRef, formData)
     ElMessage.error('注册失败，请重试')
   }
 }
@@ -198,12 +214,15 @@ const submitRegister = async (formRef) => {
   background-position: center;
   z-index: -1;
   .register-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     .form {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin-top: -260px;
-      margin-left: -200px;
       width: 400px;
       height: 520px;
       padding: 18px 50px;
@@ -246,12 +265,6 @@ const submitRegister = async (formRef) => {
         .btn {
           margin: 0 auto 12px;
           padding: 15px 40px;
-          background-color: #d24529;
-          border-color: #000;
-          color: white;
-        }
-        .btn:hover {
-          box-shadow: inset 3px 4px 5px rgba(0, 0, 0, 0.3); /* 内阴影效果，水平偏移0、垂直偏移0、模糊半径5px、颜色为黑色透明度0.3，可按需调整参数 */
         }
       }
       .link {

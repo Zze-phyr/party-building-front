@@ -2,8 +2,8 @@
 import { ref, onUnmounted } from 'vue'
 
 export function useCountdown(initialTime, initialButtonText) {
-  let time = initialTime //倒计时总时间
-  let isCounting = false //倒计时是否已经开始
+  const time = ref(initialTime) //倒计时总时间
+  const isCounting = ref(false) //倒计时是否已经开始
   let timer = null //是否设定了定时器
 
   // 按钮文本计算属性
@@ -15,15 +15,15 @@ export function useCountdown(initialTime, initialButtonText) {
       clearInterval(timer)
       timer = null
     }
-    isCounting = true
-    time = initialTime
+    isCounting.value = true
+    time.value = initialTime
     updateButtonText()
 
     timer = setInterval(() => {
-      time--
+      time.value--
       updateButtonText()
 
-      if (time <= 0) {
+      if (time.value <= 0) {
         stop()
       }
     }, 1000)
@@ -33,12 +33,12 @@ export function useCountdown(initialTime, initialButtonText) {
   const stop = () => {
     clearInterval(timer)
     timer = null
-    isCounting = false
+    isCounting.value = false
     updateButtonText()
   }
 
   const updateButtonText = () => {
-    buttonText.value = isCounting ? `倒计时${time}s` : initialButtonText
+    buttonText.value = isCounting.value ? `倒计时${time.value}s` : initialButtonText
   }
 
   // 组件卸载时清除定时器

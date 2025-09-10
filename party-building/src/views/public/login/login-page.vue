@@ -1,84 +1,46 @@
 <template>
   <div class="bg-container">
-    <div class="form-container">
-      <!-- 身份选择 -->
-      <div class="roule-choice">
-        <span :class="{ active: permission === 'Common' }" @click="choiceCommon()"
-          >普通用户登录</span
-        >
-        <span :class="{ active: permission === 'Admin' }" @click="choiceAdmin()">管理员登录</span>
-      </div>
-      <!-- 手机验证码表单 -->
-      <div v-if="loginWay" class="phone-login-container form-box">
-        <el-form
-          class="form"
-          label-width="auto"
-          label-position="top"
-          size="normal"
-          :model="phoneLoginForm"
-          ref="phoneLoginFormRef"
-          :rules="phoneLoginRules"
-        >
-          <el-form-item label="手机号" prop="phone">
-            <el-input v-model="phoneLoginForm.phone" placeholder="请输入您的手机号" />
-          </el-form-item>
-          <el-form-item class="verify" label="验证码">
-            <el-input v-model="phoneLoginForm.verify" placeholder="请输入验证码">
-              <!-- 输入框尾部追加一个span标签 -->
-              <template #append>
-                <el-button type="warning" :disabled="isDisabled" @click="countdownChange">{{
-                  buttonText
-                }}</el-button>
-              </template>
-            </el-input>
-          </el-form-item>
-          <el-form-item class="login-way">
-            <span @click="switchLoginWay()">切换账号密码登录</span>
-          </el-form-item>
-          <el-form-item class="btn-box">
-            <el-button
-              class="btn"
-              @click="submitLoginForm(phoneLoginFormRef, phoneLoginForm, userPhoneLogin)"
-              >确认登录</el-button
-            >
-          </el-form-item>
-          <el-form-item>
-            <el-link :underline="false" href="/register" class="link" type="info"
-              >暂无帐号，立即注册</el-link
-            >
-          </el-form-item>
-        </el-form>
-      </div>
-      <!-- 账号密码表单 -->
-      <div v-else class="number-login-container form-box">
-        <!-- 账号密码登录表单 -->
-        <div class="form-box">
+    <div class="form-center-box">
+      <div class="form-container">
+        <!-- 身份选择 -->
+        <div class="roule-choice">
+          <span :class="{ active: permission === 'Common' }" @click="choiceCommon()"
+            >普通用户登录</span
+          >
+          <span :class="{ active: permission === 'Admin' }" @click="choiceAdmin()">管理员登录</span>
+        </div>
+        <!-- 手机验证码表单 -->
+        <div v-if="loginWay === 'phone'" class="phone-login-container form-box">
           <el-form
             class="form"
             label-width="auto"
             label-position="top"
             size="normal"
-            :model="numberLoginForm"
-            ref="numberLoginFormRef"
-            :rules="numberLoginRules"
+            :model="phoneLoginForm"
+            ref="phoneLoginFormRef"
+            :rules="phoneLoginRules"
           >
-            <el-form-item label="账号" prop="number">
-              <el-input v-model="numberLoginForm.number" placeholder="请输入您的学号/工号" />
+            <el-form-item label="手机号" prop="phone">
+              <el-input v-model="phoneLoginForm.phone" placeholder="请输入您的手机号" />
             </el-form-item>
-            <el-form-item class="password" label="密码" prop="password">
-              <el-input
-                v-model="numberLoginForm.password"
-                type="password"
-                placeholder="请输入账号密码"
-              />
+            <el-form-item class="verify" label="验证码">
+              <el-input v-model="phoneLoginForm.verify" placeholder="请输入验证码">
+                <!-- 输入框尾部追加一个span标签 -->
+                <template #append>
+                  <el-button type="warning" :disabled="isDisabled" @click="countdownChange">{{
+                    buttonText
+                  }}</el-button>
+                </template>
+              </el-input>
             </el-form-item>
             <el-form-item class="login-way">
-              <span @click="switchLoginWay()">切换手机号验证码登录</span>
+              <span @click="switchLoginWay()">切换账号密码登录</span>
             </el-form-item>
             <el-form-item class="btn-box">
               <el-button
+                color="#d12626"
                 class="btn"
-                @click="submitLoginForm(numberLoginFormRef, numberLogin, userNumberLogin)"
+                @click="submitLoginForm(phoneLoginFormRef, phoneLoginForm, publicApi.loginByPhone)"
                 >确认登录</el-button
               >
             </el-form-item>
@@ -89,6 +51,50 @@
             </el-form-item>
           </el-form>
         </div>
+        <!-- 账号密码表单 -->
+        <div v-else-if="loginWay === 'number'" class="number-login-container form-box">
+          <!-- 账号密码登录表单 -->
+          <div class="form-box">
+            <el-form
+              class="form"
+              label-width="auto"
+              label-position="top"
+              size="normal"
+              :model="numberLoginForm"
+              ref="numberLoginFormRef"
+              :rules="numberLoginRules"
+            >
+              <el-form-item label="账号" prop="number">
+                <el-input v-model="numberLoginForm.number" placeholder="请输入您的学号/工号" />
+              </el-form-item>
+              <el-form-item class="password" label="密码" prop="password">
+                <el-input
+                  v-model="numberLoginForm.password"
+                  type="password"
+                  placeholder="请输入账号密码"
+                />
+              </el-form-item>
+              <el-form-item class="login-way">
+                <span @click="switchLoginWay()">切换手机号验证码登录</span>
+              </el-form-item>
+              <el-form-item class="btn-box">
+                <el-button
+                  class="btn"
+                  color="#d12626"
+                  @click="
+                    submitLoginForm(numberLoginFormRef, numberLoginForm, publicApi.loginByNumber)
+                  "
+                  >确认登录</el-button
+                >
+              </el-form-item>
+              <el-form-item>
+                <el-link :underline="false" href="/register" class="link" type="info"
+                  >暂无帐号，立即注册</el-link
+                >
+              </el-form-item>
+            </el-form>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -96,11 +102,10 @@
 
 <script setup>
 import { reactive, ref } from 'vue'
-import { userPhoneLogin, userVerification, userNumberLogin } from '@/api/public'
+import { publicApi } from '@/api/public'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores'
 import { useRouter } from 'vue-router'
-import { validatePhone } from '@/utils/validators'
 import { useCountdown } from '@/composables/useCountdown'
 import { clearForm } from '@/composables/useFormUtils'
 
@@ -113,9 +118,9 @@ const choiceCommon = () => (permission.value = 'Common')
 const choiceAdmin = () => (permission.value = 'Admin')
 
 // 登录方式切换
-let loginWay = ref(1)
+let loginWay = ref('number')
 const switchLoginWay = () => {
-  loginWay.value = loginWay.value ? 0 : 1
+  loginWay.value = loginWay.value === 'number' ? 'phone' : 'number'
 }
 
 //创建表单实例——手机验证码
@@ -137,14 +142,21 @@ const numberLoginForm = reactive({
 let isDisabled = ref(true) // 是否可获取验证码
 const phoneLoginRules = reactive({
   phone: [
-    { required: true, message: '请填写电话号码', trigger: 'blur' },
+    { required: true, message: '请填写手机号码', trigger: 'blur' },
     {
       validator: (rule, value, callback) => {
-        const result = validatePhone(value)
-        if (!result) callback('请输入有效的11位手机号码')
-        else isDisabled.value = false
+        if (!value) {
+          isDisabled.value = true
+          callback(new Error('请填写手机号码'))
+        } else if (!/^1[3-9]\d{9}$/.test(value)) {
+          callback(new Error('请输入有效的11位手机号码'))
+          isDisabled.value = true
+        } else {
+          callback() // 验证成功
+          isDisabled.value = false
+        }
       },
-      trigger: 'blur',
+      trigger: ['change', 'blur'],
     },
   ],
   verify: [{ required: true, message: '请填写验证码', trigger: 'blur' }],
@@ -160,17 +172,17 @@ const { buttonText, isCounting, start } = useCountdown(60, '获取验证码')
 const countdownChange = async () => {
   if (isCounting.value) return
   try {
-    const { data } = await userVerification({ phone: phoneLoginForm.phone })
-    console.log(data)
+    const { data } = await publicApi.getVerification({ phone: phoneLoginForm.phone })
     if (data.code === 1) {
       ElMessage.success('短信成功发送')
       start() //开始倒计时
     } else {
       ElMessage.error('短信发送失败')
+      isCounting.value = false
     }
-  } catch (error) {
-    console.log(error)
+  } catch {
     ElMessage.error('网络错误，请重试')
+    isCounting.value = false
   }
 }
 
@@ -180,7 +192,7 @@ const submitLoginForm = async (formRef, formData, api) => {
   //手动触发校验
   try {
     await formRef.validate()
-    formData.permission = permission
+    formData.permission = permission.value
     const { data } = await api(formData)
     if (data.code === 1) {
       ElMessage.success('登录成功！')
@@ -208,89 +220,83 @@ const submitLoginForm = async (formRef, formData, api) => {
   background-size: cover;
   background-position: center;
   z-index: -1;
-  .form-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 10px 20px 0;
-    background-color: #fff;
-    border-radius: 10px;
-    // 角色选择
-    .roule-choice {
-      display: flex;
-      align-items: center;
-      margin: 10px 0;
-      height: 30px;
-      font-weight: bold;
-      font-size: 20px;
-      text-align: center;
-      span {
-        width: 165px;
-      }
-      .active {
-        color: #bc0000;
-      }
-    }
-    //登录表单
-    .form-box {
-      margin: 20px 0;
-      .el-form-item {
-        :deep(.el-input) {
-          --el-input-focus-border-color: #999;
+  .form-center-box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .form-container {
+      padding: 10px 20px 0;
+      background-color: #fff;
+      border-radius: 10px;
+      // 角色选择
+      .roule-choice {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        height: 30px;
+        font-weight: bold;
+        font-size: 20px;
+        text-align: center;
+        span {
+          padding: 3px;
+          width: 165px;
+          border-radius: 20px;
+          &:hover {
+            color: #bc00007f;
+            background-color: #bc000009;
+          }
+        }
+        .active {
+          color: #bc0000;
+          background-color: #bc000018;
         }
       }
-      .login-way {
-        margin: 5px 0;
-        color: #888;
-        span {
+      //登录表单
+      .form-box {
+        margin: 20px 0;
+        .login-way {
+          margin: 5px 0;
+          color: #888;
+          span {
+            font-size: 13px;
+          }
+        }
+        .login-way:hover {
+          color: #d24529;
+          cursor: pointer;
+        }
+        .btn-box {
+          margin: 0;
+          .btn {
+            margin: 12px auto;
+            padding: 15px 40px;
+          }
+        }
+        .link {
+          margin: 0 auto;
           font-size: 13px;
         }
-      }
-      .login-way:hover {
-        color: #d24529;
-        cursor: pointer;
-      }
-      .btn-box {
-        margin: 0;
-        .btn {
-          margin: 12px auto;
-          padding: 15px 40px;
-          background-color: #d24529;
-          border-color: #000;
-          color: white;
-        }
-        .btn:hover {
-          box-shadow: inset 3px 4px 5px rgba(0, 0, 0, 0.3); /* 内阴影效果，水平偏移0、垂直偏移0、模糊半径5px、颜色为黑色透明度0.3，可按需调整参数 */
+        .link:hover {
+          color: #d24529;
         }
       }
-      .link {
-        margin: 0 auto;
-        font-size: 13px;
-      }
-      .link:hover {
-        color: #d24529;
-      }
-    }
-    .phone-login-container {
-      margin: 20px 0;
-      .form {
-        .verify {
-          margin-bottom: 0;
+      .phone-login-container {
+        .form {
+          .verify {
+            margin-bottom: 0;
+          }
         }
       }
-    }
-    .phone-login-container {
-      .form {
-        .verify {
-          margin-bottom: 0;
-        }
-      }
-    }
-    .number-login-container {
-      .form {
-        .password {
-          margin-bottom: 0;
+      .number-login-container {
+        .form {
+          .password {
+            margin-bottom: 0;
+          }
         }
       }
     }
