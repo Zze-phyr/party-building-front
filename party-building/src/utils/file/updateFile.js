@@ -1,5 +1,5 @@
 import { ElMessage } from 'element-plus'
-import { fileUpload, fileDelete } from '@/api/general'
+import { generalApi } from '@/api/general'
 import { useUserStore } from '@/stores'
 
 const userStore = useUserStore()
@@ -12,7 +12,7 @@ export const updateSingleFiles = async (file, fileData, fileType) => {
   }
   try {
     //重新上传先删除
-    const { data: deletData } = await fileDelete(fileData.fileId)
+    const { data: deletData } = await generalApi.deleteFile(fileData.fileId)
     if (deletData.code === 0) {
       ElMessage.error(deletData.msg || '文件删除失败')
       return
@@ -29,7 +29,7 @@ export const updateSingleFiles = async (file, fileData, fileType) => {
     formdata.append('attachTime', fileData.attachTime)
     formdata.append('attachText', fileData.attachText)
     formdata.append('file', file.raw)
-    const { data: uploadData } = await fileUpload(formdata)
+    const { data: uploadData } = await generalApi.uploadFile(formdata)
     if (uploadData.code === 1) {
       if (fileData.status === -1) fileData.status = 0
       fileData.fileId = uploadData.data.fileId

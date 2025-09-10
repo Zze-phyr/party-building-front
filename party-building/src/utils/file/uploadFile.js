@@ -1,5 +1,5 @@
 import { ElMessage } from 'element-plus'
-import { fileUpload } from '@/api/general'
+import { generalApi } from '@/api/general'
 import { useUserStore } from '@/stores'
 
 const userStore = useUserStore()
@@ -18,7 +18,7 @@ export const uploadSingleFiles = async (file, fileData, fileType) => {
   formdata.append('attachText', fileData.attachText)
   formdata.append('file', file.raw)
   try {
-    const { data: uploadData } = await fileUpload(formdata)
+    const { data: uploadData } = await generalApi.uploadFile(formdata)
     if (uploadData.code === 1) {
       if (fileData.status === -2) fileData.status = 0
       fileData.fileId = uploadData.data.fileId

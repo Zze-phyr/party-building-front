@@ -38,7 +38,7 @@ import { useUserStore } from '@/stores'
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getFileMetadata } from '@/utils/file/getFileMetadata'
-import { fileDownload } from '@/api/general'
+import { generalApi } from '@/api/general'
 
 const userStore = useUserStore()
 
@@ -99,7 +99,7 @@ const certificateImgUrl = ref('')
 
 const generateImgUrl = async (fileId) => {
   try {
-    const response = await fileDownload(fileId)
+    const response = await generalApi.downloadFile(fileId)
     const blob = response.data
     certificateImgUrl.value = URL.createObjectURL(blob)
   } catch (error) {

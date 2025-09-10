@@ -1,5 +1,5 @@
+import { generalApi } from '@/api/general'
 import { ElMessage } from 'element-plus'
-import { fileDownload } from '@/api/general'
 
 function getFileNameFromDisposition(disposition) {
   if (!disposition) return null
@@ -17,7 +17,7 @@ export const downloadFile = async (fileId) => {
       return
     }
 
-    const response = await fileDownload(fileId)
+    const response = await generalApi.downloadFile(fileId)
     const blob = response.data
     const contentDisposition = response.headers['content-disposition']
     const fileName = getFileNameFromDisposition(contentDisposition) || '下载文件.pdf'

@@ -86,7 +86,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { reactive, ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores'
 import { ElMessage } from 'element-plus'
-import { fileUpload, fileMetadataGet, fileDelete } from '@/api/general'
+import { generalApi } from '@/api/general'
 import BigTitle from '../components/BigTitle.vue'
 import ContentBox from '../components/ContentBox.vue'
 import { downloadFile } from '@/utils/file/downloadFile'
@@ -120,7 +120,7 @@ onMounted(async () => {
   try {
     fileMetadataRequestParams.userId = userStore.userId
     fileMetadataRequestParams.fileType = 'JoinPartyApplication'
-    const { data } = await fileMetadataGet(fileMetadataRequestParams)
+    const { data } = await generalApi.getFileMetadata(fileMetadataRequestParams)
     if (data.code === 1) {
       if (data.data.length > 0) {
         Object.assign(fileMetadataParams, data.data[0])
@@ -197,7 +197,7 @@ const onSubmit = async () => {
   try {
     //重新上传先删除
     if (shouldDelete) {
-      const { data: deletData } = await fileDelete(fileMetadataParams.fileId)
+      const { data: deletData } = await generalApi.deleteFile(fileMetadataParams.fileId)
       if (deletData.code === 0) {
         ElMessage.error(deletData.msg || '文件删除失败')
         loading.value = false
@@ -211,7 +211,7 @@ const onSubmit = async () => {
   }
   try {
     // 上传请求
-    const { data: uploadData } = await fileUpload(formdata)
+    const { data: uploadData } = await generalApi.uploadFile(formdata)
     if (uploadData.code === 1) {
       fileMetadataParams.fileId = uploadData.data.fileId
       if (fileMetadataParams.status !== 0) fileMetadataParams.status = 0

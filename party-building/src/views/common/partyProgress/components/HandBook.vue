@@ -156,7 +156,7 @@ const uploadLoading = ref(false)
 const handleUpdateFile = async () => {
   try {
     uploadLoading.value = true
-    await updateSingleFiles(selectFile.value, props.fileMetadatafileMetadata, props.fileTypes[1])
+    await updateSingleFiles(selectFile.value, props.fileMetadata, props.fileTypes[1])
   } finally {
     uploadLoading.value = false
   }

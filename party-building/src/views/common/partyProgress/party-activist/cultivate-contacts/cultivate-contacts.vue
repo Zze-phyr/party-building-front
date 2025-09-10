@@ -58,7 +58,7 @@
 <script setup>
 import { reactive, ref, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
-import { addNurtureContacts, getNurtureContacts, updateNurtureContacts } from '@/api/common'
+import { commonApi } from '@/api/common'
 import { useUserStore } from '@/stores'
 import ContentBox from '../../components/ContentBox.vue'
 
@@ -97,7 +97,7 @@ cultivateContactForms = ref([
 // 组件挂载后
 onMounted(async () => {
   try {
-    const { data } = await getNurtureContacts(userStore.userId)
+    const { data } = await commonApi.getNurtureContacts(userStore.userId)
     if (data.code === 1) {
       if (data.data.length > 0) {
         cultivateContactForms = ref([
@@ -169,11 +169,11 @@ const cultivateContactSubmnit = async () => {
     let submitPromises
     // 如果是第一次提交
     if (confirmOne.value === -2 && confirmTwo.value === -2) {
-      submitPromises = cultivateContactForms.map((form) => addNurtureContacts(form))
+      submitPromises = cultivateContactForms.map((form) => commonApi.addNurtureContacts(form))
     }
     // 如果是重新提交
     else {
-      submitPromises = cultivateContactForms.map((form) => updateNurtureContacts(form))
+      submitPromises = cultivateContactForms.map((form) => commonApi.updateNurtureContacts(form))
     }
     const results = await Promise.all(submitPromises)
 
