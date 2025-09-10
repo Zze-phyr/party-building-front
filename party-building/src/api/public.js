@@ -1,5 +1,5 @@
 // 公开接口
-import request from '@/utils/request'
+import request from '@/utils/network/request'
 
 export const publicApi = {
   // 注册接口

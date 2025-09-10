@@ -1,5 +1,5 @@
 // 通用接口
-import request from '@/utils/request'
+import request from '@/utils/network/request'
 
 export const generalApi = {
   // 批量请求需要的文件元数据

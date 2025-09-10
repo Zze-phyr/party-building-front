@@ -1,5 +1,5 @@
 // 管理员接口
-import request from '@/utils/request'
+import request from '@/utils/network/request'
 
 export const adminApi = {
   //查看批次

@@ -1,5 +1,5 @@
 // 用户接口
-import request from '@/utils/request'
+import request from '@/utils/network/request'
 
 export const commonApi = {
   // 获取个人信息
