@@ -1,6 +1,9 @@
 // 校验函数
 
 // 身份证验证
+// TODO: 存在一定的风险
+// 1、出生日期校验不完整，假如是20250230就出问题了
+// 2、返回值不够语义化
 export const validateIdCard = (value) => {
   const idCardReg = /^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[0-9Xx]$/
   if (!idCardReg.test(value)) return false
