@@ -38,6 +38,7 @@
             </el-form-item>
             <el-form-item class="btn-box">
               <el-button
+                :loading="loading"
                 color="#d12626"
                 class="btn"
                 @click="submitLoginForm(phoneLoginFormRef, phoneLoginForm, publicApi.loginByPhone)"
@@ -79,6 +80,7 @@
               </el-form-item>
               <el-form-item class="btn-box">
                 <el-button
+                  :loading="loading"
                   class="btn"
                   color="#d12626"
                   @click="
@@ -186,12 +188,14 @@ const countdownChange = async () => {
   }
 }
 
+const loading = ref(false)
 // 提交登录表单
 const submitLoginForm = async (formRef, formData, api) => {
   if (!formRef) return
   //手动触发校验
   try {
     await formRef.validate()
+    loading.value = true
     formData.permission = permission.value
     const { data } = await api(formData)
     if (data.code === 1) {
@@ -205,6 +209,8 @@ const submitLoginForm = async (formRef, formData, api) => {
     console.log(error)
     clearForm(formRef, formData)
     ElMessage.error('登录失败，请重试')
+  } finally {
+    loading.value = false
   }
 }
 </script>

@@ -54,6 +54,7 @@
           </el-form-item>
           <el-form-item class="btn-box">
             <el-button
+              :loading="loading"
               class="btn"
               color="#d12626"
               @click="submitRegister(registerFormRef, registerForm)"
@@ -182,12 +183,14 @@ const countdownChange = async () => {
   }
 }
 
+const loading = ref(false)
 //提交表单
 const submitRegister = async (formRef) => {
   if (!formRef) return
   //手动触发校验
   try {
     await formRef.validate()
+    loading.value = true
     const { data } = await publicApi.register(registerForm)
     if (data.code === 1) {
       ElMessage.success('注册成功，请登录')
@@ -198,6 +201,8 @@ const submitRegister = async (formRef) => {
   } catch (error) {
     console.log(error)
     ElMessage.error('注册失败，请重试')
+  } finally {
+    loading.value = false
   }
 }
 </script>
