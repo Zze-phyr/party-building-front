@@ -76,7 +76,9 @@
       <div class="tips">Tips:可点击圆点查看历史上传记录</div>
     </div>
     <div class="task-container">
-      <component :is="tabs[checkState]"></component>
+      <keep-alive>
+        <component :is="tabs[checkState]"></component>
+      </keep-alive>
     </div>
   </div>
 </template>

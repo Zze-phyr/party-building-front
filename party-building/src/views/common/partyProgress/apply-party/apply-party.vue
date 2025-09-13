@@ -93,14 +93,8 @@ import { downloadFile } from '@/utils/file/downloadFile'
 
 const userStore = useUserStore()
 
-// 获取文件元数据请求参数
-const fileMetadataRequestParams = reactive({
-  userId: '',
-  fileType: '',
-})
-
 // 文件元数据
-const fileMetadataParams = reactive({
+const fileMetadataParams = ref({
   fileId: '-1',
   status: -2,
   attachText: '',
@@ -118,12 +112,13 @@ const form = reactive({
 // 组件挂载后
 onMounted(async () => {
   try {
-    fileMetadataRequestParams.userId = userStore.userId
-    fileMetadataRequestParams.fileType = 'JoinPartyApplication'
-    const { data } = await generalApi.getFileMetadata(fileMetadataRequestParams)
+    const { data } = await generalApi.getFileMetadata({
+      userId: userStore.userId,
+      fileType: 'JoinPartyApplication',
+    })
     if (data.code === 1) {
       if (data.data.length > 0) {
-        Object.assign(fileMetadataParams, data.data[0])
+        fileMetadataParams.value = data.data[0]
         form.attachTime = data.data[0].attachTime
       }
     } else {
@@ -187,7 +182,8 @@ const onSubmit = async () => {
     return
   }
   loading.value = true
-  const shouldDelete = fileMetadataParams.status !== -2 && fileMetadataParams.status !== 1
+  const shouldDelete =
+    fileMetadataParams.value.status !== -2 && fileMetadataParams.value.status !== 1
   let formdata = new FormData()
   formdata.append('fileType', 'JoinPartyApplication')
   formdata.append('creatorId', userStore.userId)
@@ -197,7 +193,7 @@ const onSubmit = async () => {
   try {
     //重新上传先删除
     if (shouldDelete) {
-      const { data: deletData } = await generalApi.deleteFile(fileMetadataParams.fileId)
+      const { data: deletData } = await generalApi.deleteFile(fileMetadataParams.value.fileId)
       if (deletData.code === 0) {
         ElMessage.error(deletData.msg || '文件删除失败')
         loading.value = false
@@ -213,12 +209,12 @@ const onSubmit = async () => {
     // 上传请求
     const { data: uploadData } = await generalApi.uploadFile(formdata)
     if (uploadData.code === 1) {
-      fileMetadataParams.fileId = uploadData.data.fileId
-      if (fileMetadataParams.status !== 0) fileMetadataParams.status = 0
+      fileMetadataParams.value.fileId = uploadData.data.fileId
+      if (fileMetadataParams.value.status !== 0) fileMetadataParams.value.status = 0
       ElMessage.success('文件上传成功！')
     } else {
       if (shouldDelete) {
-        fileMetadataParams.status = -2
+        fileMetadataParams.value.status = -2
         form.attachTime = ''
         form.file = null
       }
@@ -227,7 +223,7 @@ const onSubmit = async () => {
   } catch (err) {
     console.log(err)
     if (shouldDelete) {
-      fileMetadataParams.status = -2
+      fileMetadataParams.value.status = -2
       form.attachTime = ''
       form.file = null
     }
@@ -240,7 +236,7 @@ const onSubmit = async () => {
 const handleDownloadFile = async () => {
   try {
     loading.value = true
-    await downloadFile(fileMetadataParams.fileId)
+    await downloadFile(fileMetadataParams.value.fileId)
   } finally {
     loading.value = false
   }
