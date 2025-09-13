@@ -2,9 +2,19 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import router from '@/router'
 import { useUserStore } from '@/stores/index'
-
+// TODO：IP地址不要放在这里，建议建立一个.env文件，然后把各个环境的配置放在这里
+// 1、.env.development 开发环境
+// 2、.env.production 生产环境
+// 3、.env.test 测试环境
 // const baseURL = 'http://172.20.10.4:8080'
 
+// TODO： 建议在弄一个适配fetch的请求，保证流式文件的下载问题
+// 具体的方案是：
+//  const service = axios.create({
+//   baseURL: import.meta.env.VITE_API_BASE_URL,
+//   timeout: 10000,
+//   adapter: fetchAdapter, 
+// })
 const instance = axios.create({
   //基础地址
   baseURL: '/api',

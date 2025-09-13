@@ -8,7 +8,8 @@ function getFileNameFromDisposition(disposition) {
   // 解码并去除可能的引号
   return match ? decodeURIComponent(match[1].replace(/^"|"$/g, '')) : null
 }
-
+// TODO: 建议进一步抽离下，请求参数不应该直接写死在函数中，下载行为可抽离为独立工具函数
+// 1、下载文件的函数应该体现在业务代码中，而不是放在一个通用的工具函数中
 // 文件下载
 export const downloadFile = async (fileId) => {
   try {

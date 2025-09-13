@@ -1,5 +1,7 @@
 // 普通用户
-
+// TODO:这里的代码有点冗余，一些重复的代码
+// 1、代码路由配置过于重复，比如meta.roles, icon, title
+// 2、 真正的动态路由是通过函数动态添加的，而不是简单的复制原有定义
 export const commonLayoutRoute = {
   name: 'CommonLayout',
   path: '/common',

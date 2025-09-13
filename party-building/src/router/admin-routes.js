@@ -1,12 +1,13 @@
-// 管理员
-
+// TODO:这里的代码有点冗余，一些重复的代码
+// 1、代码路由配置过于重复，比如meta.roles, icon, title
+// 2、 真正的动态路由是通过函数动态添加的，而不是简单的复制原有定义
 export const adminLayoutRoute = {
   name: 'AdminLayout',
   path: '/admin',
   component: () => import('@/views/admin/layout/layout-page.vue'),
   redirect: '/admin/joinParty',
   meta: {
-    roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+    roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'], // 管理员角色
   },
   children: [], // 动态添加子路由
 }
