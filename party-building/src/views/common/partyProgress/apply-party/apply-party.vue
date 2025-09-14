@@ -73,7 +73,9 @@
           </div>
           <div class="text">恭喜你，你的入党申请书已通过！</div>
           <div class="btn-box">
-            <el-button :loading="loading" @click="handleDownloadFile()">下载入党申请书</el-button>
+            <el-button :loading="loading" color="#d12626" @click="handleDownloadFile()"
+              >下载入党申请书</el-button
+            >
           </div>
         </div>
       </ContentBox>
