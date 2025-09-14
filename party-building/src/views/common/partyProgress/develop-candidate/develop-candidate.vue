@@ -15,11 +15,9 @@
     <div class="autobiography-certificate-box">
       <!-- 结业证书 -->
       <div class="certificate-box">
-        <completionCertificate
+        <CompletionCertificate
           name="发展对象结业证书"
-          :status="DevCertificateMetadata.status"
-          :date="DevCertificateMetadata.attachTime"
-          :img-url="certificateImgUrl"
+          file-type="DevelopmentCertificateCompletion"
         />
       </div>
       <!-- 入党志愿书（一） -->
@@ -39,13 +37,12 @@
 <script setup>
 import BigTitle from '../components/BigTitle.vue'
 import HandBook from '../components/HandBook.vue'
-import completionCertificate from '../components/completionCertificate.vue'
+import CompletionCertificate from '../components/completionCertificate.vue'
 import meetingRecord from '../components/meetingRecord.vue'
 import { useUserStore } from '@/stores'
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getFileMetadata } from '@/utils/file/getFileMetadata'
-import { generalApi } from '@/api/general'
 
 const userStore = useUserStore()
 
@@ -70,15 +67,10 @@ const handbookSecondDevFileMetadataRequestParams = reactive({
   userId: userStore.userId,
   fileType: 'HandbookSecondDev',
 })
-// 发展对象结业证书请求参数
-const DevCertificateMetadataRequestParams = reactive({
+
+const DevConfirmationRequestParams = reactive({
   userId: '-1',
-  fileType: 'DevelopmentCertificateCompletion',
-})
-// 确定发展对象请求参数
-const DevConfirmationMetadataRequestParams = reactive({
-  userId: '-1',
-  fileType: 'DevelopmentConfirmationMinutes',
+  fileType: 'DevConfirmation',
 })
 
 // 文件元数据
@@ -114,15 +106,6 @@ const handbookSecondFileDevMetadata = reactive({
   fileName: '',
 })
 
-const DevCertificateMetadata = reactive({
-  fileId: null,
-  status: -2,
-  attachText: '',
-  attachTime: '',
-  returnText: '错误',
-  fileName: '',
-})
-
 const DevConfirmationMetadata = reactive({
   fileId: null,
   status: -2,
@@ -146,34 +129,12 @@ onMounted(async () => {
         handbookSecondFileTemplateDevMetadata,
       ),
       getFileMetadata(handbookSecondDevFileMetadataRequestParams, handbookSecondFileDevMetadata),
-      getFileMetadata(DevCertificateMetadataRequestParams, DevCertificateMetadata),
-      getFileMetadata(DevConfirmationMetadataRequestParams, DevConfirmationMetadata),
+      getFileMetadata(DevConfirmationRequestParams, DevConfirmationMetadata),
     ])
   } catch (error) {
     console.log(error)
     ElMessage.error('数据获取失败')
   }
-})
-
-const certificateImgUrl = ref('')
-
-const generateImgUrl = async (fileId) => {
-  try {
-    const response = await generalApi.downloadFile(fileId)
-    const blob = response.data
-    certificateImgUrl.value = URL.createObjectURL(blob)
-  } catch (error) {
-    console.error('下载失败:', error)
-    ElMessage.error('图片下载失败')
-  }
-}
-
-if (DevCertificateMetadata.fileId) {
-  generateImgUrl(DevCertificateMetadata.fileId)
-}
-
-onUnmounted(() => {
-  if (certificateImgUrl.value) URL.revokeObjectURL(certificateImgUrl.value)
 })
 </script>
 
