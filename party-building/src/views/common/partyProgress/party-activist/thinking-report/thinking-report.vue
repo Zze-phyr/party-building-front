@@ -87,7 +87,7 @@
                       size="small"
                       :loading="uploadLoading"
                       @click="
-                        updateSingleFiles(updateFile[scope.row.fileId], scope.row, 'ThoughtReport')
+                        updateSingleFile(updateFile[scope.row.fileId], scope.row, 'ThoughtReport')
                       "
                       >确认重新提交
                     </el-button>
@@ -117,7 +117,7 @@ import ContentBox from '../../components/ContentBox.vue'
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores'
-import { updateSingleFiles } from '@/utils/file/updateFile'
+import { updateSingleFile } from '@/utils/file/updateFile'
 import { downloadFile } from '@/utils/file/downloadFile'
 import { generalApi } from '@/api/general'
 
@@ -179,7 +179,7 @@ const uploadFiles = async () => {
       formdata.append('file', file.raw)
       try {
         // 上传请求
-        const { data: uploadData } = await generalApi.fileUpload(formdata)
+        const { data: uploadData } = await generalApi.uploadFile(formdata)
         if (uploadData.code === 1) {
           successResults.push(file.name)
         } else {
@@ -242,18 +242,13 @@ const fileMetadataData = ref([
   },
 ])
 
-// 获取文件元数据请求参数
-const fileMetadataRequestParams = reactive({
-  userId: '',
-  fileType: '',
-})
-
 const openDialog = async () => {
   dialogTableVisible.value = true
   try {
-    fileMetadataRequestParams.userId = userStore.userId
-    fileMetadataRequestParams.fileType = 'ThoughtReport'
-    const { data } = await generalApi.fileMetadataGet(fileMetadataRequestParams)
+    const { data } = await generalApi.getFileMetadata({
+      userId: userStore.userId,
+      fileType: 'ThoughtReport',
+    })
     if (data.code === 1) {
       fileMetadataData.value = data.data
     } else {

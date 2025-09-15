@@ -5,7 +5,6 @@ import { useUserStore } from '@/stores'
 const userStore = useUserStore()
 
 export const uploadSingleFiles = async (file, fileData, fileType) => {
-  console.log('updateSingleFiles:', file, fileData, fileType)
   fileData.status = 1
   if (!file) {
     ElMessage.error('请选择需要上传的文件')

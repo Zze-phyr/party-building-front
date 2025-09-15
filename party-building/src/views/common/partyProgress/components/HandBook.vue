@@ -76,7 +76,7 @@ import ContentBox from './ContentBox.vue'
 import { ref, defineProps } from 'vue'
 import { ElMessage } from 'element-plus'
 import { downloadFile } from '@/utils/file/downloadFile'
-import { updateSingleFiles } from '@/utils/file/updateFile'
+import { updateSingleFile } from '@/utils/file/updateFile'
 import { uploadSingleFiles } from '@/utils/file/uploadFile'
 
 const props = defineProps({
@@ -156,7 +156,7 @@ const uploadLoading = ref(false)
 const handleUpdateFile = async () => {
   try {
     uploadLoading.value = true
-    await updateSingleFiles(selectFile.value, props.fileMetadata, props.fileTypes[1])
+    await updateSingleFile(selectFile.value, props.fileMetadata, props.fileTypes[1])
   } finally {
     uploadLoading.value = false
   }
