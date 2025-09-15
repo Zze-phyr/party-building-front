@@ -10,11 +10,12 @@
         </div>
         <el-button link disabled class="download-title">{{ name }}模板</el-button>
         <el-button
+          :loading="loadings.templateDownload"
           link
           :disabled="fileTemplateMetadata.status !== 1"
           class="download"
           :class="{ 'download-btn': fileTemplateMetadata.status === 1 }"
-          @click="downloadFile(fileTemplateMetadata.fileId)"
+          @click="handleDownloadFile(fileTemplateMetadata.fileId, 'templateDownload')"
         >
           {{ fileTemplateMetadata.status === 1 ? '点击下载模板到本地' : '等待管理员上传中' }}
         </el-button>
@@ -40,7 +41,7 @@
           <el-button
             link
             class="upload btn"
-            :loading="uploadLoading"
+            :loading="loadings.upload"
             @click="handleUploadFile()"
             v-if="fileMetadata.status === -2"
           >
@@ -50,7 +51,7 @@
           <el-button
             link
             class="upload btn"
-            :loading="uploadLoading"
+            :loading="loadings.update"
             @click="handleUpdateFile()"
             v-else-if="fileMetadata.status === -1 || fileMetadata.status === 0"
           >
@@ -60,7 +61,8 @@
             link
             type="info"
             class="upload btn"
-            @click="downloadFile(fileMetadata.fileId)"
+            :loading="loadings.download"
+            @click="handleDownloadFile(fileMetadata.fileId, 'download')"
             v-if="fileMetadata.status !== -2"
           >
             下载文件
@@ -73,46 +75,66 @@
 
 <script setup>
 import ContentBox from './ContentBox.vue'
-import { ref, defineProps } from 'vue'
+import { ref, defineProps, onMounted, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { downloadFile } from '@/utils/file/downloadFile'
+import { getFileMetadata } from '@/utils/file/getFileMetadata'
 import { updateSingleFile } from '@/utils/file/updateFile'
 import { uploadSingleFiles } from '@/utils/file/uploadFile'
+import { useUserStore } from '@/stores'
+
+const userStore = useUserStore()
 
 const props = defineProps({
   name: {
     type: String,
-    default: '手册一',
   },
   fileTypes: {
     type: Array,
-    default: () => ['HandbookFirstTemplate', 'HandbookFirst'],
   },
   isPicShow: {
     type: Boolean,
     default: false,
   },
-  fileTemplateMetadata: {
-    type: Object,
-    default: () => ({
-      fileId: null,
-      status: -2,
-      attachText: '',
-      attachTime: '',
-      fileName: '',
-    }),
-  },
-  fileMetadata: {
-    type: Object,
-    default: () => ({
-      fileId: null,
-      status: -2,
-      attachText: '',
-      attachTime: '',
-      returnText: '',
-      fileName: '',
-    }),
-  },
+})
+
+// 获取文件元数据请求参数
+const fileTemplateMetadataRequestParams = {
+  userId: '-1',
+  fileType: props.fileTypes[0],
+}
+const fileMetadataRequestParams = {
+  userId: userStore.userId,
+  fileType: props.fileTypes[1],
+}
+
+// 模板文件源数据
+const fileTemplateMetadata = ref({
+  fileId: null,
+  status: -2,
+  attachText: '',
+  attachTime: '',
+  fileName: '',
+})
+
+// 提交文件源数据
+const fileMetadata = ref({
+  fileId: null,
+  status: -2,
+  attachText: '',
+  attachTime: '',
+  fileName: '',
+})
+
+// 组件挂载后
+onMounted(async () => {
+  try {
+    await getFileMetadata(fileTemplateMetadataRequestParams, fileTemplateMetadata)
+    await getFileMetadata(fileMetadataRequestParams, fileMetadata)
+  } catch (error) {
+    console.log(error)
+    ElMessage.error('数据获取失败')
+  }
 })
 
 // 上传文件
@@ -150,25 +172,38 @@ const uploadChange = (file) => {
   if (isValid) selectFile.value = file
 }
 
-const uploadLoading = ref(false)
-
-// 单文件重新上传
-const handleUpdateFile = async () => {
-  try {
-    uploadLoading.value = true
-    await updateSingleFile(selectFile.value, props.fileMetadata, props.fileTypes[1])
-  } finally {
-    uploadLoading.value = false
-  }
-}
+const loadings = reactive({
+  upload: false,
+  update: false,
+  templateDownload: false,
+  download: false,
+})
 
 // 单文件上传
 const handleUploadFile = async () => {
   try {
-    uploadLoading.value = true
-    await uploadSingleFiles(selectFile.value, props.fileMetadata, props.fileTypes[1])
+    loadings.upload = true
+    await uploadSingleFiles(selectFile.value, fileMetadata, props.fileTypes[1])
   } finally {
-    uploadLoading.value = false
+    loadings.upload = false
+  }
+}
+// 单文件重新上传
+const handleUpdateFile = async () => {
+  try {
+    loadings.update = true
+    await updateSingleFile(selectFile.value, fileMetadata, props.fileTypes[1])
+  } finally {
+    loadings.update = false
+  }
+}
+// 文件删除
+const handleDownloadFile = async (fileId, loadingName) => {
+  try {
+    loadings[loadingName] = true
+    await downloadFile(fileId)
+  } finally {
+    loadings[loadingName] = false
   }
 }
 </script>
