@@ -12,7 +12,12 @@
           <div class="img-box">
             <img class="img" src="../../../../assets/images/icons/photo.png" alt="" />
           </div>
-          <el-button link class="download" @click="downloadFile(fileMetadata.fileId)">
+          <el-button
+            link
+            :loading="loading"
+            class="download"
+            @click="handleDownloadFile(fileMetadata.fileId)"
+          >
             点击下载查看{{ name }}佐证材料
           </el-button>
         </div>
@@ -22,35 +27,64 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue'
+import { ref, defineProps, onMounted } from 'vue'
 import ContentBox from './ContentBox.vue'
 import { downloadFile } from '@/utils/file/downloadFile'
+import { ElMessage } from 'element-plus'
+import { getFileMetadata } from '@/utils/file/getFileMetadata'
 
 const props = defineProps({
   name: {
     type: String,
     default: '会议记录',
   },
-  fileMetadata: {
-    type: Object,
-    default: () => ({
-      fileId: null,
-      status: -2,
-      attachText: '张三|2025-3-8|李四|一教101|王五、李六、赵三...',
-      attachTime: '',
-      returnText: '',
-      fileName: '',
-    }),
+  fileType: {
+    type: String,
   },
+})
+
+// 获取文件元数据请求参数
+const fileMetadataRequestParams = {
+  userId: '-1',
+  fileType: props.fileType,
+}
+// 文件元数据
+const fileMetadata = ref({
+  fileId: null,
+  status: 1,
+  attachText: '张三|2025-3-8|李四|一教101|王五、李六、赵三...',
+  attachTime: '',
+  fileName: '',
+})
+
+// 组件挂载后
+onMounted(async () => {
+  try {
+    await getFileMetadata(fileMetadataRequestParams, fileMetadata)
+  } catch (error) {
+    console.log(error)
+    ElMessage.error('数据获取失败')
+  }
 })
 
 const itemContent = ref([])
 
-if (props.fileMetadata.attachText) {
-  itemContent.value = props.fileMetadata.attachText.split('|')
+if (fileMetadata.value.attachText) {
+  itemContent.value = fileMetadata.value.attachText.split('|')
 }
 
 const itemTitle = ref(['当事人', '时间', '主持人', '会议地点', '参加人员'])
+
+const loading = ref(false)
+// 文件下载
+const handleDownloadFile = async (fileId) => {
+  try {
+    loading.value = true
+    await downloadFile(fileId)
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <style lang="scss" scoped>

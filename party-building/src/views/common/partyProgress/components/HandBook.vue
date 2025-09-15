@@ -117,7 +117,7 @@ const fileTemplateMetadata = ref({
   fileName: '',
 })
 
-// 提交文件源数据
+// 提交文件元数据
 const fileMetadata = ref({
   fileId: null,
   status: -2,
@@ -197,7 +197,7 @@ const handleUpdateFile = async () => {
     loadings.update = false
   }
 }
-// 文件删除
+// 文件下载
 const handleDownloadFile = async (fileId, loadingName) => {
   try {
     loadings[loadingName] = true
