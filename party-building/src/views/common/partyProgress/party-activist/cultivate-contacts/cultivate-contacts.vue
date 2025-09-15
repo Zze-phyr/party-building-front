@@ -101,9 +101,13 @@
             </el-form-item>
           </el-form>
           <div class="btn-box">
-            <el-button v-if="!isFormOneDisabled" color="#d12626" @click="submitForm('one')">{{
-              confirmOne === -2 ? '确定提交' : '确定重新提交'
-            }}</el-button>
+            <el-button
+              v-if="!isFormOneDisabled"
+              :loading="loadingOne"
+              color="#d12626"
+              @click="submitForm('one')"
+              >{{ confirmOne === -2 ? '确定提交' : '确定重新提交' }}</el-button
+            >
           </div>
         </el-col>
         <el-col :span="12">
@@ -147,9 +151,13 @@
             </el-form-item>
           </el-form>
           <div class="btn-box">
-            <el-button v-if="!isFormTwoDisabled" color="#d12626" @click="submitForm('two')">{{
-              confirmTwo === -2 ? '确定提交' : '确定重新提交'
-            }}</el-button>
+            <el-button
+              :loading="loadingTwo"
+              v-if="!isFormTwoDisabled"
+              color="#d12626"
+              @click="submitForm('two')"
+              >{{ confirmTwo === -2 ? '确定提交' : '确定重新提交' }}</el-button
+            >
           </div>
         </el-col>
       </el-row>
@@ -236,19 +244,24 @@ const cultivateContactRules = reactive({
   unitOccupation: [{ required: true, message: '请填写', trigger: 'blur' }],
 })
 
+const loadingOne = ref(false)
+const loadingTwo = ref(false)
+
 // 提交入党积极分子培养联系人表单
 const submitForm = (formNumber) => {
-  if (formNumber === 'one') cultivateContactSubmit(formRefOne.value, confirmOne, contactFormOne)
+  if (formNumber === 'one')
+    cultivateContactSubmit(formRefOne.value, confirmOne, contactFormOne, loadingOne)
   else if (formNumber === 'two')
-    cultivateContactSubmit(formRefTwo.value, confirmTwo, contactFormTwo)
+    cultivateContactSubmit(formRefTwo.value, confirmTwo, contactFormTwo, loadingTwo)
 }
-const cultivateContactSubmit = async (formRefValue, confirm, contactForm) => {
+const cultivateContactSubmit = async (formRefValue, confirm, contactForm, loading) => {
+  console.log(loading)
+
   if (!formRefValue) return
   try {
-    console.log(formRefValue, confirm, contactForm)
-
     // 验证所有表单
     await formRefValue.validate()
+    loading.value = true
 
     let res
     // 如果是第一次提交
@@ -283,6 +296,8 @@ const cultivateContactSubmit = async (formRefValue, confirm, contactForm) => {
   } catch (error) {
     console.log(error)
     ElMessage.error('提交失败，请重试')
+  } finally {
+    loading.value = false
   }
 }
 </script>
