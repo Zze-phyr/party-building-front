@@ -46,7 +46,8 @@ export const setupRouteGuard = (router) => {
         }
         // 未知身份异常处理
         if (dynamicRoutes.length === 0) {
-          throw new Error(`未知角色: ${thirdRole}`)
+          // throw new Error(`未知角色: ${thirdRole}`)
+          console.log(thirdRole, dynamicRoutes)
         }
         // 添加动态子路由
         if (layoutRoute) {
@@ -74,6 +75,7 @@ export const setupRouteGuard = (router) => {
         //   'user',
         //   '{"token":"111","permission":["Common", "Student", "Applicant"],"userId":123,"name":"张三","hasAddedRoutes":false,"dynamicRoutes":[]}',
         // )
+        localStorage.setItem('user', userStore.token)
         userStore.logout()
         next('/login')
       }

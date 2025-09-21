@@ -8,7 +8,10 @@ export const useUserStore = defineStore(
   'user', //该 store 的唯一标识
   () => {
     // 认证状态
-    const token = ref('Bearer 111')
+    // const token = ref('Bearer 111')
+    const token = ref('')
+    const permission = ref(null)
+    const userId = ref('')
     // const permission = ref(['Common', 'Teacher', 'Teacher'])
     // const permission = ref(['Common', 'Student', 'Student'])
     // 申请入党
@@ -18,7 +21,7 @@ export const useUserStore = defineStore(
     // 发展对象
     // const permission = ref(['Common', 'Student', 'Development'])
     // 预备党员
-    const permission = ref(['Common', 'Student', 'ReservePartyMenbers'])
+    // const permission = ref(['Common', 'Student', 'ReservePartyMenbers'])
     //
     //
     // 系统管理员
@@ -29,7 +32,7 @@ export const useUserStore = defineStore(
     // const permission = ref(['Admin', 'BranchSecretary', 'BranchSecretary'])
     // 支委、支部副书记
     // const permission = ref(['Admin', 'BranchCommittee', 'BranchCommittee'])
-    const userId = ref('222')
+    // const userId = ref('222')
     const hasAddedRoutes = ref(false) // 是否动态添加路由
     const dynamicRoutes = ref([]) // 存储动态路由信息
     // 用户infoStore引用
@@ -89,16 +92,19 @@ export const useUserStore = defineStore(
   // {
   //   // 配置项，启用数据持久化功能
   //   persist: {
-  //     storage: {
-  //       // cookie存储需指定操作方法
-  //       getItem: (key) => Cookies.get(key),
-  //       setItem: (key, value) =>
-  //         Cookies.set(key, value, {
-  //           expires: 7, // 7天后过期
-  //         }),
-  //       removeItem: (key) => Cookies.remove(key),
-  //     },
+  //     key: 'user',
+  //     storage: localStorage,
   //     paths: ['token'],
   //   },
   // },
 )
+
+// storage: {
+//   // cookie存储需指定操作方法
+//   getItem: (key) => Cookies.get(key),
+//   setItem: (key, value) =>
+//     Cookies.set(key, value, {
+//       expires: 7, // 7天后过期
+//     }),
+//   removeItem: (key) => Cookies.remove(key),
+// },

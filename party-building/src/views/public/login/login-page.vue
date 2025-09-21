@@ -201,7 +201,8 @@ const submitLoginForm = async (formRef, formData, api) => {
     if (data.code === 1) {
       ElMessage.success('登录成功！')
       userStore.login(data.data)
-      router.push(permission.value === 'Common' ? '/common/index' : '/admin/joinParty')
+      // console.log(data.data.permission[0] === 'Common')
+      router.push(data.data.permission[0] === 'Common' ? '/common/index' : '/admin/joinParty')
     } else {
       ElMessage.error(data.msg)
     }
