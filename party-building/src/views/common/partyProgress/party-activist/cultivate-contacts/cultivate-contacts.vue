@@ -76,8 +76,8 @@
             </el-form-item>
             <el-form-item label="培养联系人" prop="number">
               <el-radio-group v-model="contactFormOne.number">
-                <el-radio border :value="'1'">培养联系人1</el-radio>
-                <el-radio border :value="'2'">培养联系人2</el-radio>
+                <el-radio border :value="1">培养联系人1</el-radio>
+                <el-radio border :value="2">培养联系人2</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="党龄" prop="partyAge">
@@ -126,8 +126,8 @@
             </el-form-item>
             <el-form-item label="培养联系人" prop="number">
               <el-radio-group v-model="contactFormTwo.number">
-                <el-radio border :value="'1'">培养联系人1</el-radio>
-                <el-radio border :value="'2'">培养联系人2</el-radio>
+                <el-radio border :value="1">培养联系人1</el-radio>
+                <el-radio border :value="2">培养联系人2</el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="党龄" prop="partyAge">
@@ -175,7 +175,7 @@ import ContentBox from '../../components/ContentBox.vue'
 const userStore = useUserStore()
 
 // 添加入党积极分子培养联系人表单数据
-const getAddContactForm = (number = '1') => ({
+const getAddContactForm = (number = 1) => ({
   commonUserId: userStore.userId,
   name: '', //姓名
   number: number, //第几联系人
@@ -250,11 +250,11 @@ const loadingTwo = ref(false)
 // 提交入党积极分子培养联系人表单
 const submitForm = (formNumber) => {
   if (formNumber === 'one')
-    cultivateContactSubmit(formRefOne.value, confirmOne, contactFormOne, loadingOne)
+    cultivateContactSubmit(formRefOne.value, confirmOne, contactFormOne, loadingOne, returnTextOne)
   else if (formNumber === 'two')
-    cultivateContactSubmit(formRefTwo.value, confirmTwo, contactFormTwo, loadingTwo)
+    cultivateContactSubmit(formRefTwo.value, confirmTwo, contactFormTwo, loadingTwo, returnTextTwo)
 }
-const cultivateContactSubmit = async (formRefValue, confirm, contactForm, loading) => {
+const cultivateContactSubmit = async (formRefValue, confirm, contactForm, loading, returnText) => {
   console.log(loading)
 
   if (!formRefValue) return
@@ -280,9 +280,14 @@ const cultivateContactSubmit = async (formRefValue, confirm, contactForm, loadin
       // 如果是第一次提交成功，待提交状态-2
       if (confirm.value === -2) {
         // 转换成待审核
-        confirm.value = 0
-        // contactForm.value.id = res.data.data.id
-        contactForm.value.confirm = 0
+        const { data } = await commonApi.getNurtureContacts(userStore.userId)
+        data.data.forEach((item) => {
+          if (item.name === contactForm.value.name) {
+            contactForm.value = item
+            confirm.value = item.value
+            returnText.value = item.returnText
+          }
+        })
       }
       // 如果是审核失败的重新提交成功
       else if (confirm.value === -1) {
