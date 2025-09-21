@@ -135,7 +135,6 @@ onMounted(async () => {
 //文件上传，删除
 
 const fileList = ref([])
-
 const loading = ref(false)
 
 // 禁用今天之后的日期
@@ -177,12 +176,12 @@ const onSubmit = async () => {
   if (!form.attachTime) {
     ElMessage.error('请填写申请入党日期')
     return
-    
   }
   if (!form.file) {
     ElMessage.error('请选择需要上传的文件')
     return
   }
+
   loading.value = true
   const shouldDelete =
     fileMetadataParams.value.status !== -2 && fileMetadataParams.value.status !== 1
@@ -192,6 +191,7 @@ const onSubmit = async () => {
   formdata.append('userId', userStore.userId)
   formdata.append('attachTime', form.attachTime)
   formdata.append('file', form.file)
+  formdata.append('fileName', form.file.name)
   try {
     //重新上传先删除
     if (shouldDelete) {

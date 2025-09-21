@@ -7,11 +7,12 @@ import { useInfoStore } from '@/stores'
 export const useUserStore = defineStore(
   'user', //该 store 的唯一标识
   () => {
+    // const token = ref('')
+    // const permission = ref(null)
+    // const userId = ref('')
     // 认证状态
-    // const token = ref('Bearer 111')
-    const token = ref('')
-    const permission = ref(null)
-    const userId = ref('')
+    const token = ref('Bearer 111')
+
     // const permission = ref(['Common', 'Teacher', 'Teacher'])
     // const permission = ref(['Common', 'Student', 'Student'])
     // 申请入党
@@ -21,7 +22,7 @@ export const useUserStore = defineStore(
     // 发展对象
     // const permission = ref(['Common', 'Student', 'Development'])
     // 预备党员
-    // const permission = ref(['Common', 'Student', 'ReservePartyMenbers'])
+    const permission = ref(['Common', 'Student', 'ReservePartyMenbers'])
     //
     //
     // 系统管理员
@@ -32,7 +33,7 @@ export const useUserStore = defineStore(
     // const permission = ref(['Admin', 'BranchSecretary', 'BranchSecretary'])
     // 支委、支部副书记
     // const permission = ref(['Admin', 'BranchCommittee', 'BranchCommittee'])
-    // const userId = ref('222')
+    const userId = ref('222')
     const hasAddedRoutes = ref(false) // 是否动态添加路由
     const dynamicRoutes = ref([]) // 存储动态路由信息
     // 用户infoStore引用

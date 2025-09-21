@@ -177,6 +177,7 @@ const uploadFiles = async () => {
       formdata.append('creatorId', userStore.userId)
       formdata.append('userId', userStore.userId)
       formdata.append('file', file.raw)
+      formdata.append('fileName', file.name)
       try {
         // 上传请求
         const { data: uploadData } = await generalApi.uploadFile(formdata)

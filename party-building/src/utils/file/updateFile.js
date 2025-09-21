@@ -28,6 +28,7 @@ export const updateSingleFile = async (file, fileData, fileType) => {
     formdata.append('attachTime', fileData.attachTime)
     formdata.append('attachText', fileData.attachText)
     formdata.append('file', file.raw)
+    formdata.append('fileName', file.name)
     const { data: uploadData } = await generalApi.uploadFile(formdata)
     if (uploadData.code === 1) {
       if (fileData.status === -1) fileData.status = 0
