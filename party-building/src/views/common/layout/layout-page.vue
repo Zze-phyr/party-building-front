@@ -70,6 +70,7 @@ const skipPage = (path) => {
 }
 
 // 定义默认图片和 hover 图片路径
+// TODO: 关于对图片资源的加载，建议可以封装一个公用的JS函数来处理
 const normalIcon = new URL('../../../assets/images/common/nav-icon.png', import.meta.url).href
 const hoverIcon = new URL('../../../assets/images/common/nav-icon-2.png', import.meta.url).href
 
@@ -77,6 +78,8 @@ const hoverIcon = new URL('../../../assets/images/common/nav-icon-2.png', import
 const currentIcon = ref(normalIcon)
 
 // hover 切换函数
+// TODO: 优化 hover 切换逻辑
+// 这个完全可以用一个函数来搞定
 const handleMouseEnter = () => {
   currentIcon.value = hoverIcon
 }

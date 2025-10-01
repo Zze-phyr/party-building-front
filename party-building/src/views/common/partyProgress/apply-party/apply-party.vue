@@ -118,6 +118,8 @@ onMounted(async () => {
       userId: userStore.userId,
       fileType: 'JoinPartyApplication',
     })
+    // TODO: 关于API状态码，建议和后端约定好后提供统一的一个静态字段，增强可读性
+    // TODO: 关于If的使用，不要太多嵌套，多使用“卫语句”来处理
     if (data.code === 1) {
       if (data.data.length > 0) {
         fileMetadataParams.value = data.data[0]
@@ -246,6 +248,7 @@ const handleDownloadFile = async () => {
 </script>
 
 <style lang="scss" scoped>
+// TODO: 关于组件的样式，建议后续封装出一个公共样式部分，这样减少代码量
 .apply-party-box {
   // 入党申请书上传
   .party-application-box {
