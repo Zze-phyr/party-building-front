@@ -73,7 +73,9 @@
           </div>
           <div class="text">恭喜你，你的入党申请书已通过！</div>
           <div class="btn-box">
-            <el-button :loading="loading" @click="handleDownloadFile()">下载入党申请书</el-button>
+            <el-button :loading="loading" color="#d12626" @click="handleDownloadFile()"
+              >下载入党申请书</el-button
+            >
           </div>
         </div>
       </ContentBox>
@@ -133,7 +135,6 @@ onMounted(async () => {
 //文件上传，删除
 
 const fileList = ref([])
-
 const loading = ref(false)
 
 // 禁用今天之后的日期
@@ -172,7 +173,6 @@ const fileRemove = () => {
 }
 
 const onSubmit = async () => {
-  console.log(form.file)
   if (!form.attachTime) {
     ElMessage.error('请填写申请入党日期')
     return
@@ -181,6 +181,7 @@ const onSubmit = async () => {
     ElMessage.error('请选择需要上传的文件')
     return
   }
+
   loading.value = true
   const shouldDelete =
     fileMetadataParams.value.status !== -2 && fileMetadataParams.value.status !== 1
@@ -190,6 +191,7 @@ const onSubmit = async () => {
   formdata.append('userId', userStore.userId)
   formdata.append('attachTime', form.attachTime)
   formdata.append('file', form.file)
+  formdata.append('fileName', form.file.name)
   try {
     //重新上传先删除
     if (shouldDelete) {

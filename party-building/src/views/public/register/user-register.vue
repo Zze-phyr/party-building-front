@@ -199,7 +199,7 @@ const submitRegister = async (formRef) => {
       ElMessage.error(data.msg)
     }
   } catch (error) {
-    console.log(error)
+    console.log('注册抛出错误', error)
     ElMessage.error('注册失败，请重试')
   } finally {
     loading.value = false

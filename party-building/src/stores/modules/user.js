@@ -7,8 +7,12 @@ import { useInfoStore } from '@/stores'
 export const useUserStore = defineStore(
   'user', //该 store 的唯一标识
   () => {
+    // const token = ref('')
+    // const permission = ref(null)
+    // const userId = ref('')
     // 认证状态
     const token = ref('Bearer 111')
+
     // const permission = ref(['Common', 'Teacher', 'Teacher'])
     // const permission = ref(['Common', 'Student', 'Student'])
     // 申请入党
@@ -89,16 +93,19 @@ export const useUserStore = defineStore(
   // {
   //   // 配置项，启用数据持久化功能
   //   persist: {
-  //     storage: {
-  //       // cookie存储需指定操作方法
-  //       getItem: (key) => Cookies.get(key),
-  //       setItem: (key, value) =>
-  //         Cookies.set(key, value, {
-  //           expires: 7, // 7天后过期
-  //         }),
-  //       removeItem: (key) => Cookies.remove(key),
-  //     },
+  //     key: 'user',
+  //     storage: localStorage,
   //     paths: ['token'],
   //   },
   // },
 )
+
+// storage: {
+//   // cookie存储需指定操作方法
+//   getItem: (key) => Cookies.get(key),
+//   setItem: (key, value) =>
+//     Cookies.set(key, value, {
+//       expires: 7, // 7天后过期
+//     }),
+//   removeItem: (key) => Cookies.remove(key),
+// },

@@ -5,7 +5,6 @@ import { useUserStore } from '@/stores'
 const userStore = useUserStore()
 
 export const uploadSingleFiles = async (file, fileData, fileType) => {
-  console.log('updateSingleFiles:', file, fileData, fileType)
   fileData.status = 1
   if (!file) {
     ElMessage.error('请选择需要上传的文件')
@@ -17,6 +16,7 @@ export const uploadSingleFiles = async (file, fileData, fileType) => {
   formdata.append('attachTime', fileData.attachTime)
   formdata.append('attachText', fileData.attachText)
   formdata.append('file', file.raw)
+  formdata.append('fileName', file.name)
   try {
     const { data: uploadData } = await generalApi.uploadFile(formdata)
     if (uploadData.code === 1) {
