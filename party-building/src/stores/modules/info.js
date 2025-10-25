@@ -141,4 +141,9 @@ export const useInfoStore = defineStore('info', () => {
     loginInfo,
     logoutInfo,
   }
+}, {
+  persist: {
+    storage: localStorage,
+    paths: ['hasGetInfo', 'userInfo', 'userUpdateInfo'],
+  }
 })

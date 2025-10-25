@@ -31,7 +31,7 @@ export default defineConfig({
     proxy: {
       // 代理规则1：匹配 /api 开头的请求
       '/api': {
-        target: 'http://192.168.81.251:8080', // 后端真实地址
+        target: 'http://124.221.250.149:8085', // 后端真实地址
         changeOrigin: true, // 修改请求头中的 Origin 为目标地址
         rewrite: (path) => path.replace(/^\/api/, ''), // 移除路径中的 /api 前缀
       },

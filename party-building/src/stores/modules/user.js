@@ -2,6 +2,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useInfoStore } from '@/stores'
+import { ROLE_PERMISSIONS_MAP } from '@/types/constants/auth'
 // import Cookies from 'js-cookie'
 
 export const useUserStore = defineStore(
@@ -13,26 +14,26 @@ export const useUserStore = defineStore(
     // 认证状态
     const token = ref('Bearer 111')
 
-    // const permission = ref(['Common', 'Teacher', 'Teacher'])
-    // const permission = ref(['Common', 'Student', 'Student'])
+    // const permission = ref(ROLE_PERMISSIONS_MAP['Common'])
+    // const permission = ref(ROLE_PERMISSIONS_MAP['Student'])
     // 申请入党
-    // const permission = ref(['Common', 'Student', 'Applicant'])
+    // const permission = ref(ROLE_PERMISSIONS_MAP['Applicant'])
     // 入党积极分子
-    // const permission = ref(['Common', 'Student', 'PartyActivities'])
+    // const permission = ref(ROLE_PERMISSIONS_MAP['PartyActivities'])
     // 发展对象
-    // const permission = ref(['Common', 'Student', 'Development'])
+    // const permission = ref(ROLE_PERMISSIONS_MAP['Development'])
     // 预备党员
-    const permission = ref(['Common', 'Student', 'ReservePartyMenbers'])
+    // const permission = ref(ROLE_PERMISSIONS_MAP['ReservePartyMenbers'])
     //
     //
     // 系统管理员
-    // const permission = ref(['Admin', 'Administrator', 'Administrator'])
+    const permission = ref(ROLE_PERMISSIONS_MAP['Admin'])
     // 组织员、副书记、书记
-    // const permission = ref(['Admin', 'Organizers', 'Organizers'])
+    // const permission = ref(ROLE_PERMISSIONS_MAP['Organizers'])
     // 支部书记
-    // const permission = ref(['Admin', 'BranchSecretary', 'BranchSecretary'])
+    // const permission = ref(ROLE_PERMISSIONS_MAP['BranchSecretary'])
     // 支委、支部副书记
-    // const permission = ref(['Admin', 'BranchCommittee', 'BranchCommittee'])
+    // const permission = ref(ROLE_PERMISSIONS_MAP['BranchCommittee'])
     const userId = ref('222')
     const hasAddedRoutes = ref(false) // 是否动态添加路由
     const dynamicRoutes = ref([]) // 存储动态路由信息
@@ -90,14 +91,14 @@ export const useUserStore = defineStore(
       setHasAddedRoutes,
     }
   },
-  // {
-  //   // 配置项，启用数据持久化功能
-  //   persist: {
-  //     key: 'user',
-  //     storage: localStorage,
-  //     paths: ['token'],
-  //   },
-  // },
+  {
+    // 配置项，启用数据持久化功能
+    persist: {
+      key: 'user',
+      storage: localStorage,
+      paths: ['token','permission','userId'],
+    },
+  },
 )
 
 // storage: {

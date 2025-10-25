@@ -79,7 +79,7 @@ import { ref, onMounted } from 'vue'
 import systemSet from '@/views/common/personalCenter/system-set/system-set.vue'
 import userData from '@/views/common/personalCenter/user-data/user-data.vue'
 import userInfoDialog from '@/views/common/personalCenter/user-info-dialog/user-info-dialog.vue'
-import { getCommonUserDetail } from '@/api/common'
+import { commonApi } from '@/api/common'
 import { ElMessage } from 'element-plus'
 import { useInfoStore } from '@/stores'
 
@@ -92,7 +92,7 @@ const activeTab = ref('用户信息')
 onMounted(async () => {
   try {
     if (!infoStore.hasGetInfo) {
-      const { data } = await getCommonUserDetail()
+      const { data } = await commonApi.getCommonUserDetail()
       infoStore.userInfo = data.data
     }
   } catch (error) {

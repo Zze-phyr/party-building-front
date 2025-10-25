@@ -84,7 +84,7 @@ export const setupRouteGuard = (router) => {
     // 检查路由权限
     const permissions = userStore.getPermission
     const thirdRole = permissions[2]
-    const routeRoles = to.meta.roles
+    const routeRoles = to.meta?.roles || []
 
     // 检查是否无权限
     if (!routeRoles.includes(thirdRole)) {

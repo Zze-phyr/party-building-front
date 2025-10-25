@@ -188,141 +188,99 @@ export const adminBaseRoutes = [
       hidden: true, // 不在导航栏显示
     },
   },
-]
+];
 
-// 完整人员管理数组
-const personManageArr = [
-  {
+// 人员管理路由生成函数
+const createPersonManageRoutes = (roles, includeAppointLeaderTeam) => {
+  const children = [
+    {
+      name: 'PersonCheck',
+      path: 'personCheck',
+      component: () => import('@/views/admin/personManage/person-check.vue'),
+      meta: {
+        icon: '&#xe621;',
+        title: '人员查看',
+        roles: roles,
+      },
+    },
+    {
+      name: 'HistoryLeaderTeam',
+      path: 'historyLeaderTeam',
+      component: () =>
+        import('@/views/admin/personManage/administrator/history-leader-team.vue'),
+      meta: {
+        icon: '&#xe61a;',
+        title: '查看历史领导班子',
+        roles: roles,
+      },
+    },
+  ];
+
+  if (includeAppointLeaderTeam) {
+    children.push({
+      name: 'AppointLeaderTeam',
+      path: 'appointLeaderTeam',
+      component: () =>
+        import('@/views/admin/personManage/administrator/appoint-leader-team.vue'),
+      meta: {
+        icon: '&#xe9d6;',
+        title: '任命新的领导班子',
+        roles: ['Administrator', 'Organizers', 'BranchSecretary'],
+      },
+    });
+  }
+
+  return {
     name: 'PersonManage',
     path: 'personManage',
     meta: {
       icon: '&#xe606;',
       title: '人员管理',
-      roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+      roles: roles,
     },
-    children: [
-      {
-        name: 'Administrator',
-        path: 'administrator',
-        component: () => import('@/views/admin/personManage/person-check.vue'),
-        meta: {
-          icon: '&#xe621;',
-          title: '人员查看',
-          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-        },
-      },
-      {
-        name: 'Administrator',
-        path: 'administrator',
-        meta: {
-          icon: '&#xe62c;',
-          title: '管理员身份',
-          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-        },
-        children: [
-          {
-            name: 'HistoryLeaderTeam',
-            path: 'historyLeaderTeam',
-            component: () =>
-              import('@/views/admin/personManage/administrator/history-leader-team.vue'),
-            meta: {
-              icon: '&#xe61a;',
-              title: '查看历史领导班子',
-              roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-            },
-          },
-          {
-            name: 'AppointLeaderTeam',
-            path: 'appointLeaderTeam',
-            component: () =>
-              import('@/views/admin/personManage/administrator/appoint-leader-team.vue'),
-            meta: {
-              icon: '&#xe9d6;',
-              title: '任命新的领导班子',
-              roles: ['Administrator', 'Organizers', 'BranchSecretary'],
-            },
-          },
-        ],
-      },
-    ],
-  },
-]
+    children: children,
+  };
+};
 
 // 一级管理员路由（系统管理员）
-export const administratorRoutes = personManageArr
+export const administratorRoutes = [
+  createPersonManageRoutes(['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'], true),
+];
 
 // 二级管理员路由（书记，副书记，组织员）
-export const organizersRoutes = personManageArr
+export const organizersRoutes = [
+  createPersonManageRoutes(['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'], true),
+];
 
 // 三级管理员路由（支部书记）
-export const branchSecretaryRoutes = personManageArr
+export const branchSecretaryRoutes = [
+  createPersonManageRoutes(['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'], true),
+];
 
 // 四级管理员路由（支委，支部副书记）
 export const branchCommitteeRoutes = [
-  {
-    name: 'PersonManage',
-    path: 'personManage',
-    meta: {
-      icon: '&#xe606;',
-      title: '人员管理',
-      roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-    },
-    children: [
-      {
-        name: 'PersonCheck',
-        path: 'personCheck',
-        component: () => import('@/views/admin/personManage/person-check.vue'),
-        meta: {
-          icon: '&#xe621;',
-          title: '人员查看',
-          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-        },
-      },
-      {
-        name: 'Administrator',
-        path: 'administrator',
-        meta: {
-          icon: '&#xe62c;',
-          title: '管理员身份',
-          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-        },
-        children: [
-          {
-            name: 'HistoryLeaderTeam',
-            path: 'historyLeaderTeam',
-            component: () =>
-              import('@/views/admin/personManage/administrator/history-leader-team.vue'),
-            meta: {
-              icon: '&#xe61a;',
-              title: '查看历史领导班子',
-              roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-            },
-          },
-        ],
-      },
-    ],
-  },
-]
+  createPersonManageRoutes(['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'], false),
+];
 
 // 获取管理员完整路由
 export const getAdminRoutes = (thirdRole) => {
-  const routes = [...adminBaseRoutes]
+  const routes = [...adminBaseRoutes];
   switch (thirdRole) {
     case 'BranchCommittee':
-      routes.push(...branchCommitteeRoutes)
-      break
+      routes.push(...branchCommitteeRoutes);
+      break;
     case 'BranchSecretary':
-      routes.push(...branchSecretaryRoutes)
-      break
+      routes.push(...branchSecretaryRoutes);
+      break;
     case 'Organizers':
-      routes.push(...organizersRoutes)
-      break
+      routes.push(...organizersRoutes);
+      break;
     case 'Administrator':
-      routes.push(...administratorRoutes)
-      break
+      routes.push(...administratorRoutes);
+      break;
     default:
-      console.log('未知的普通用户类型:', thirdRole)
-      return []
+      console.log('未知的普通用户类型:', thirdRole);
+      return [];
   }
-  return routes
-}
+  return routes;
+};

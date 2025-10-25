@@ -36,9 +36,9 @@
 import ContentCard from '@/components/admin/ContentCard.vue'
 import DynamicFilterForm from '@/components/admin/DynamicFilterForm.vue'
 import { reactive, ref, onMounted, computed } from 'vue'
-import { getBatch } from '@/api/admin'
+import { adminApi } from '@/api/admin'
 import { ElMessage } from 'element-plus'
-import { getFormItems } from './config/review-upload-form-items'
+import { getFormItems } from './config/review-upload-form-items.js'
 
 // 编辑操作
 const handleEdit = (index, row) => {
@@ -60,7 +60,7 @@ const batchData = ref([
 
 onMounted(async () => {
   try {
-    const { data } = await getBatch()
+    const { data } = await adminApi.getBatch()
     if (data.code === 1) {
       batchData.value = data.records.map((item) => ({
         value: item.id,

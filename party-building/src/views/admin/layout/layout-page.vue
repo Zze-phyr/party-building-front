@@ -27,43 +27,30 @@
           <!-- 动态渲染菜单 -->
           <template v-for="(route, index) in dynamicRoutes" :key="index">
             <!-- 有子路由的菜单 -->
-            <el-sub-menu v-if="route.children && route.children.length > 0" :index="index + 1">
+            <el-sub-menu v-if="route.children && route.children.length > 0" :index="route.path">
               <template #title>
                 <i class="iconfont" v-html="route.meta.icon"></i>
-                <span>{{ route.meta.title }}</span>
+                <el-tooltip :content="route.meta.title" placement="right">
+                  <el-text truncated>{{ route.meta.title }}</el-text>
+                </el-tooltip>
               </template>
-              <!-- 递归渲染子菜单 -->
-              <template v-for="(child, childIndex) in route.children" :key="childIndex">
-                <el-menu-item
-                  v-if="!child.children || child.children.length === 0"
-                  :index="`${index + 1}-${childIndex + 1}`"
-                  @click="navigateTo(`/admin/${route.path}/${child.path}`)"
-                >
-                  <i class="iconfont" v-html="child.meta.icon"></i>
-                  <span>{{ child.meta.title }}</span>
-                </el-menu-item>
-                <!-- 三级菜单 -->
-                <el-sub-menu v-else :index="`${index + 1}-${childIndex + 1}`">
-                  <template #title>
-                    <i class="iconfont" v-html="child.meta.icon"></i>
-                    <span>{{ child.meta.title }}</span>
-                  </template>
-                  <el-menu-item
-                    v-for="(grandchild, gcIndex) in child.children"
-                    :key="gcIndex"
-                    :index="`${index + 1}-${childIndex + 1}-${gcIndex + 1}`"
-                    @click="navigateTo(`/admin/${route.path}/${child.path}/${grandchild.path}`)"
-                  >
-                    <i class="iconfont" v-html="grandchild.meta.icon"></i>
-                    <span>{{ grandchild.meta.title }}</span>
-                  </el-menu-item>
-                </el-sub-menu>
-              </template>
+              <el-menu-item
+                v-for="(child, childIndex) in route.children"
+                :key="childIndex"
+                :index="child.path"
+                @click="navigateTo(`/admin/${route.path}/${child.path}`)"
+              >
+                <i class="iconfont" v-html="child.meta.icon"></i>
+                <el-tooltip :content="child.meta.title" placement="right">
+                  <el-text truncated>{{ child.meta.title }}</el-text>
+                </el-tooltip>
+              </el-menu-item>
             </el-sub-menu>
-            <!-- 无子路由的菜单 -->
-            <el-menu-item v-else :index="index + 1" @click="navigateTo(`/admin/${route.path}`)">
+            <el-menu-item v-else :index="route.path" @click="navigateTo(`/admin/${route.path}`)">
               <i class="iconfont" v-html="route.meta.icon"></i>
-              <span>{{ route.meta.title }}</span>
+              <el-tooltip :content="route.meta.title" placement="right">
+                <el-text truncated>{{ route.meta.title }}</el-text>
+              </el-tooltip>
             </el-menu-item>
           </template>
         </el-menu>

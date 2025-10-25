@@ -110,14 +110,15 @@ import { useUserStore } from '@/stores'
 import { useRouter } from 'vue-router'
 import { useCountdown } from '@/composables/useCountdown'
 import { clearForm } from '@/composables/useFormUtils'
+import { EPermission } from '@/types/constants/auth'
 
 const userStore = useUserStore()
 const router = useRouter()
 
 // 身份切换
-let permission = ref('Common')
-const choiceCommon = () => (permission.value = 'Common')
-const choiceAdmin = () => (permission.value = 'Admin')
+let permission = ref(EPermission.COMMON)
+const choiceCommon = () => (permission.value = EPermission.COMMON)
+const choiceAdmin = () => (permission.value = EPermission.ADMIN)
 
 // 登录方式切换
 let loginWay = ref('number')
@@ -201,8 +202,9 @@ const submitLoginForm = async (formRef, formData, api) => {
     if (data.code === 1) {
       ElMessage.success('登录成功！')
       userStore.login(data.data)
-      // console.log(data.data.permission[0] === 'Common')
-      router.push(data.data.permission[0] === 'Common' ? '/common/index' : '/admin/joinParty')
+      console.log(data.data)
+      console.log(data.data.permission[0])
+      router.push(data.data.permission[0] === EPermission.COMMON ? '/common/index' : '/admin/joinParty')
     } else {
       ElMessage.error(data.msg)
     }
