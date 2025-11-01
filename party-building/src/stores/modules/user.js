@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useInfoStore } from '@/stores'
-import { ROLE_PERMISSIONS_MAP } from '@/types/constants/auth'
+import { ROLE_PERMISSIONS_MAP, EUserRole } from '@/types/constants/auth'
 // import Cookies from 'js-cookie'
 
 export const useUserStore = defineStore(
@@ -27,7 +27,7 @@ export const useUserStore = defineStore(
     //
     //
     // 系统管理员
-    const permission = ref(ROLE_PERMISSIONS_MAP['Admin'])
+    const permission = ref(ROLE_PERMISSIONS_MAP[EUserRole.SYSTEM_ADMIN])
     // 组织员、副书记、书记
     // const permission = ref(ROLE_PERMISSIONS_MAP['Organizers'])
     // 支部书记
@@ -98,7 +98,7 @@ export const useUserStore = defineStore(
       storage: localStorage,
       paths: ['token','permission','userId'],
     },
-  },
+  }
 )
 
 // storage: {

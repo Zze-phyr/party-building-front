@@ -8,9 +8,11 @@
 export enum EUserRole {
   // 学生侧角色
   APPLICANT = 'Applicant', // 申请入党
-  PARTY_ACTIVIST = 'PartyActivities', // 入党积极分子
-  DEVELOPMENT_TARGET = 'Development', // 发展对象
-  PROBATIONARY_MEMBER = 'ReservePartyMenbers', // 预备党员
+  // PARTY_ACTIVIST = 'PartyActivities', // 入党积极分子
+  // DEVELOPMENT_TARGET = 'Development', // 发展对象
+  // PROBATIONARY_MEMBER = 'ReservePartyMenbers', // 预备党员
+  STUDENT = 'Student', // 学生
+  TEACHER = 'Teacher', // 教师
 
   // 管理侧角色
   SYSTEM_ADMIN = 'SystemAdmin', // 系统管理员
@@ -25,6 +27,7 @@ export enum EPermission {
   // 通用权限
   COMMON = 'Common',
   STUDENT = 'Student',
+  TEACHER = 'Teacher',
   ADMIN = 'Admin',
 
   // 学生侧流程权限
@@ -46,16 +49,14 @@ export enum EPermission {
 export const ROLE_PERMISSIONS_MAP: Record<EUserRole, EPermission[]> = Object.freeze({
   // 学生侧
   [EUserRole.APPLICANT]: [EPermission.COMMON, EPermission.STUDENT, EPermission.APPLICANT],
-  [EUserRole.PARTY_ACTIVIST]: [EPermission.COMMON, EPermission.STUDENT, EPermission.PARTY_ACTIVIST],
-  [EUserRole.DEVELOPMENT_TARGET]: [EPermission.COMMON, EPermission.STUDENT, EPermission.DEVELOPMENT_TARGET],
-  [EUserRole.PROBATIONARY_MEMBER]: [EPermission.COMMON, EPermission.STUDENT, EPermission.PROBATIONARY_MEMBER],
+  [EUserRole.STUDENT]: [EPermission.COMMON, EPermission.STUDENT, EPermission.STUDENT], // 学生
+  [EUserRole.TEACHER]: [EPermission.COMMON, EPermission.TEACHER, EPermission.TEACHER], // 教师
 
   // 管理侧
-  // 注意：你原来的设定 ['Admin', 'Administrator', 'Administrator'] 有重复，这里已去重
-  [EUserRole.SYSTEM_ADMIN]: [EPermission.ADMIN, EPermission.ADMINISTRATOR],
-  [EUserRole.ORGANIZER]: [EPermission.ADMIN, EPermission.ORGANIZER],
-  [EUserRole.BRANCH_SECRETARY]: [EPermission.ADMIN, EPermission.BRANCH_SECRETARY],
-  [EUserRole.BRANCH_COMMITTEE]: [EPermission.ADMIN, EPermission.BRANCH_COMMITTEE],
+  [EUserRole.SYSTEM_ADMIN]: [EPermission.ADMIN, EPermission.ADMINISTRATOR, EPermission.ADMINISTRATOR], // 系统管理员
+  [EUserRole.ORGANIZER]: [EPermission.ADMIN, EPermission.ORGANIZER, EPermission.ORGANIZER], // 组织员、副书记、书记
+  [EUserRole.BRANCH_SECRETARY]: [EPermission.ADMIN, EPermission.BRANCH_SECRETARY, EPermission.BRANCH_SECRETARY], // 支部书记
+  [EUserRole.BRANCH_COMMITTEE]: [EPermission.ADMIN, EPermission.BRANCH_COMMITTEE, EPermission.BRANCH_COMMITTEE], // 支委、支部副书记
 });
 
 

@@ -188,6 +188,28 @@ export const adminBaseRoutes = [
       hidden: true, // 不在导航栏显示
     },
   },
+  {
+    // 字典配置
+    name: 'Dictionary',
+    path: 'dictionary',
+    meta: {
+      icon: '&#xe607;',
+      title: '字典配置',
+      roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'], // 角色权限 管理员 组织员 支部书记
+    },
+    children: [
+      {
+        name: 'DictionaryManagement',
+        path: 'DictionaryManagement',
+        component: () => import('@/views/admin/dictionary/dictionary-management.vue'),
+        meta: {
+          icon: '&#xe61a;',
+          title: '字典管理',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
+    ]
+  }
 ];
 
 // 人员管理路由生成函数
