@@ -72,7 +72,7 @@ const handleBack = () => router.go(-1)
   }
 
   .card-content {
-    padding: 24px;
+    padding: 16px 24px;
   }
 }
 </style>
