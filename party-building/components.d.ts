@@ -11,6 +11,8 @@ declare module 'vue' {
     ContentCard: typeof import('./src/components/admin/ContentCard.vue')['default']
     DynamicFilterForm: typeof import('./src/components/admin/DynamicFilterForm.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
+    ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
     ElCol: typeof import('element-plus/es')['ElCol']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDialog: typeof import('element-plus/es')['ElDialog']

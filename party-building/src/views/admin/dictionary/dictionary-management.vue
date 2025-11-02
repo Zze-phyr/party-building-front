@@ -20,7 +20,10 @@
         <template #toolbar>
           <!-- <el-input v-model="" placeholder="请输入字典名称" clearable style="width: 200px;" /> -->
           <el-button type="primary" :icon="Plus" @click="handleAddClick">
-            新增
+            新增字典
+          </el-button>
+          <el-button type="primary" :icon="Config" @click="handleConfigClick">
+            字典配置
           </el-button>
         </template>
 
@@ -47,7 +50,9 @@
     </div>
   </ContentCard>
   <AddDictDialog
-    v-model="dictionaryAddDialogVisible"
+    v-model="dictionaryDialogVisible"
+    :isEdit="isEditMode"
+    :editData="editingRow"
     @confirm="handleConfirm"
     @cancel="handleCancel"
   />
@@ -58,6 +63,9 @@ import { ref, onMounted, reactive } from 'vue'
 import { adminApi } from '@/api/admin.js'
 import { ElMessage } from 'element-plus'
 import AddDictDialog from './components/add-dict-dialog.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const tableData = ref([])
 
@@ -126,8 +134,10 @@ const defaultFilters = reactive({
   type: '年级'
 })
 
-// 新增字典弹窗的可见性
-const dictionaryAddDialogVisible = ref(false)
+// 弹窗状态
+const dictionaryDialogVisible = ref(false)
+const isEditMode = ref(false)
+const editingRow = ref(null)
 
 // 筛选配置
 const searchConfig = [
@@ -159,7 +169,33 @@ const searchConfig = [
 ]
 
 const handleAddClick = () => {
-  dictionaryAddDialogVisible.value = true
+  isEditMode.value = false
+  editingRow.value = null
+  dictionaryDialogVisible.value = true
+}
+
+const handleConfigClick = () => {
+  // 跳转到字典配置页面
+  router.push({ name: 'DictionaryConfig' })
+}
+
+const handleEdit = (row) => {
+  isEditMode.value = true
+  editingRow.value = {
+    id: row.id,
+    type: defaultFilters.type,
+    name: row.name
+  }
+  dictionaryDialogVisible.value = true
+}
+
+/**
+ * 选择变化处理
+ * @param {Array} selection - 选中的行数据数组
+ */
+const handleSelectionChange = (selection) => {
+  selectedRows.value = selection
+  console.log('当前选中的行:', selectedRows.value)
 }
 
 const handleSearch = (filters) => {
@@ -238,45 +274,87 @@ const getDictionaryList = async (filters, paginationConfig) => {
 }
 
 const handleConfirm = async (formData) => {
-  console.log('formData', formData)
-  const {type, ...rest} = formData
-  console.log('type', type)
-  console.log('name', name)
   try {
-    let res = null;
-    switch (type) {
-      case '年级':
-        res = await adminApi.addGrade(rest.name)
-        break
-      case '学院':
-        res = await adminApi.addCollege(rest)
-        break
-      case '专业':
-        res = await adminApi.addMajor(rest)
-        break
-      case '班级':
-        res = await adminApi.addClass(rest)
-        break
-      case '党委':
-        res = await adminApi.addParty(rest)
-        break
-      case '党支部':
-        res = await adminApi.addPartyBranch(rest)
-        break
-      default:
-        res = null
-        break
-    }
-    console.log('res', res)
-    if (res && res.data) {
-      ElMessage.success('新增字典成功')
-      dictionaryAddDialogVisible.value = false
-      handleSearch(defaultFilters)
-    } else {
-      ElMessage.error('新增字典失败')
-    }
+    let res = null
+    switch (formData.type) {
+        case '年级':
+          res = await adminApi.updateGrade(formData)
+          break
+        case '学院':
+          res = await adminApi.updateCollege(formData)
+          break
+        case '专业':
+          res = await adminApi.updateMajor(formData)
+          break
+        case '班级':
+          res = await adminApi.updateClass(formData)
+          break
+        case '党委':
+          res = await adminApi.updateParty(formData)
+          break
+        case '党支部':
+          res = await adminApi.updatePartyBranch(formData)
+          break
+      }
+      
+      if (res && res.data) {
+        ElMessage.success(isEditMode.value ? '编辑字典成功' : '新增字典成功')
+        dictionaryDialogVisible.value = false
+        handleSearch(defaultFilters)
+      } else {
+        ElMessage.error(isEditMode.value ? '编辑字典失败' : '新增字典失败')
+      } 
   } catch (error) {
-    console.error('新增字典失败:', error)
+    console.error('操作失败:', error)
+    ElMessage.error(isEditMode.value ? '编辑字典失败' : '新增字典失败')
+  }
+}
+
+/**
+ * 处理字典项的保存操作（包括新增和编辑）
+ * @param {Object} row - 要操作的字典数据对象
+ */
+const handleDelete = async (row) => { 
+  console.log('row', row)
+  const data = {
+    ...row,
+    status: -1,
+  }
+  try {
+    let res = null
+    // 根据字典类型调用对应的API接口
+    switch (defaultFilters.type) {
+        case '年级':
+          res = await adminApi.updateGrade(data)
+          break
+        case '学院':
+          res = await adminApi.updateCollege(data)
+          break
+        case '专业':
+          res = await adminApi.updateMajor(data)
+          break
+        case '班级':
+          res = await adminApi.updateClass(data)
+          break
+        case '党委':
+          res = await adminApi.updateParty(data)    
+          break
+        case '党支部':
+          res = await adminApi.updatePartyBranch(data)
+          break
+      }
+      
+      // 处理API响应结果
+      if (res && res.data) {
+        ElMessage.success(isEditMode.value ? '编辑字典成功' : '新增字典成功')
+        dictionaryDialogVisible.value = false
+        handleSearch(defaultFilters)
+      } else {
+        ElMessage.error(isEditMode.value ? '编辑字典失败' : '新增字典失败')
+      } 
+  } catch (error) {
+    console.error('操作失败:', error)
+    ElMessage.error(isEditMode.value ? '编辑字典失败' : '新增字典失败')
   }
 }
 

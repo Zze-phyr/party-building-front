@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="dialogVisible"
-    title="新增字典"
+    :title="dialogTitle"
     width="500px"
     :close-on-click-modal="false"
     :destroy-on-close="true"
@@ -20,6 +20,7 @@
           placeholder="请选择字典类型"
           style="width: 100%"
           clearable
+          :disabled="isEditMode"
           @change="handleDictTypeChange"
         >
           <el-option
@@ -66,6 +67,16 @@ const props = defineProps({
   modelValue: {
     type: Boolean,
     default: false
+  },
+  // 编辑模式的数据
+  editData: {
+    type: Object,
+    default: null
+  },
+  // 是否为编辑模式
+  isEdit: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -83,6 +94,14 @@ const dialogVisible = computed({
   }
 })
 
+// 是否为编辑模式
+const isEditMode = computed(() => props.isEdit)
+
+// 对话框标题
+const dialogTitle = computed(() => {
+  return isEditMode.value ? '编辑字典' : '新增字典'
+})
+
 // 表单引用
 const formRef = ref(null)
 
@@ -91,6 +110,7 @@ const submitLoading = ref(false)
 
 // 表单数据
 const formData = reactive({
+  id: '',
   type: '',
   name: ''
 })
@@ -120,14 +140,14 @@ const validateGrade = (rule, value, callback) => {
   // 校验格式：必须是2位数字 + "级"
   const gradePattern = /^\d{2}级$/
   if (!gradePattern.test(value)) {
-    callback(new Error('年级格式错误，请输入00-99之间的年份'))
+    callback(new Error('年级格式错误,请输入00-99之间的年份'))
     return
   }
 
   // 校验范围：00-99
   const year = parseInt(value.slice(0, 2))
   if (year < 0 || year > 99) {
-    callback(new Error('年级格式错误，请输入00-99之间的年份'))
+    callback(new Error('年级格式错误,请输入00-99之间的年份'))
     return
   }
 
@@ -199,7 +219,7 @@ const validateClass = (rule, value, callback) => {
   // 校验格式：1-2位数字 + "班"
   const classPattern = /^\d{1,2}班$/
   if (!classPattern.test(value)) {
-    callback(new Error('班级格式错误，请按照"班级号"格式输入'))
+    callback(new Error('班级格式错误,请按照"班级号"格式输入'))
     return
   }
 
@@ -254,12 +274,12 @@ const getDictNameRules = () => {
 
   // 校验器映射表
   const validatorMap = {
-    grade: validateGrade,
-    college: validateCollege,
-    major: validateMajor,
-    class: validateClass,
-    party_committee: validatePartyCommittee,
-    party_branch: validatePartyBranch
+    '年级': validateGrade,
+    '学院': validateCollege,
+    '专业': validateMajor,
+    '班级': validateClass,
+    '党委': validatePartyCommittee,
+    '党支部': validatePartyBranch
   }
 
   // 根据字典类型添加对应的校验器
@@ -308,10 +328,29 @@ const handleDictTypeChange = () => {
 }
 
 /**
+ * 初始化表单数据
+ * 根据是否为编辑模式填充数据
+ */
+const initFormData = () => {
+  if (isEditMode.value && props.editData) {
+    // 编辑模式：填充编辑数据
+    formData.id = props.editData.id || ''
+    formData.type = props.editData.type || ''
+    formData.name = props.editData.name || ''
+  } else {
+    // 新增模式：清空数据
+    formData.id = ''
+    formData.type = ''
+    formData.name = ''
+  }
+}
+
+/**
  * 重置表单
  * 清空表单数据和校验结果
  */
 const resetForm = () => {
+  formData.id = ''
   formData.type = ''
   formData.name = ''
 
@@ -360,12 +399,16 @@ const handleConfirm = async () => {
       name: formData.name
     }
 
+    // 编辑模式需要传递 id
+    if (isEditMode.value) {
+      submitData.id = formData.id
+    }
+
     // 触发 confirm 事件
     emit('confirm', submitData)
 
-    // 关闭对话框并重置表单
-    dialogVisible.value = false
-    resetForm()
+    // 不在这里关闭对话框，由父组件控制
+    // 这样可以在提交失败时不关闭对话框
   } catch (error) {
     // 校验失败，Element Plus 会自动显示错误信息
     console.log('表单校验失败:', error)
@@ -378,16 +421,28 @@ const handleConfirm = async () => {
 // ==================== 生命周期监听 ====================
 
 /**
- * 监听对话框关闭，确保表单被重置
+ * 监听对话框打开，初始化表单数据
  */
 watch(dialogVisible, (newVal) => {
-  if (!newVal) {
-    // 延迟重置，确保关闭动画完成
+  if (newVal) {
+    // 对话框打开时，初始化表单数据
+    initFormData()
+  } else {
+    // 对话框关闭时，延迟重置表单
     setTimeout(() => {
       resetForm()
     }, 200)
   }
 })
+
+/**
+ * 监听编辑数据变化
+ */
+watch(() => props.editData, () => {
+  if (dialogVisible.value && isEditMode.value) {
+    initFormData()
+  }
+}, { deep: true })
 </script>
 
 <style lang="scss" scoped>
@@ -454,56 +509,22 @@ watch(dialogVisible, (newVal) => {
   }
 }
 
+// 禁用状态样式优化
+:deep(.el-select.is-disabled) {
+  .el-input__wrapper {
+    background-color: #f5f7fa;
+    cursor: not-allowed;
+    
+    &:hover {
+      box-shadow: 0 0 0 1px #dcdfe6 inset;
+    }
+  }
+}
+
 // 错误提示样式
 :deep(.el-form-item__error) {
   font-size: 12px;
   line-height: 1.5;
   padding-top: 4px;
-}
-
-// 响应式处理 - 移动端适配
-@media screen and (max-width: 768px) {
-  :deep(.el-dialog) {
-    width: 90% !important;
-    margin: 5vh auto;
-  }
-
-  :deep(.el-form-item__label) {
-    font-size: 14px;
-  }
-
-  :deep(.el-input__inner) {
-    font-size: 14px;
-  }
-
-  .dialog-footer {
-    flex-direction: column-reverse;
-    gap: 10px;
-
-    .el-button {
-      width: 100%;
-      margin: 0;
-    }
-  }
-}
-
-// 响应式处理 - 小屏幕
-@media screen and (max-width: 480px) {
-  :deep(.el-dialog) {
-    width: 95% !important;
-    margin: 3vh auto;
-  }
-
-  :deep(.el-dialog__header) {
-    padding: 15px;
-  }
-
-  :deep(.el-dialog__body) {
-    padding: 15px;
-  }
-
-  :deep(.el-dialog__footer) {
-    padding: 15px;
-  }
 }
 </style>

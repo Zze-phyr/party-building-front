@@ -27,7 +27,7 @@
           <!-- 动态渲染菜单 -->
           <template v-for="(route, index) in dynamicRoutes" :key="index">
             <!-- 有子路由的菜单 -->
-            <el-sub-menu v-if="route.children && route.children.length > 0" :index="route.path">
+            <el-sub-menu v-if="route.children && route.children.length > 0 && !route.meta?.hiddenChildren" :index="route.path">
               <template #title>
                 <i class="iconfont" v-html="route.meta.icon"></i>
                 <el-tooltip :content="route.meta.title" placement="right">
