@@ -30,7 +30,7 @@ export const adminApi = {
 
   // 添加学院数据
   addCollege: (data) => {
-    return request.post('/admin/dictionary/college/add', data)
+    return request.post(`/admin/dictionary/college/add?name=${data}`)
   },
 
   // 修改学院数据
@@ -45,7 +45,7 @@ export const adminApi = {
 
   // 添加专业数据
   addMajor: (data) => {
-    return request.post('/admin/dictionary/major/add', data)
+    return request.post(`/admin/dictionary/major/add?name=${data}`)
   },
 
   // 修改专业数据
@@ -60,7 +60,7 @@ export const adminApi = {
 
   // 添加班级数据
   addClass: (data) => {
-    return request.post('/admin/dictionary/class/add', data)
+    return request.post(`/admin/dictionary/class/add?name=${data}`)
   },
 
   // 修改班级数据
@@ -96,4 +96,79 @@ export const adminApi = {
   updatePartyBranch: (data) => {
     return request.patch('/admin/dictionary/partyBranch/update', data)
   },
+
+  // 查看年级学院关联数据
+  getGradeCollege(gradeId) {
+    return request.get(`/admin/dictionary/relations/grade-college/get/${gradeId}`);
+  },
+
+  // 添加年级学院关联数据
+  addGradeCollege: (data) => {
+    return request.post(`/admin/dictionary/relations/grade-college/add`, data)
+  },
+
+  // 修改年级学院关联数据
+  updateGradeCollege(params) {
+    return request.patch(`/admin/dictionary/relations/grade-college/update`, params);
+  },
+
+  // 查看学院专业关联数据
+  getCollegeMajor(gradeCollegeId) {
+    return request.get(`/admin/dictionary/relations/college-major/get/${gradeCollegeId}`);
+  },
+
+  // 添加学院专业关联数据
+  addCollegeMajor(params) {
+    return request.post(`/admin/dictionary/relations/college-major/add`, params);
+  },
+
+  // 修改学院专业关联数据
+  updateCollegeMajor(params) {
+    return request.patch(`/admin/dictionary/relations/college-major/update`, params);
+  },
+
+  // 查看专业班级关联数据
+  getMajorClassByCollegeMajorId(collegeMajorId) {
+    return request.get(`/admin/dictionary/relations/major-class/get/${collegeMajorId}`);
+  },
+  
+  // 添加专业班级关联数据
+  addMajorClass(params) {
+    return request.post(`/admin/dictionary/relations/major-class/add`, params);
+  },
+
+  // 修改专业班级关联数据
+  updateMajorClass(params) {
+    return request.patch(`/admin/dictionary/relations/major-class/update`, params);
+  },
+
+  // 添加年级党委关联数据
+  addGradeCommittee(params) {
+    return request.post(`/admin/dictionary/grade-committee/add`, params);
+  },
+
+  // 修改年级党委关联数据
+  updateGradeCommittee(params) {
+    return request.patch(`/admin/dictionary/grade-committee/update`, params);
+  },
+
+  // 添加班级党支部关联数据
+  addCommitteeBranch(params) {
+    return request.post(`/admin/dictionary/committee-branch/add`, params);
+  },
+
+  // 修改班级党支部关联数据
+  updateCommitteeBranch(params) {
+    return request.post(`/admin/dictionary/committee-branch/update`, params);
+  },
+
+  // 添加党支部班级关联数据
+  addBranchClass(params) {
+    return request.post(`/admin/dictionary/branch-class/add`, params);
+  },
+
+  // 修改党支部班级关联数据
+  updateBranchClass(params) {
+    return request.post(`/admin/dictionary/branch-class/update`, params);
+  }
 }
