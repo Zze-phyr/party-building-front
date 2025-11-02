@@ -6,4 +6,94 @@ export const adminApi = {
   getBatch: (data) => {
     return request.get('/admin/batch/get', data)
   },
+
+  // 查看年级数据
+  getGradeDictionaryList: (data) => {
+    return request.get('/admin/dictionary/grade/get', data)
+  },
+
+  // 添加年级数据
+  addGrade: (data) => {
+    console.log(data)
+    return request.post(`/admin/dictionary/grade/add?grade=${data}`)
+  },
+
+  // 修改年级数据
+  updateGrade: (data) => {
+    return request.patch('/admin/dictionary/grade/update', data)
+  },
+
+  // 查看学院数据
+  getCollegeDictionaryList: (data) => {
+    return request.get('/admin/dictionary/college/get', data)
+  },
+
+  // 添加学院数据
+  addCollege: (data) => {
+    return request.post('/admin/dictionary/college/add', data)
+  },
+
+  // 修改学院数据
+  updateCollege: (data) => {
+    return request.patch('/admin/dictionary/college/update', data)
+  },
+
+  // 查看专业数据
+  getMajorDictionaryList: (data) => {
+    return request.get('/admin/dictionary/major/get', data)
+  },
+
+  // 添加专业数据
+  addMajor: (data) => {
+    return request.post('/admin/dictionary/major/add', data)
+  },
+
+  // 修改专业数据
+  updateMajor: (data) => {
+    return request.patch('/admin/dictionary/major/update', data)
+  },
+
+  // 查看班级数据
+  getClassDictionaryList: (data) => {
+    return request.get('/admin/dictionary/class/getClasses', data)
+  },
+
+  // 添加班级数据
+  addClass: (data) => {
+    return request.post('/admin/dictionary/class/add', data)
+  },
+
+  // 修改班级数据
+  updateClass: (data) => {
+    return request.patch('/admin/dictionary/class/update', data)
+  },
+
+  // 查看党委数据
+  getPartyDictionaryList: (data) => {
+    return request.get('/admin/dictionary/partyCommittee/get', data)
+  },
+
+  // 添加党委数据
+  addParty: (data) => {
+    return request.post('/admin/dictionary/partyCommittee/add', data)
+  },
+
+  // 修改党委数据
+  updateParty: (data) => {
+    return request.patch('/admin/dictionary/partyCommittee/update', data)
+  },
+
+  // 查看党支部数据
+  getPartyBranchDictionaryList: (data) => {
+    return request.get('/admin/dictionary/partyBranch/get', data)
+  },
+
+  // 添加党支部数据
+  addPartyBranch: (data) => {
+    return request.post('/admin/dictionary/partyBranch/add', data)
+  },
+  // 修改党支部数据
+  updatePartyBranch: (data) => {
+    return request.patch('/admin/dictionary/partyBranch/update', data)
+  },
 }
