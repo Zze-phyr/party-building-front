@@ -47,6 +47,8 @@
         :layout="paginationConfig.layout"
         :total="filteredData.length"
         :background="true"
+        :page-sizes-text="paginationConfig.smallText"
+        :total-text="paginationConfig.totalText"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -97,6 +99,11 @@ const props = defineProps({
   rowKey: {
     type: String,
     default: 'id'
+  },
+  // 是否是前端做分页
+  isFrontPagination: {
+    type: Boolean,
+    default: true
   }
 })
 
@@ -119,7 +126,10 @@ const paginationConfig = computed(() => {
   const defaultConfig = {
     pageSize: 10,
     pageSizes: [10, 20, 50, 100],
-    layout: 'total, sizes, prev, pager, next, jumper'
+    layout: 'total, sizes, prev, pager, next, jumper',
+    // 自定义文字配置
+    smallText: '条/页',
+    totalText: '共 {total} 条'
   }
 
   return typeof props.pagination === 'object'
@@ -142,13 +152,22 @@ const filteredData = computed(() => {
 
 // 当前页数据
 const currentPageData = computed(() => {
+  // 后端分页：直接返回传入的数据（后端已处理分页和筛选）
+  if (!props.isFrontPagination) {
+    return props.data || []
+  }
+  
+  // 前端分页：需要在前端进行筛选和分页
+  // 如果不显示分页，返回所有筛选后的数据
   if (!showPagination.value) {
-    return filteredData.value
+    return filteredData.value || []
   }
 
+  // 前端分页计算
   const start = (currentPage.value - 1) * currentPageSize.value
   const end = start + currentPageSize.value
-  return filteredData.value.slice(start, end)
+  
+  return filteredData.value?.slice(start, end) || []
 })
 
 // 获取需要插槽的列
