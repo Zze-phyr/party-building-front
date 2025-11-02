@@ -13,7 +13,7 @@ import { useUserStore } from '@/stores/index'
 //  const service = axios.create({
 //   baseURL: import.meta.env.VITE_API_BASE_URL,
 //   timeout: 10000,
-//   adapter: fetchAdapter, 
+//   adapter: fetchAdapter,
 // })
 const instance = axios.create({
   //基础地址
@@ -54,7 +54,6 @@ instance.interceptors.response.use(
   (err) => {
     //处理401错误
     console.log(err)
-    console.log(err.data.msg)
 
     if (err.response.status === 401) {
       const userStore = useUserStore()
