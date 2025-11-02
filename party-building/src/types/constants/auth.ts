@@ -53,7 +53,7 @@ export const ROLE_PERMISSIONS_MAP: Record<EUserRole, EPermission[]> = Object.fre
   [EUserRole.TEACHER]: [EPermission.COMMON, EPermission.TEACHER, EPermission.TEACHER], // 教师
 
   // 管理侧
-  [EUserRole.SYSTEM_ADMIN]: [EPermission.ADMIN, EPermission.ADMINISTRATOR, EPermission.ADMINISTRATOR], // 系统管理员
+  [EUserRole.SYSTEM_ADMIN]: [EPermission.ADMIN, EPermission.ADMIN, EPermission.ADMIN], // 系统管理员
   [EUserRole.ORGANIZER]: [EPermission.ADMIN, EPermission.ORGANIZER, EPermission.ORGANIZER], // 组织员、副书记、书记
   [EUserRole.BRANCH_SECRETARY]: [EPermission.ADMIN, EPermission.BRANCH_SECRETARY, EPermission.BRANCH_SECRETARY], // 支部书记
   [EUserRole.BRANCH_COMMITTEE]: [EPermission.ADMIN, EPermission.BRANCH_COMMITTEE, EPermission.BRANCH_COMMITTEE], // 支委、支部副书记

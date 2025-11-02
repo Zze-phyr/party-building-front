@@ -1,6 +1,8 @@
 // TODO:这里的代码有点冗余，一些重复的代码
 // 1、代码路由配置过于重复，比如meta.roles, icon, title
 // 2、 真正的动态路由是通过函数动态添加的，而不是简单的复制原有定义
+import { EPermission } from '@/types/constants/auth'
+
 export const adminLayoutRoute = {
   name: 'AdminLayout',
   path: '/admin',
@@ -196,7 +198,9 @@ export const adminBaseRoutes = [
       icon: '&#xe607;',
       title: '字典配置',
       roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'], // 角色权限 管理员 组织员 支部书记
+      hiddenChildren: true, // 不在导航栏显示子路由
     },
+    redirect: '/admin/dictionary/DictionaryManagement',
     children: [
       {
         name: 'DictionaryManagement',
@@ -206,8 +210,20 @@ export const adminBaseRoutes = [
           icon: '&#xe61a;',
           title: '字典管理',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+          hidden: true, // 不在导航栏显示
         },
       },
+      {
+        name: 'DictionaryConfig',
+        path: 'dictionaryConfig',
+        component: () => import('@/views/admin/dictionary/dictionary-config.vue'),
+        meta: {
+          icon: '&#xe61a;',
+          title: '字典配置',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+          hidden: true, // 不在导航栏显示
+        },
+      }
     ]
   }
 ];
@@ -294,10 +310,10 @@ export const getAdminRoutes = (thirdRole) => {
     case 'BranchSecretary':
       routes.push(...branchSecretaryRoutes);
       break;
-    case 'Organizers':
+    case EPermission.ORGANIZER:
       routes.push(...organizersRoutes);
       break;
-    case 'Administrator':
+    case EPermission.ADMIN:
       routes.push(...administratorRoutes);
       break;
     default:
