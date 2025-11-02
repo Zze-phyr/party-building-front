@@ -5,6 +5,8 @@
  * @returns {Array} 筛选后的数据
  */
 export function filterData(data, filters) {
+  // console.log('data', data)
+  // console.log('filters', filters)
   if (!data || data.length === 0) {
     return []
   }
@@ -15,8 +17,11 @@ export function filterData(data, filters) {
 
   return data.filter(item => {
     return Object.keys(filters).every(key => {
+      // console.log('key', key)
       const filterValue = filters[key]
       const itemValue = item[key]
+      // console.log('filterValue', filterValue)
+      // console.log('itemValue', itemValue)
 
       // 如果筛选值为空，则不筛选
       if (filterValue === '' || filterValue === null || filterValue === undefined) {

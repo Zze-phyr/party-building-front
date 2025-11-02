@@ -35,7 +35,7 @@
       <el-form-item label="字典名称" prop="name">
         <el-input
           v-model="formData.name"
-          placeholder="请输入字典名称"
+          :placeholder="defaultDictNamePlaceholder"
           maxlength="50"
           show-word-limit
           clearable
@@ -124,6 +124,19 @@ const dictTypeOptions = [
   { label: '党委', value: '党委' },
   { label: '党支部', value: '党支部' }
 ]
+
+const dictNamePlaceholderMap = {
+  年级: '格式要求为“00-99级”，如"00级"',
+  学院: '格式要求为“2-30个字符，支持中文”，如"计算机科学与工程学院"',
+  专业: '格式要求为“2-30个字符，支持中文”，如"计算机科学与技术专业"',
+  班级: '格式要求为“汉字数字 + 班”，如"一班"',
+  党委: '格式要求：以“中共湖南科技大学”开头，“委员会”结尾，如"中共湖南科技大学委员会"',
+  党支部: '以"本科生"或"研究生"开头，中间包含"第x党支部"，其中x为一位或两位中文数字，如"本科生第一党支部"'
+}
+
+const defaultDictNamePlaceholder = computed(() => {
+  return dictNamePlaceholderMap[formData.type] || '请输入字典名称'
+})
 
 // ==================== 校验规则 ====================
 
@@ -216,10 +229,28 @@ const validateClass = (rule, value, callback) => {
     return
   }
 
-  // 校验格式：1-2位数字 + "班"
-  const classPattern = /^\d{1,2}班$/
-  if (!classPattern.test(value)) {
-    callback(new Error('班级格式错误,请按照"班级号"格式输入'))
+  // 去除首尾空格
+  const trimmedValue = value.trim()
+
+  // 基本格式检查：必须以"班"结尾
+  if (!trimmedValue.endsWith('班')) {
+    callback(new Error('班级名称必须以"班"结尾'))
+    return
+  }
+
+  // 提取"班"字前的数字部分
+  const classNumber = trimmedValue.slice(0, -1)
+
+  // 定义有效的汉字数字班级名称
+  const validClassNumbers = [
+    // 1-10班
+    '一', '二', '三', '四', '五', '六', '七', '八', '九', '十',
+    // 11-20班
+    '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九','二十'
+  ]
+
+  if (!validClassNumbers.includes(classNumber)) {
+    callback(new Error('班级格式错误，请输入正确的汉字数字，如：一班、二班、十班、十一班、二十班等'))
     return
   }
 

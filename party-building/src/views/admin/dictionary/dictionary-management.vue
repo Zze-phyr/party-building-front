@@ -214,6 +214,7 @@ const getDictionaryList = async (filters, paginationConfig) => {
   console.log('filters', filters)
   console.log('paginationConfig', paginationConfig)
   loading.value = true
+  tableData.value = []
   const data = {
     type: filters.type,
     status: filters.status,
@@ -254,12 +255,13 @@ const getDictionaryList = async (filters, paginationConfig) => {
     // console.log('res', res)
     if (res && res.data) {
       // console.log('res.data', res.data)
-      let records = res.data.data.records
-      if (filters.status !== undefined && filters.status !== '') {
-        records = records.filter(item => item.status === filters.status)
-      }
+      let records = filters.type === '年级' || filters.type === '专业' ? res.data.data.records : res.data.data
+      records.forEach(item => {
+        item.type = filters.type
+      })
+      // console.log('records', records)
       tableData.value = records
-      paginationConfig.total = res.data.data.total
+      paginationConfig.total = filters.type === '年级' ? res.data.data.total : records.length
       ElMessage.success('获取字典列表成功')
     } else {
       tableData.value = []
@@ -276,28 +278,30 @@ const getDictionaryList = async (filters, paginationConfig) => {
 const handleConfirm = async (formData) => {
   try {
     let res = null
-    switch (formData.type) {
+    const {name, type} = formData
+    console.log('name', name)
+    switch (type) {
         case '年级':
-          res = await adminApi.updateGrade(formData)
+          res = isEditMode.value ? await adminApi.updateGrade(formData) : await adminApi.addGrade(name)
           break
         case '学院':
-          res = await adminApi.updateCollege(formData)
+          res = isEditMode.value ? await adminApi.updateCollege(formData) : await adminApi.addCollege(name)
           break
         case '专业':
-          res = await adminApi.updateMajor(formData)
+          res = isEditMode.value ? await adminApi.updateMajor(formData) : await adminApi.addMajor(name)
           break
         case '班级':
-          res = await adminApi.updateClass(formData)
+          res = isEditMode.value ? await adminApi.updateClass(formData) : await adminApi.addClass(name)
           break
         case '党委':
-          res = await adminApi.updateParty(formData)
+          res = isEditMode.value ? await adminApi.updateParty(formData) : await adminApi.addParty({name})
           break
         case '党支部':
-          res = await adminApi.updatePartyBranch(formData)
+          res = isEditMode.value ? await adminApi.updatePartyBranch(formData) : await adminApi.addPartyBranch({name})
           break
       }
-      
-      if (res && res.data) {
+      console.log('res', res)
+      if (res && res.data && res.data.code === 1) {
         ElMessage.success(isEditMode.value ? '编辑字典成功' : '新增字典成功')
         dictionaryDialogVisible.value = false
         handleSearch(defaultFilters)
