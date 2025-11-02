@@ -18,3 +18,31 @@
   --el-color-primary-light-13: #FDF3F3;
   --el-color-primary-dark-2: #990000;
 }
+
+.el-col {
+  // 滚动条样式
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #C0C4CC;
+    border-radius: 3px;
+    
+    &:hover {
+      background: #A8ABB2;
+    }
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #F5F7FA;
+    border-radius: 4px;
+  }
+}
+
+
+.el-sub-menu,
+.el-menu-item {
+  --el-menu-item-height: 45px;
+  --el-menu-sub-item-height: var(--el-menu-item-height);
+}
