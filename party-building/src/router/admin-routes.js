@@ -210,7 +210,6 @@ export const adminBaseRoutes = [
           icon: '&#xe61a;',
           title: '字典管理',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-          hidden: true, // 不在导航栏显示
         },
       },
       {
@@ -221,9 +220,18 @@ export const adminBaseRoutes = [
           icon: '&#xe61a;',
           title: '字典配置',
           roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
-          hidden: true, // 不在导航栏显示
         },
-      }
+      },
+      {
+        name: 'DictionaryResult',
+        path: 'dictionaryResult',
+        component: () => import('@/views/admin/dictionary/dictionary-result.vue'),
+        meta: {
+          icon: '&#xe61a;',
+          title: '字典配置结果',
+          roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
+        },
+      },
     ]
   }
 ];
