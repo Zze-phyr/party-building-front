@@ -1,5 +1,12 @@
 :root {
   --el-color-primary: #bc0000;
+  --el-color-primary-light-3: #C62424;
+  --el-color-primary-light-5: #D14949;
+  --el-color-primary-light-7: #ffbfbf;
+  --el-color-primary-light-9: #ffe2e2;
+  --el-color-primary-light-11: #fff4f4;
+  --el-color-primary-light-13: #FDF3F3;
+  --el-color-primary-dark-2: #990000;
 }
 
 .el-pagination {
@@ -24,16 +31,16 @@
   &::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   &::-webkit-scrollbar-thumb {
     background: #C0C4CC;
     border-radius: 3px;
-    
+
     &:hover {
       background: #A8ABB2;
     }
   }
-  
+
   &::-webkit-scrollbar-track {
     background: #F5F7FA;
     border-radius: 4px;
