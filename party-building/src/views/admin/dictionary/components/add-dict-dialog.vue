@@ -368,6 +368,7 @@ const initFormData = () => {
     formData.id = props.editData.id || ''
     formData.type = props.editData.type || ''
     formData.name = props.editData.name || ''
+    formData.status = props.editData.status || ''
   } else {
     // 新增模式：清空数据
     formData.id = ''
@@ -427,7 +428,8 @@ const handleConfirm = async () => {
     // 准备返回数据
     const submitData = {
       type: formData.type,
-      name: formData.name
+      name: formData.name,
+      status: formData.status
     }
 
     // 编辑模式需要传递 id
@@ -545,7 +547,7 @@ watch(() => props.editData, () => {
   .el-input__wrapper {
     background-color: #f5f7fa;
     cursor: not-allowed;
-    
+
     &:hover {
       box-shadow: 0 0 0 1px #dcdfe6 inset;
     }

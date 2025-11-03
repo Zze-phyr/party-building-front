@@ -184,7 +184,8 @@ const handleEdit = (row) => {
   editingRow.value = {
     id: row.id,
     type: defaultFilters.type,
-    name: row.name
+    name: row.name,
+    status: row.status
   }
   dictionaryDialogVisible.value = true
 }
@@ -307,7 +308,7 @@ const handleConfirm = async (formData) => {
         handleSearch(defaultFilters)
       } else {
         ElMessage.error(isEditMode.value ? '编辑字典失败' : '新增字典失败')
-      } 
+      }
   } catch (error) {
     console.error('操作失败:', error)
     ElMessage.error(isEditMode.value ? '编辑字典失败' : '新增字典失败')
@@ -318,7 +319,7 @@ const handleConfirm = async (formData) => {
  * 处理字典项的保存操作（包括新增和编辑）
  * @param {Object} row - 要操作的字典数据对象
  */
-const handleDelete = async (row) => { 
+const handleDelete = async (row) => {
   console.log('row', row)
   const data = {
     ...row,
@@ -341,13 +342,13 @@ const handleDelete = async (row) => {
           res = await adminApi.updateClass(data)
           break
         case '党委':
-          res = await adminApi.updateParty(data)    
+          res = await adminApi.updateParty(data)
           break
         case '党支部':
           res = await adminApi.updatePartyBranch(data)
           break
       }
-      
+
       // 处理API响应结果
       if (res && res.data) {
         ElMessage.success(isEditMode.value ? '编辑字典成功' : '新增字典成功')
@@ -355,7 +356,7 @@ const handleDelete = async (row) => {
         handleSearch(defaultFilters)
       } else {
         ElMessage.error(isEditMode.value ? '编辑字典失败' : '新增字典失败')
-      } 
+      }
   } catch (error) {
     console.error('操作失败:', error)
     ElMessage.error(isEditMode.value ? '编辑字典失败' : '新增字典失败')

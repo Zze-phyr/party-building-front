@@ -6,14 +6,15 @@
         <el-button type="primary" link @click="handleViewResult">
           查看配置结果
         </el-button>
+        <el-button link type="primary" @click="$router.back()">返回</el-button>
       </div>
 
       <!-- 配置表单 -->
       <div class="form-scroll-container">
-        <el-form 
+        <el-form
           ref="formRef"
-          :model="formData" 
-          label-width="120px" 
+          :model="formData"
+          label-width="120px"
           class="config-form"
           label-position="left"
         >
@@ -60,8 +61,8 @@
           <!-- 年级学院专业班级配置模式 -->
           <template v-if="formData.configType === '年级学院专业班级'">
             <!-- 学院选择 -->
-            <el-form-item 
-              label="学院：" 
+            <el-form-item
+              label="学院："
               required
             >
               <el-select
@@ -84,7 +85,7 @@
             </el-form-item>
 
             <!-- 专业多选 - 使用组件 -->
-            <el-form-item 
+            <el-form-item
               label="专业："          >
               <CheckboxList
                 v-model="formData.majorIds"
@@ -96,7 +97,7 @@
             </el-form-item>
 
             <!-- 班级多选 - 使用组件 -->
-            <el-form-item 
+            <el-form-item
               label="班级："
             >
               <CheckboxList
@@ -111,8 +112,8 @@
           <!-- 年级党委党支部班级配置模式 -->
           <template v-if="formData.configType === '年级党委党支部班级'">
             <!-- 党委选择 -->
-            <el-form-item 
-              label="党委：" 
+            <el-form-item
+              label="党委："
               required
             >
               <el-select
@@ -134,8 +135,8 @@
             </el-form-item>
 
             <!-- 党支部选择 -->
-            <el-form-item 
-              label="党支部：" 
+            <el-form-item
+              label="党支部："
               required
             >
               <el-select
@@ -157,7 +158,7 @@
             </el-form-item>
 
             <!-- 班级多选 - 使用组件 -->
-            <el-form-item 
+            <el-form-item
               label="班级："
               v-if="formData.partyBranchId"
             >
@@ -174,15 +175,15 @@
 
       <div class="form-footer">
         <div class="footer-content">
-          <el-button 
-            type="primary" 
+          <el-button
+            type="primary"
             @click="handleSubmit"
             :disabled="!canSubmit"
             :loading="submitting"
           >
             组成配置
           </el-button>
-          <el-button 
+          <el-button
             @click="handleReset"
           >
             重置
@@ -198,7 +199,9 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import CheckboxList from './components/checkbox-list.vue'  // 引入组件
 import { adminApi } from '@/api/admin'
+import { useRouter } from 'vue-router'
 // ==================== 响应式数据定义 ====================
+const router = useRouter()
 
 // 表单数据
 const formData = reactive({
@@ -239,15 +242,15 @@ const dataCache = new Map()
 
 const canSubmit = computed(() => {
   if (!formData.configType || !formData.gradeId) return false
-  
+
   if (formData.configType === '年级学院专业班级') {
     return formData.collegeId !== null
   }
-  
+
   if (formData.configType === '年级党委党支部班级') {
     return formData.partyCommitteeId !== null && formData.partyBranchId !== null
   }
-  
+
   return false
 })
 // ==================== 数据加载方法 ====================
@@ -337,7 +340,7 @@ const loadList = async (type) => {
 // 配置类型变更
 const handleConfigTypeChange = async (value) => {
   if (!value) return
-  
+
   // 如果有已选数据，提示确认
   if (formData.gradeId || formData.collegeId || formData.partyCommitteeId) {
     try {
@@ -350,13 +353,13 @@ const handleConfigTypeChange = async (value) => {
           type: 'warning'
         }
       )
-      
+
       // 用户确认，重置表单数据
       resetFormData(false)
     } catch {
       // 用户取消，恢复原值
-      const oldValue = value === 'grade-college-major-class' 
-        ? 'grade-party-branch-class' 
+      const oldValue = value === 'grade-college-major-class'
+        ? 'grade-party-branch-class'
         : 'grade-college-major-class'
       formData.configType = oldValue
     }
@@ -372,15 +375,15 @@ const handleGradeChange = async (value) => {
   formData.partyBranchId = null
   formData.majorIds = []
   formData.classIds = []
-  
+
   collegeList.value = []
   partyList.value = []
   branchList.value = []
   majorList.value = []
   classList.value = []
-  
+
   if (!value) return
-  
+
   // 根据配置类型加载对应数据
   if (formData.configType === '年级学院专业班级') {
     await loadList('college')
@@ -396,9 +399,9 @@ const handleCollegeChange = async (value) => {
   formData.classIds = []
   majorList.value = []
   classList.value = []
-  
+
   if (!value) return
-  
+
   await loadList('major')
 }
 
@@ -409,9 +412,9 @@ const handlePartyChange = async (value) => {
   formData.classIds = []
   branchList.value = []
   classList.value = []
-  
+
   if (!value) return
-  
+
   await loadList('partyBranch')
 }
 
@@ -420,9 +423,9 @@ const handleBranchChange = async (value) => {
   // 清空下级数据
   formData.classIds = []
   classList.value = []
-  
+
   if (!value) return
-  
+
   await loadList('class')
 }
 
@@ -431,20 +434,20 @@ const handleMajorChange = async (value) => {
   // 清空班级数据
   formData.classIds = []
   classList.value = []
-  
+
   if (!value || !value.length) return
-  
+
   await loadList('class')
 }
 
 // 查看配置结果
 const handleViewResult = () => {
-  
+  router.push({ name: 'DictionaryResult' })
 }
 
 // 重置表单
 const handleReset = async () => {
-  
+
 }
 
 // 提交配置
@@ -453,23 +456,36 @@ const handleSubmit = async () => {
     ElMessage.warning('请完成必填项选择')
     return
   }
-  
+
   const submitData = formatSubmitData()
-  
+
   console.log('提交配置数据:', submitData)
-  
+
   submitting.value = true
   try {
-    // 这里调用实际的提交接口
-    // await adminApi.submitDictionaryConfig(submitData)
-    
-    // 模拟提交延迟
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    
+    if (submitData.configType === '年级学院专业班级') {
+      const addGradeCollegeRes = await adminApi.addGradeCollege({
+        gradeId: submitData.gradeId,
+        collegeId: submitData.collegeId,
+      })
+      if (!addGradeCollegeRes || addGradeCollegeRes.data.code !== 1) {
+        ElMessage.error('添加年级学院专业班级配置失败，请稍后重试')
+        return
+      }
+      const addGradeCollegeMajorRes = await adminApi.addGradeCollegeMajor({
+        gradeCollegeId: addGradeCollegeRes.data.data,
+        majorIds: submitData.majorIds,
+      })
+      if (!addGradeCollegeMajorRes || addGradeCollegeMajorRes.data.code !== 1) {
+        ElMessage.error('添加年级学院专业班级配置失败，请稍后重试')
+        return
+      }
+
+    }
+    else if (submitData.configType === '年级党委党支部班级') {
+
+    }
     ElMessage.success('配置提交成功')
-    
-    // 可以选择是否重置表单或跳转页面
-    // resetFormData(true)
   } catch (error) {
     console.error('提交失败:', error)
     ElMessage.error('配置提交失败，请稍后重试')
@@ -484,30 +500,30 @@ const handleSubmit = async () => {
 const formatSubmitData = () => {
   const baseData = {
     configType: formData.configType,
-    grade: gradeList.value.find(item => item.id === formData.gradeId) || null
+    gradeId: gradeList.value.find(item => item.id === formData.gradeId).id || null,
   }
-  
+
   if (formData.configType === '年级学院专业班级') {
     return {
       ...baseData,
-      college: collegeList.value.find(item => item.id === formData.collegeId) || null,
-      majors: majorList.value.filter(item => formData.majorIds.includes(item.id)),
-      classes: classList.value.filter(item => formData.classIds.includes(item.id)),
+      collegeId: collegeList.value.find(item => item.id === formData.collegeId).id || null,
+      majorIds: majorList.value.filter(item => formData.majorIds.includes(item.id)).map(item => item.id || null),
+      classIds: classList.value.filter(item => formData.classIds.includes(item.id)).map(item => item.id || null),
       majorCount: formData.majorIds.length,
       classCount: formData.classIds.length
     }
   }
-  
+
   if (formData.configType === '年级党委党支部班级') {
     return {
       ...baseData,
-      partyCommittee: partyList.value.find(item => item.id === formData.partyCommitteeId) || null,
-      partyBranch: branchList.value.find(item => item.id === formData.partyBranchId) || null,
-      classes: classList.value.filter(item => formData.classIds.includes(item.id)),
+      partyCommittee: partyList.value.find(item => item.id === formData.partyCommitteeId).id || null,
+      partyBranch: branchList.value.find(item => item.id === formData.partyBranchId).id || null,
+      classIds: classList.value.filter(item => formData.classIds.includes(item.id)).map(item => item.id || null),
       classCount: formData.classIds.length
     }
   }
-  
+
   return baseData
 }
 
@@ -522,7 +538,7 @@ const resetFormData = (resetType = true) => {
   formData.partyBranchId = null
   formData.majorIds = []
   formData.classIds = []
-  
+
   collegeList.value = []
   partyList.value = []
   branchList.value = []
@@ -547,55 +563,55 @@ onMounted(() => {
   min-height: 500px;
   max-height: 800px;
   background: #fff;
-  
+
   .config-header {
     position: absolute;
     top: -50px;
     right: 20px;
     z-index: 10;
   }
-  
+
   // 可滚动的表单容器
   .form-scroll-container {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0px 20px;
-    
+
     // 滚动条样式
     &::-webkit-scrollbar {
       width: 8px;
     }
-    
+
     &::-webkit-scrollbar-thumb {
       background: #C0C4CC;
       border-radius: 4px;
-      
+
       &:hover {
         background: #A8ABB2;
       }
     }
-    
+
     &::-webkit-scrollbar-track {
       background: #F5F7FA;
       border-radius: 4px;
     }
   }
-  
+
   .config-form {
     margin: 0 auto;
     padding-bottom: 20px; // 给底部留出一些空间
-    
+
     .full-width {
       width: 100%;
     }
-    
+
     :deep(.el-form-item__label) {
       font-weight: 500;
       color: #303133;
     }
   }
-  
+
   // 固定在底部的按钮区域
   .form-footer {
     position: sticky;
@@ -606,7 +622,7 @@ onMounted(() => {
     border-top: 1px solid #EBEEF5;
     padding: 16px 20px 0;
     z-index: 100;
-    
+
     .footer-content {
       max-width: 700px;
       margin: 0 auto;
