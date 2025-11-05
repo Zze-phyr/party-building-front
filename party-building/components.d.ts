@@ -41,6 +41,7 @@ declare module 'vue' {
     ProTable: typeof import('./src/components/ProTable/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ScrollableSelect: typeof import('./src/components/admin/ScrollableSelect.vue')['default']
     SearchForm: typeof import('./src/components/ProTable/components/SearchForm.vue')['default']
     TableMain: typeof import('./src/components/ProTable/components/TableMain.vue')['default']
     TablePagination: typeof import('./src/components/ProTable/components/TablePagination.vue')['default']

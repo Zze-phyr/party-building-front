@@ -11,6 +11,7 @@
         @reset="handleReset"
         @selection-change="handleSelectionChange"
         :pagination="paginationConfig"
+        :total="paginationConfig.total"
         :showPagination="true"
         @page-change="handlePageChange"
         @page-size-change="handlePageSizeChange"
@@ -26,13 +27,6 @@
             字典配置
           </el-button>
         </template>
-
-        <!-- 自定义状态列 -->
-        <!-- <template #column-status="{ row }">
-          <el-tag :type="getStatusType(row.status)" size="small">
-            {{ getStatusText(row.status) }}
-          </el-tag>
-        </template> -->
 
         <!-- 自定义操作列 -->
         <template #column-action="{ row }">
@@ -131,13 +125,20 @@ const columns = [
 ]
 
 const defaultFilters = reactive({
-  type: '年级'
+  type: '年级',
+  status: 1
 })
 
 // 弹窗状态
 const dictionaryDialogVisible = ref(false)
 const isEditMode = ref(false)
 const editingRow = ref(null)
+
+const statusEnum = new Map([
+  [1, 'ENABLE'],
+  [0, 'DISABLE'],
+  [-1, 'DELETE']
+])
 
 // 筛选配置
 const searchConfig = [
@@ -161,6 +162,7 @@ const searchConfig = [
     label: '状态',
     type: 'select',
     placeholder: '请选择状态',
+    defaultValue: defaultFilters.status,
     options: [
       { label: '启用', value: 1 },
       { label: '停用', value: 0 }
@@ -185,7 +187,7 @@ const handleEdit = (row) => {
     id: row.id,
     type: defaultFilters.type,
     name: row.name,
-    status: row.status
+    status: statusEnum.get(row.status)
   }
   dictionaryDialogVisible.value = true
 }
@@ -211,17 +213,18 @@ const handleRefresh = () => {
   getDictionaryList(defaultFilters, paginationConfig)
 }
 
-const getDictionaryList = async (filters, paginationConfig) => {
+const getDictionaryList = async (filters, pagination) => {
   console.log('filters', filters)
-  console.log('paginationConfig', paginationConfig)
+  console.log('pagination', pagination)
   loading.value = true
   tableData.value = []
   const data = {
     type: filters.type,
-    status: filters.status,
-    page: paginationConfig.currentPage,
-    pageSize: paginationConfig.currentPageSize
+    statusEnum: statusEnum.get(filters.status),
+    page: pagination.currentPage,
+    pageSize: pagination.currentPageSize
   }
+  console.log('data', data)
   try {
     let res = null;
     switch (filters.type) {
@@ -255,14 +258,19 @@ const getDictionaryList = async (filters, paginationConfig) => {
     }
     // console.log('res', res)
     if (res && res.data) {
-      // console.log('res.data', res.data)
-      let records = filters.type === '年级' || filters.type === '专业' ? res.data.data.records : res.data.data
+      console.log('res.data', res.data)
+      let records = filters.type === '年级' || filters.type === '专业' ? res.data.data.records || [] : res.data.data || []
+      if (records && records.length === 0) {
+        ElMessage.warning('暂无数据')
+        return
+      }
       records.forEach(item => {
         item.type = filters.type
       })
       // console.log('records', records)
       tableData.value = records
-      paginationConfig.total = filters.type === '年级' ? res.data.data.total : records.length
+      paginationConfig.total = filters.type === '年级' || filters.type === '专业' ? res.data.data.total : records.length
+      console.log('paginationConfig.total', paginationConfig.total)
       ElMessage.success('获取字典列表成功')
     } else {
       tableData.value = []
@@ -409,13 +417,23 @@ const handleChangeStatus = async (row) => {
 
 // 分页事件处理
 const handlePageChange = (page) => {
-  paginationConfig.currentPage = page
+  console.log('page', page)
+  Object.assign(paginationConfig, {
+    ...paginationConfig,
+    currentPage: page.page,
+    pageSize: page.pageSize,
+    currentPageSize: page.pageSize,
+  })
   getDictionaryList(defaultFilters, paginationConfig)
 }
 
 // 每页条数变化处理
 const handlePageSizeChange = (size) => {
-  paginationConfig.currentPageSize = size
+  console.log('size', size)
+  Object.assign(paginationConfig, {
+    ...paginationConfig,
+    currentPageSize: size,
+  })
   getDictionaryList(defaultFilters, paginationConfig)
 }
 
@@ -430,6 +448,8 @@ onMounted(() => {
 
 .table-container {
   width: 100%;
+  height: calc(100vh - 200px);
+  overflow: auto;
   box-sizing: border-box;
 }
 </style>

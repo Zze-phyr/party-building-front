@@ -9,7 +9,7 @@ export const adminApi = {
 
   // 查看年级数据
   getGradeDictionaryList: (data) => {
-    return request.get('/admin/dictionary/grade/get', data)
+    return request.get(`/admin/dictionary/grade/get?page=${data.page}&pageSize=${data.pageSize}&statusEnum=${data.statusEnum}&name=${data.name || ''}`);
   },
 
   // 添加年级数据
@@ -25,7 +25,7 @@ export const adminApi = {
 
   // 查看学院数据
   getCollegeDictionaryList: (data) => {
-    return request.get('/admin/dictionary/college/get', data)
+    return request.get(`/admin/dictionary/college/get?statusEnum=${data.statusEnum}${data.name ? `&name=${data.name}` : ''}`);
   },
 
   // 添加学院数据
@@ -40,7 +40,7 @@ export const adminApi = {
 
   // 查看专业数据
   getMajorDictionaryList: (data) => {
-    return request.get('/admin/dictionary/major/get', data)
+    return request.get(`/admin/dictionary/major/get?page=${data.page}&pageSize=${data.pageSize}&statusEnum=${data.statusEnum}&name=${data.name || ''}`);
   },
 
   // 添加专业数据
@@ -55,7 +55,7 @@ export const adminApi = {
 
   // 查看班级数据
   getClassDictionaryList: (data) => {
-    return request.get('/admin/dictionary/class/getClasses', data)
+  return request.get(`/admin/dictionary/class/getClasses?statusEnum=${data.statusEnum}&name=${data.name || ''}`);
   },
 
   // 添加班级数据
@@ -70,7 +70,7 @@ export const adminApi = {
 
   // 查看党委数据
   getPartyDictionaryList: (data) => {
-    return request.get('/admin/dictionary/partyCommittee/get', data)
+    return request.get(`/admin/dictionary/partyCommittee/get?statusEnum=${data.statusEnum}&name=${data.name || ''}`);
   },
 
   // 添加党委数据
@@ -85,7 +85,7 @@ export const adminApi = {
 
   // 查看党支部数据
   getPartyBranchDictionaryList: (data) => {
-    return request.get('/admin/dictionary/partyBranch/get', data)
+    return request.get(`/admin/dictionary/partyBranch/get?statusEnum=${data.statusEnum}&name=${data.name || ''}`);
   },
 
   // 添加党支部数据
@@ -131,7 +131,7 @@ export const adminApi = {
   getMajorClassByCollegeMajorId(collegeMajorId) {
     return request.get(`/admin/dictionary/relations/major-class/get/${collegeMajorId}`);
   },
-  
+
   // 添加专业班级关联数据
   addMajorClass(params) {
     return request.post(`/admin/dictionary/relations/major-class/add`, params);
