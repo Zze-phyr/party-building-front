@@ -3,6 +3,7 @@
     <el-table
       :data="data"
       :row-key="rowKey"
+      height="100%"
       v-loading="loading"
       border
       stripe
@@ -66,6 +67,9 @@ const handleSelectionChange = (selection) => {
 
 <style lang="scss" scoped>
 .table-main {
+  height: 100%;
+  overflow: hidden;
+
   :deep(.el-table) {
     font-size: 14px;
 
@@ -75,6 +79,11 @@ const handleSelectionChange = (selection) => {
         color: #606266;
         font-weight: 600;
       }
+    }
+
+    // 确保表格内容区域可以滚动
+    .el-table__body-wrapper {
+      overflow-y: auto;
     }
   }
 }

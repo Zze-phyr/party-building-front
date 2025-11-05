@@ -1,42 +1,47 @@
 <template>
   <div class="pro-table">
     <!-- 筛选区域 -->
-    <SearchForm
-      v-if="searchConfig && searchConfig.length > 0"
-      :searchConfig="searchConfig"
-      :loading="loading"
-      @search="handleSearch"
-      @reset="handleReset"
-    />
+    <div class="pro-table__search" v-if="searchConfig && searchConfig.length > 0">
+      <SearchForm
+        :searchConfig="searchConfig"
+        :loading="loading"
+        @search="handleSearch"
+        @reset="handleReset"
+      />
+    </div>
 
     <!-- 工具栏 -->
-    <Toolbar
-      :loading="loading"
-      @refresh="handleRefresh"
-    >
-      <template #default>
-        <slot name="toolbar"></slot>
-      </template>
-    </Toolbar>
+    <div class="pro-table__toolbar">
+      <Toolbar
+        :loading="loading"
+        @refresh="handleRefresh"
+      >
+        <template #default>
+          <slot name="toolbar"></slot>
+        </template>
+      </Toolbar>
+    </div>
 
     <!-- 表格主体 -->
-    <TableMain
-      :columns="columns"
-      :data="currentPageData"
-      :loading="loading"
-      :rowKey="rowKey"
-      v-bind="$attrs"
-      @selection-change="handleSelectionChange"
-    >
-      <!-- 传递所有列插槽 -->
-      <template
-        v-for="column in slotColumns"
-        :key="column.prop"
-        #[`column-${column.prop}`]="scope"
+    <div class="pro-table__body">
+      <TableMain
+        :columns="columns"
+        :data="currentPageData"
+        :loading="loading"
+        :rowKey="rowKey"
+        v-bind="$attrs"
+        @selection-change="handleSelectionChange"
       >
-        <slot :name="`column-${column.prop}`" v-bind="scope"></slot>
-      </template>
-    </TableMain>
+        <!-- 传递所有列插槽 -->
+        <template
+          v-for="column in slotColumns"
+          :key="column.prop"
+          #[`column-${column.prop}`]="scope"
+        >
+          <slot :name="`column-${column.prop}`" v-bind="scope"></slot>
+        </template>
+      </TableMain>
+    </div>
 
     <!-- 分页 -->
     <div v-if="showPagination" class="pro-table__pagination">
@@ -45,10 +50,8 @@
         v-model:page-size="currentPageSize"
         :page-sizes="paginationConfig.pageSizes"
         :layout="paginationConfig.layout"
-        :total="filteredData.length"
+        :total="getTotalCount"
         :background="true"
-        :page-sizes-text="paginationConfig.smallText"
-        :total-text="paginationConfig.totalText"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -104,11 +107,16 @@ const props = defineProps({
   isFrontPagination: {
     type: Boolean,
     default: true
+  },
+  // 后端分页时的总数
+  total: {
+    type: Number,
+    default: 0
   }
 })
 
 // Emits 定义
-const emit = defineEmits(['refresh', 'search', 'reset', 'selection-change'])
+const emit = defineEmits(['refresh', 'search', 'reset', 'selection-change', 'page-change'])
 
 // 筛选条件
 const searchFilters = ref({})
@@ -119,6 +127,7 @@ const currentPageSize = ref(10)
 
 // 计算分页配置
 const paginationConfig = computed(() => {
+  // console.log(props.pagination)
   if (props.pagination === false) {
     return null
   }
@@ -126,10 +135,7 @@ const paginationConfig = computed(() => {
   const defaultConfig = {
     pageSize: 10,
     pageSizes: [10, 20, 50, 100],
-    layout: 'total, sizes, prev, pager, next, jumper',
-    // 自定义文字配置
-    smallText: '条/页',
-    totalText: '共 {total} 条'
+    layout: 'total, sizes, prev, pager, next, jumper'
   }
 
   return typeof props.pagination === 'object'
@@ -150,13 +156,24 @@ const filteredData = computed(() => {
   return filterData(props.data, searchFilters.value)
 })
 
+// 总数计算
+const getTotalCount = computed(() => {
+  // console.log(props.total)
+  // 后端分页使用传入的 total
+  if (!props.isFrontPagination) {
+    return props.total
+  }
+  // 前端分页使用筛选后的数据长度
+  return filteredData.value.length
+})
+
 // 当前页数据
 const currentPageData = computed(() => {
   // 后端分页：直接返回传入的数据（后端已处理分页和筛选）
   if (!props.isFrontPagination) {
     return props.data || []
   }
-  
+
   // 前端分页：需要在前端进行筛选和分页
   // 如果不显示分页，返回所有筛选后的数据
   if (!showPagination.value) {
@@ -166,7 +183,7 @@ const currentPageData = computed(() => {
   // 前端分页计算
   const start = (currentPage.value - 1) * currentPageSize.value
   const end = start + currentPageSize.value
-  
+
   return filteredData.value?.slice(start, end) || []
 })
 
@@ -177,7 +194,9 @@ const slotColumns = computed(() => {
 
 // 监听数据变化，重置到第一页
 watch(() => props.data, () => {
-  currentPage.value = 1
+  if (props.isFrontPagination) {
+    currentPage.value = 1
+  }
 }, { deep: true })
 
 // 监听筛选条件变化，重置到第一页
@@ -212,11 +231,27 @@ const handleSelectionChange = (selection) => {
 const handleSizeChange = (size) => {
   currentPageSize.value = size
   currentPage.value = 1
+
+  // 后端分页时通知父组件
+  if (!props.isFrontPagination) {
+    emit('page-change', {
+      page: currentPage.value,
+      pageSize: currentPageSize.value
+    })
+  }
 }
 
 // 处理当前页变化
 const handleCurrentChange = (page) => {
   currentPage.value = page
+
+  // 后端分页时通知父组件
+  if (!props.isFrontPagination) {
+    emit('page-change', {
+      page: currentPage.value,
+      pageSize: currentPageSize.value
+    })
+  }
 }
 
 // 初始化分页大小
@@ -227,7 +262,26 @@ if (paginationConfig.value) {
 
 <style lang="scss" scoped>
 .pro-table {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &__search {
+    flex-shrink: 0;
+  }
+
+  &__toolbar {
+    flex-shrink: 0;
+  }
+
+  &__body {
+    flex: 1;
+    overflow: hidden;
+    min-height: 0; // 关键：确保 flex 子元素可以缩小
+  }
+
   &__pagination {
+    flex-shrink: 0;
     display: flex;
     justify-content: flex-end;
     margin-top: 16px;
