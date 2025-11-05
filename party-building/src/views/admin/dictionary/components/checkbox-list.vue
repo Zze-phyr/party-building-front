@@ -26,7 +26,12 @@
       </div>
     </div>
 
-    <div class="checkbox-list" v-loading="loading">
+    <div
+      ref="listContainerRef"
+      class="checkbox-list"
+      v-loading="loading"
+      @scroll="handleScroll"
+    >
       <el-checkbox-group
         :model-value="modelValue"
         @update:model-value="handleChange"
@@ -53,6 +58,16 @@
         </div>
       </el-checkbox-group>
 
+      <!-- 加载更多提示 -->
+      <div v-if="hasMore && !loading" class="load-more-trigger">
+        <span class="load-more-text">滚动加载更多...</span>
+      </div>
+
+      <!-- 没有更多数据提示 -->
+      <div v-if="!hasMore && list.length > 0 && !loading" class="no-more-data">
+        <span>已全部加载</span>
+      </div>
+
       <el-empty
         v-if="!list.length && !loading"
         :description="emptyText"
@@ -62,12 +77,13 @@
 
     <div class="checkbox-footer">
       <span class="selected-count">已选 {{ modelValue.length }} 项</span>
+      <span v-if="hasMore" class="total-hint">（还有更多数据未加载）</span>
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { WarningFilled } from '@element-plus/icons-vue'
 
 // Props 定义
@@ -106,11 +122,19 @@ const props = defineProps({
   emptyText: {
     type: String,
     default: '暂无数据'
+  },
+  // 是否还有更多数据
+  hasMore: {
+    type: Boolean,
+    default: false
   }
 })
 
 // Emits 定义
-const emit = defineEmits(['update:modelValue', 'change'])
+const emit = defineEmits(['update:modelValue', 'change', 'load-more'])
+
+// 列表容器引用
+const listContainerRef = ref(null)
 
 // 是否全选
 const isAllSelected = computed(() => {
@@ -137,6 +161,24 @@ const handleSelectAll = () => {
 // 取消全选
 const handleClearAll = () => {
   handleChange([])
+}
+
+// 处理滚动事件 - 无限滚动加载
+const handleScroll = (e) => {
+  if (props.loading || !props.hasMore) return
+
+  const container = e.target
+  const scrollHeight = container.scrollHeight
+  const scrollTop = container.scrollTop
+  const clientHeight = container.clientHeight
+
+  // 距离底部还有 50px 时触发加载
+  const threshold = 50
+  const distanceToBottom = scrollHeight - scrollTop - clientHeight
+
+  if (distanceToBottom < threshold) {
+    emit('load-more')
+  }
 }
 </script>
 
@@ -197,6 +239,7 @@ const handleClearAll = () => {
     max-height: 320px;
     overflow-y: auto;
     padding: 12px 16px;
+    position: relative;
 
     .el-checkbox-group {
       display: flex;
@@ -256,12 +299,45 @@ const handleClearAll = () => {
         }
       }
     }
+
+    // 加载更多提示
+    .load-more-trigger {
+      padding: 12px 0;
+      text-align: center;
+
+      .load-more-text {
+        font-size: 13px;
+        color: #909399;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        &::before {
+          content: '↓';
+          font-size: 16px;
+          animation: bounce 1.5s infinite;
+        }
+      }
+    }
+
+    // 没有更多数据
+    .no-more-data {
+      padding: 12px 0;
+      text-align: center;
+      font-size: 13px;
+      color: #C0C4CC;
+      border-top: 1px dashed #EBEEF5;
+      margin-top: 8px;
+    }
   }
 
   .checkbox-footer {
     padding: 4px 12px;
     border-top: 1px solid #EBEEF5;
     background: #FAFAFA;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 
     .selected-count {
       font-size: 13px;
@@ -273,6 +349,11 @@ const handleClearAll = () => {
         color: #67C23A;
         font-weight: bold;
       }
+    }
+
+    .total-hint {
+      font-size: 12px;
+      color: #909399;
     }
   }
 }
@@ -317,6 +398,16 @@ const handleClearAll = () => {
   .el-empty__description {
     color: #909399;
     font-size: 13px;
+  }
+}
+
+// 加载动画
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
   }
 }
 </style>
