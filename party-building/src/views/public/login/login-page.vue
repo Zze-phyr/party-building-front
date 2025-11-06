@@ -199,6 +199,7 @@ const submitLoginForm = async (formRef, formData, api) => {
     loading.value = true
     formData.permission = permission.value
     const { data } = await api(formData)
+    console.log('登录成功', data)
     if (data.code === 1) {
       ElMessage.success('登录成功！')
       userStore.login(data.data)
