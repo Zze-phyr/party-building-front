@@ -91,7 +91,7 @@ const columns = [
   {
     prop: 'id',
     label: 'ID',
-    width: 80,
+    width: 200,
     align: 'center',
     sortable: true
   },
@@ -99,7 +99,8 @@ const columns = [
     prop: 'name',
     label: '字典名称',
     align: 'center',
-    width: 120
+    width: 120,
+    sortable: true
   },
   {
     prop: 'status',
@@ -154,7 +155,8 @@ const searchConfig = [
       { label: '专业', value: '专业' },
       { label: '班级', value: '班级' },
       { label: '党委', value: '党委' },
-      { label: '党支部', value: '党支部' }
+      { label: '党支部', value: '党支部' },
+      { label: '批次', value: '批次' }
     ]
   },
   {
@@ -170,17 +172,21 @@ const searchConfig = [
   }
 ]
 
+// 新增字典弹窗打开
 const handleAddClick = () => {
   isEditMode.value = false
   editingRow.value = null
   dictionaryDialogVisible.value = true
 }
 
+
+// 字典配置页面跳转
 const handleConfigClick = () => {
   // 跳转到字典配置页面
   router.push({ name: 'DictionaryConfig' })
 }
 
+// 编辑字典弹窗打开
 const handleEdit = (row) => {
   isEditMode.value = true
   editingRow.value = {
@@ -201,6 +207,7 @@ const handleSelectionChange = (selection) => {
   console.log('当前选中的行:', selectedRows.value)
 }
 
+// 搜索处理
 const handleSearch = (filters) => {
   console.log('filters', filters)
   Object.assign(defaultFilters, filters)
@@ -209,10 +216,12 @@ const handleSearch = (filters) => {
   getDictionaryList(filters, paginationConfig)
 }
 
+// 刷新处理
 const handleRefresh = () => {
   getDictionaryList(defaultFilters, paginationConfig)
 }
 
+// 获取数据列表
 const getDictionaryList = async (filters, pagination) => {
   console.log('filters', filters)
   console.log('pagination', pagination)
@@ -252,6 +261,10 @@ const getDictionaryList = async (filters, pagination) => {
         res = await adminApi.getPartyBranchDictionaryList(data)
         isFrontPagination.value = true
         break
+      case '批次':
+        res = await adminApi.getBatch(data)
+        isFrontPagination.value = true
+        break
       default:
         res = []
         break
@@ -259,17 +272,20 @@ const getDictionaryList = async (filters, pagination) => {
     // console.log('res', res)
     if (res && res.data) {
       console.log('res.data', res.data)
-      let records = filters.type === '年级' || filters.type === '专业' ? res.data.data.records || [] : res.data.data || []
+      let records = filters.type === '年级' || filters.type === '专业' || filters.type === '批次' ? res.data.data.records || [] : res.data.data || []
       if (records && records.length === 0) {
         ElMessage.warning('暂无数据')
         return
       }
       records.forEach(item => {
         item.type = filters.type
+        if (!item.status) {
+          item.status = filters.status
+        }
       })
-      // console.log('records', records)
+      console.log('records', records)
       tableData.value = records
-      paginationConfig.total = filters.type === '年级' || filters.type === '专业' ? res.data.data.total : records.length
+      paginationConfig.total = filters.type === '年级' || filters.type === '专业' || filters.type === '批次'  ? res.data.data.total : records.length
       console.log('paginationConfig.total', paginationConfig.total)
       ElMessage.success('获取字典列表成功')
     } else {
@@ -284,6 +300,7 @@ const getDictionaryList = async (filters, pagination) => {
   }
 }
 
+// 加载字典列表
 const handleConfirm = async (formData) => {
   try {
     let res = null
@@ -307,6 +324,9 @@ const handleConfirm = async (formData) => {
           break
         case '党支部':
           res = isEditMode.value ? await adminApi.updatePartyBranch(formData) : await adminApi.addPartyBranch({name})
+          break
+        case '批次':
+          res = isEditMode.value ? await adminApi.updateBatch(formData) : await adminApi.addBatch({name})
           break
       }
       console.log('res', res)
@@ -355,6 +375,9 @@ const handleDelete = async (row) => {
         case '党支部':
           res = await adminApi.updatePartyBranch(data)
           break
+        case '批次':
+          res = await adminApi.updateBatch(data)
+          break
       }
 
       // 处理API响应结果
@@ -398,6 +421,9 @@ const handleChangeStatus = async (row) => {
         break
       case '党支部':
         res = await adminApi.updatePartyBranch(rowData)
+        break
+      case '批次':
+        res = await adminApi.updateBatch(rowData)
         break
       default:
         res = null

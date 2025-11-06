@@ -122,7 +122,8 @@ const dictTypeOptions = [
   { label: '专业', value: '专业' },
   { label: '班级', value: '班级' },
   { label: '党委', value: '党委' },
-  { label: '党支部', value: '党支部' }
+  { label: '党支部', value: '党支部' },
+  { label: '批次', value: '批次' }
 ]
 
 const dictNamePlaceholderMap = {
@@ -295,6 +296,43 @@ const validatePartyBranch = (rule, value, callback) => {
 }
 
 /**
+ * 批次校验器
+ * 规则: 格式为：yyyy-yyyy-x
+ * 前两部分为年份，由1-9开头的4位数字组成
+ * 第三部分为批次号，只能是1或2
+ * 示例： 2023-2024-1 或 2025-2026-2
+ */
+const validateBatch = (rule, value, callback) => {
+  // 1. 必填校验 (用户已提供)
+  if (!value) {
+    callback(new Error('请输入批次名称'))
+    return
+  }
+
+  // 2. 格式校验 (正则匹配)
+  // 匹配规则: (1-9开头的四位数)-(1-9开头的四位数)-(1或2)
+  const batchRegex = /^([1-9]\d{3})-([1-9]\d{3})-([12])$/
+  const match = value.match(batchRegex)
+
+  if (!match) {
+    callback(new Error('批次格式不正确，应为 yyyy-yyyy-x (例如: 2023-2024-1)'))
+    return
+  }
+
+  // 3. 逻辑校验 (年份必须连续)
+  const year1 = parseInt(match[1], 10)
+  const year2 = parseInt(match[2], 10)
+
+  if (year2 !== year1 + 1) {
+    callback(new Error('年份必须连续，且第二年必须比第一年大一年'))
+    return
+  }
+
+  // 4. 校验通过
+  callback()
+}
+
+/**
  * 获取字典名称的动态校验规则
  * 根据字典类型返回不同的校验器
  */
@@ -310,7 +348,8 @@ const getDictNameRules = () => {
     '专业': validateMajor,
     '班级': validateClass,
     '党委': validatePartyCommittee,
-    '党支部': validatePartyBranch
+    '党支部': validatePartyBranch,
+    '批次': validateBatch,
   }
 
   // 根据字典类型添加对应的校验器
