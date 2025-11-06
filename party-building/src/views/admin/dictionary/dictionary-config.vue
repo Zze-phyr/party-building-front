@@ -168,13 +168,29 @@
           >
             组成配置
           </el-button>
-          <el-button @click="handleReset">
+          <el-button @click="resetDialogVisible = true">
             重置
           </el-button>
         </div>
       </div>
     </div>
   </ContentCard>
+  <el-dialog
+    v-model="resetDialogVisible"
+    title="Tips"
+    width="500"
+    :before-close="handleClose"
+  >
+    <span>确定要重置所有配置吗？</span>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="resetDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleReset">
+          确认
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
@@ -245,6 +261,9 @@ const submitting = ref(false)
 
 // 表单引用
 const formRef = ref(null)
+
+// 重置确认弹窗
+const resetDialogVisible = ref(false)
 
 // 数据缓存
 const dataCache = new Map()
@@ -462,18 +481,7 @@ const handleConfigTypeChange = async (value) => {
   // 如果有已选数据，提示确认
   if (formData.gradeId || formData.collegeId || formData.partyCommitteeId) {
     try {
-      await ElMessageBox.confirm(
-        '切换配置类型将清空当前已选择的数据，是否继续？',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      )
-
-      // 用户确认，重置表单数据
-      resetFormData(false)
+      resetDialogVisible.value = true
     } catch {
       // 用户取消，恢复原值
       const oldValue = value === '年级学院专业班级'
@@ -576,15 +584,7 @@ const handleViewResult = () => {
 // 重置表单
 const handleReset = async () => {
   try {
-    await ElMessageBox.confirm(
-      '确定要重置所有配置吗？',
-      '提示',
-      {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }
-    )
+    resetDialogVisible.value = false
     resetFormData(true)
     ElMessage.success('已重置')
   } catch {
@@ -598,65 +598,17 @@ const handleSubmit = async () => {
     ElMessage.warning('请完成必填项选择')
     return
   }
-  let submitData = formatSubmitData()
 
+  let submitData = formatSubmitData()
   console.log('提交配置数据:', submitData)
 
   submitting.value = true
+
   try {
     if (submitData.configType === '年级学院专业班级') {
-      // 先检查一遍是否存在当前年级-学院、学院-专业、专业-班级的配置
-      if (submitData.gradeId && submitData.collegeId) {
-        // 检查当前年级-学院配置是否存在
-        if (treeManager.findByBusinessIdInParent('college', submitData.collegeId, { gradeId: submitData.gradeId }) !== null) {
-          ElMessage.warning('当前年级已存在学院配置，请勿重复添加')
-          return
-        }
-        const getGradeCollegeRes = await adminApi.getGradeCollege(submitData.gradeId)
-        console.log(getGradeCollegeRes)
-        if (getGradeCollegeRes.data.code === 1 && getGradeCollegeRes.data.data.length > 0) {
-          treeManager.add('college', getGradeCollegeRes.data.data, {gradeId: submitData.gradeId})
-          if (treeManager.getChildren('grade', submitData.gradeId).some(item => item.collegeId === submitData.collegeId)) {
-            ElMessage.warning('当前年级已存在学院配置，请勿重复添加')
-            return
-          }
-        }
-        // 添加年级-学院配置
-        const addGradeCollegeRes = await adminApi.addGradeCollege(submitData)
-        console.log(addGradeCollegeRes)
-        if (addGradeCollegeRes.data.code === 1) {
-          ElMessage.success('添加学院配置成功')
-        }
-      }
-      if (submitData.collegeId && submitData.gradeCollegeId && submitData.majorIds && submitData.majorIds.length > 0) {
-        // 检查当前学院-专业配置是否存在
-        for (let i = 0; i < submitData.majorIds.length; i++) {
-          const majorId = submitData.majorIds[i]
-          if (treeManager.findByBusinessIdInParent('major', majorId, { collegeId: submitData.collegeId }) !== null) {
-            // 删除已存在的专业配置
-            submitData.majorIds.splice(i, 1)
-          }
-        }
-        const getCollegeMajorRes = await adminApi.getCollegeMajor(submitData.collegeMajorId)
-        console.log(getCollegeMajorRes)
-        if (getCollegeMajorRes.data.code === 1 && getCollegeMajorRes.data.data.length > 0) {
-          treeManager.add('major', getCollegeMajorRes.data.data, {collegeId: submitData.collegeId})
-          if (treeManager.getChildren('college', submitData.collegeId).some(item => item.majorId === submitData.majorIds[0])) {
-            submitData.majorIds.splice(0, 1)
-            return
-          }
-        }
-        // 将专业-班级数据配置
-      }
-      if (submitData.majorIds && submitData.majorIds.length > 0 && submitData.collegeMajorIds) {
-        if (treeManager.findByBusinessIdInParent('major', submitData.majorIds[0], { collegeId: submitData.collegeId }) !== null) {
-          ElMessage.warning('当前学院已存在专业配置，请勿重复添加')
-          return
-        }
-      }
-    }
-    else if (submitData.configType === '年级党委党支部班级') {
-      // 添加年级党委党支部班级配置
+      await handleGradeCollegeMajorClassSubmit(submitData)
+    } else if (submitData.configType === '年级党委党支部班级') {
+      await handleGradePartyBranchClassSubmit(submitData)
     }
   } catch (error) {
     console.error('提交失败:', error)
@@ -664,6 +616,245 @@ const handleSubmit = async () => {
   } finally {
     submitting.value = false
   }
+}
+
+/**
+ * 处理年级学院专业班级配置提交
+ */
+const handleGradeCollegeMajorClassSubmit = async (submitData) => {
+  let gradeCollegeId = null
+  let hasNewRelation = false // 标记是否有新的关联被添加
+
+  // ==================== 第一步：处理年级-学院关联 ====================
+  if (submitData.gradeId && submitData.collegeId) {
+    // 1. 先在本地树形数据中查找
+    const existsInTree = treeManager.findByBusinessIdInParent(
+      'college',
+      submitData.collegeId,
+      { gradeId: submitData.gradeId }
+    )
+
+    if (existsInTree) {
+      console.log('本地树形数据中已存在年级-学院关联:', existsInTree)
+      gradeCollegeId = existsInTree.data.id
+    } else {
+      // 2. 本地不存在，从服务器查询
+      const getGradeCollegeRes = await adminApi.getGradeCollege(submitData.gradeId)
+      console.log('服务器查询年级-学院关联:', getGradeCollegeRes)
+
+      if (getGradeCollegeRes.data.code === 1 && getGradeCollegeRes.data.data.length > 0) {
+        // 将服务器数据同步到本地树
+        treeManager.add('college', getGradeCollegeRes.data.data, { gradeId: submitData.gradeId })
+
+        // 再次检查是否存在
+        const serverCollege = getGradeCollegeRes.data.data.find(
+          item => item.collegeId === submitData.collegeId
+        )
+
+        if (serverCollege) {
+          console.log('服务器中已存在年级-学院关联')
+          gradeCollegeId = serverCollege.id
+        }
+      }
+
+      // 3. 如果仍不存在，则添加新的年级-学院关联
+      if (!gradeCollegeId) {
+        const addGradeCollegeRes = await adminApi.addGradeCollege({
+          gradeId: submitData.gradeId,
+          collegeId: submitData.collegeId
+        })
+        console.log('添加年级-学院关联:', addGradeCollegeRes)
+
+        if (addGradeCollegeRes.data.code === 1) {
+          gradeCollegeId = addGradeCollegeRes.data.data
+          hasNewRelation = true
+
+          // 同步到本地树
+          treeManager.add('college', {
+            id: gradeCollegeId,
+            collegeId: submitData.collegeId,
+            collegeName: submitData.collegeName,
+            status: 1
+          }, { gradeId: submitData.gradeId })
+
+          console.log('✅ 成功添加年级-学院关联')
+        } else {
+          throw new Error('添加年级-学院关联失败')
+        }
+      }
+    }
+  }
+  console.log('gradeCollegeId:', gradeCollegeId)
+
+  // ==================== 第二步：处理学院-专业关联 ====================
+  const collegeMajorIds = [] // 存储所有的学院-专业关联ID
+  const newMajorIds = [] // 需要新建关联的专业ID
+
+  if (gradeCollegeId && submitData.majorIds && submitData.majorIds.length > 0) {
+    // 1. 先从服务器查询现有的学院-专业关联
+    const getCollegeMajorRes = await adminApi.getCollegeMajor(gradeCollegeId)
+    console.log('服务器查询学院-专业关联:', getCollegeMajorRes)
+
+    if (getCollegeMajorRes.data.code === 1 && getCollegeMajorRes.data.data.length > 0) {
+      // 同步到本地树
+      treeManager.add('major', getCollegeMajorRes.data.data, {
+        gradeId: submitData.gradeId,
+        collegeId: submitData.collegeId
+      })
+    }
+
+    // 2. 遍历所有选中的专业，检查哪些需要新建关联
+    for (const majorId of submitData.majorIds) {
+      // 在本地树中查找
+      const existsInTree = treeManager.findByBusinessIdInParent(
+        'major',
+        majorId,
+        {
+          gradeId: submitData.gradeId,
+          collegeId: submitData.collegeId
+        }
+      )
+
+      if (existsInTree) {
+        console.log(`专业 ${majorId} 已存在关联`)
+        collegeMajorIds.push(existsInTree.data.id)
+      } else {
+        console.log(`专业 ${majorId} 需要新建关联`)
+        newMajorIds.push(majorId)
+      }
+    }
+
+    // 3. 为需要新建关联的专业添加学院-专业关联
+    if (newMajorIds.length > 0) {
+      for (const majorId of newMajorIds) {
+        const addCollegeMajorRes = await adminApi.addCollegeMajor({
+          gradeCollegeId: gradeCollegeId,
+          majorId: majorId
+        })
+        console.log(`添加学院-专业关联 (majorId: ${majorId}):`, addCollegeMajorRes)
+
+        if (addCollegeMajorRes.data.code === 1) {
+          const collegeMajorId = addCollegeMajorRes.data.data
+          collegeMajorIds.push(collegeMajorId)
+          hasNewRelation = true
+
+          // 同步到本地树
+          const majorInfo = majorList.value.find(m => m.id === majorId)
+          treeManager.add('major', {
+            id: collegeMajorId,
+            majorId: majorId,
+            majorName: majorInfo?.name || '',
+            status: 1
+          }, {
+            gradeId: submitData.gradeId,
+            collegeId: submitData.collegeId
+          })
+
+          console.log(`✅ 成功添加学院-专业关联 (majorId: ${majorId})`)
+        } else {
+          console.error(`❌ 添加学院-专业关联失败 (majorId: ${majorId})`)
+        }
+      }
+    }
+  }
+
+  // ==================== 第三步：处理专业-班级关联 ====================
+  if (collegeMajorIds.length > 0 && submitData.classIds && submitData.classIds.length > 0) {
+    let totalNewClassRelations = 0
+
+    // 遍历每个专业
+    for (let i = 0; i < collegeMajorIds.length; i++) {
+      const collegeMajorId = collegeMajorIds[i]
+      const majorId = submitData.majorIds[i]
+
+      // 1. 从服务器查询现有的专业-班级关联
+      const getMajorClassRes = await adminApi.getMajorClassByCollegeMajorId(collegeMajorId)
+      console.log(`服务器查询专业-班级关联 (collegeMajorId: ${collegeMajorId}):`, getMajorClassRes)
+
+      if (getMajorClassRes.data.code === 1 && getMajorClassRes.data.data.length > 0) {
+        // 同步到本地树
+        treeManager.add('class', getMajorClassRes.data.data, {
+          gradeId: submitData.gradeId,
+          collegeId: submitData.collegeId,
+          majorId: majorId
+        })
+      }
+
+      // 2. 检查哪些班级需要新建关联
+      const newClassIds = []
+      for (const classId of submitData.classIds) {
+        const existsInTree = treeManager.findByBusinessIdInParent(
+          'class',
+          classId,
+          {
+            gradeId: submitData.gradeId,
+            collegeId: submitData.collegeId,
+            majorId: majorId
+          }
+        )
+
+        if (!existsInTree) {
+          newClassIds.push(classId)
+        }
+      }
+
+      // 3. 添加新的专业-班级关联
+      if (newClassIds.length > 0) {
+        const addMajorClassRes = await adminApi.addMajorClass({
+          collegeMajorId: collegeMajorId,
+          classIds: newClassIds
+        })
+        console.log(`添加专业-班级关联 (collegeMajorId: ${collegeMajorId}):`, addMajorClassRes)
+
+        if (addMajorClassRes.data.code === 1) {
+          totalNewClassRelations += newClassIds.length
+          hasNewRelation = true
+
+          // 同步到本地树
+          const classInfoList = newClassIds.map(classId => {
+            const classInfo = classList.value.find(c => c.id === classId)
+            return {
+              id: `${collegeMajorId}_${classId}`, // 临时ID
+              classId: classId,
+              className: classInfo?.name || '',
+              status: 1
+            }
+          })
+
+          treeManager.add('class', classInfoList, {
+            gradeId: submitData.gradeId,
+            collegeId: submitData.collegeId,
+            majorId: majorId
+          })
+
+          console.log(`✅ 成功添加 ${newClassIds.length} 个专业-班级关联`)
+        }
+      }
+    }
+
+    if (totalNewClassRelations > 0) {
+      console.log(`✅ 总共添加了 ${totalNewClassRelations} 个专业-班级关联`)
+    }
+  }
+
+  // ==================== 第四步：显示结果提示 ====================
+  if (hasNewRelation) {
+    ElMessage.success('配置提交成功！')
+    // 可选：重置表单或跳转到结果页面
+    // resetFormData(false)
+    // router.push({ name: 'DictionaryResult' })
+  } else {
+    ElMessage.warning('当前配置均已关联，无需重复关联')
+  }
+}
+
+/**
+ * 处理年级党委党支部班级配置提交
+ */
+const handleGradePartyBranchClassSubmit = async (submitData) => {
+  // TODO: 实现年级党委党支部班级的提交逻辑
+  // 逻辑类似，根据实际API调整
+  ElMessage.info('年级党委党支部班级配置功能待实现')
 }
 
 // ==================== 工具方法 ====================
@@ -679,6 +870,7 @@ const formatSubmitData = () => {
     return {
       ...baseData,
       collegeId: collegeList.value.find(item => item.id === formData.collegeId)?.id || null,
+      collegeName: collegeList.value.find(item => item.id === formData.collegeId)?.name || null,
       majorIds: majorList.value.filter(item => formData.majorIds.includes(item.id)).map(item => item.id),
       classIds: classList.value.filter(item => formData.classIds.includes(item.id)).map(item => item.id),
       majorCount: formData.majorIds.length,
