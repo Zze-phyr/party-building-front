@@ -46,6 +46,7 @@ const handleRefresh = () => {
   min-height: 40px;
 
   &__left {
+    flex: 1;
     display: flex;
     gap: 8px;
     align-items: center;
