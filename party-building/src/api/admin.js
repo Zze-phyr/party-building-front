@@ -4,7 +4,22 @@ import request from '@/utils/network/request'
 export const adminApi = {
   //查看批次
   getBatch: (data) => {
-    return request.get('/admin/batch/get', data)
+    return request.get(`/admin/batch/get?page=${data.page}&pageSize=${data.pageSize}&statusEnum=${data.statusEnum}&name=${data.name || ''}`);
+  },
+
+  // 添加批次
+  addBatch: (data) => {
+    return request.post(`/admin/batch/add?name=${data.name}`);
+  },
+
+  // 修改批次
+  updateBatch: (data) => {
+    return request.patch(`/admin/batch/update`, data);
+  },
+
+  // 删除批次
+  deleteBatch: (data) => {
+    return request.delete(`/admin/batch/delete?id=${data}`);
   },
 
   // 查看年级数据
@@ -170,5 +185,27 @@ export const adminApi = {
   // 修改党支部班级关联数据
   updateBranchClass(params) {
     return request.post(`/admin/dictionary/branch-class/update`, params);
+  },
+
+  // 获取入党状态列表
+  getJoinPartyStatusList() {
+    return request.get(`/admin/joinPartyStatus/get`);
+  },
+
+  // 获得当前批次的用户列表
+  getUsersByBatch(data) {
+    return request.get(`/admin/batch/${data.batchId}/users?page=${data.page}&pageSize=${data.pageSize}`);
+  },
+
+  // 添加用户到当前批次
+  addUsersToBatch(data) {
+    return request.post(`/admin/batch/${data.batchId}/users`, data.params);
+  },
+
+  // 从当前批次移除用户
+  removeUsersFromBatch(data) {
+    return request.delete(`/admin/batch/${data.batchId}/users`, data.params);
   }
+
+  
 }
