@@ -18,7 +18,19 @@
       >
         <!-- 自定义工具栏按钮 -->
         <template #toolbar>
-
+          <div class="table-toolbar">
+            <div class="toolbar-left">
+              <el-input placeholder="请输入学生姓名、学号" v-model="searchName" clearable></el-input>
+            </div>
+            <div class="toolbar-right">
+              <el-button type="primary">
+                确认转为下一个状态
+              </el-button>
+              <el-button>
+                中共预备党员管理
+              </el-button>
+            </div>
+          </div>
         </template>
 
         <!-- 自定义操作列 -->
@@ -51,6 +63,8 @@ const loading = ref(false)
 // 选中的行
 const selectedRows = ref([])
 
+const joinPartyStatusList = reactive([])
+
 const isFrontPagination = ref(true)
 
 // 分页配置
@@ -79,7 +93,13 @@ const columns = [
   },
   {
     prop: 'name',
-    label: '字典名称',
+    label: '姓名',
+    align: 'center',
+    width: 120
+  },
+  {
+    prop: 'number',
+    label: '学号 / 工号',
     align: 'center',
     width: 120
   },
@@ -91,8 +111,14 @@ const columns = [
     // slot: 'status'
   },
   {
-    prop: 'createTime',
-    label: '创建时间',
+    prop: 'branch',
+    label: '所属党支部',
+    align: 'center',
+    width: 120
+  },
+  {
+    prop: 'updateUser',
+    label: '处理人',
     align: 'center',
     sortable: true
   },
@@ -109,10 +135,10 @@ const columns = [
 // 筛选配置
 const searchConfig = [
   {
-    prop: 'type',
-    label: '字典类型',
+    prop: 'branch',
+    label: '所属党支部',
     type: 'select',
-    placeholder: '请选择字典类型',
+    placeholder: '请选择所属党支部',
     defaultValue: '年级',
     options: [
       { label: '年级', value: '年级' },
@@ -128,12 +154,48 @@ const searchConfig = [
     label: '状态',
     type: 'select',
     placeholder: '请选择状态',
-    options: [
-      { label: '启用', value: 1 },
-      { label: '停用', value: 0 }
-    ]
+    options: joinPartyStatusList
   }
 ]
+
+// const get
+
+const getJoinPartyStatusListEvent = async () => {
+  try {
+    const res = await adminApi.getJoinPartyStatusList()
+    console.log('getJoinPartyStatusList', res)
+    if (res.data.code === 1) {
+      const options = res.data.data.map(item => {
+        return {
+          label: item,
+          value: item
+        }
+      })
+      Object.assign(joinPartyStatusList, options)
+    }
+  } catch (error) {
+    console.error('获取入党状态列表失败:', error)
+  }
+}
+
+onMounted(async () => {
+  await getJoinPartyStatusListEvent()
+})
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.table-toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 40px;
+}
+
+.toolbar-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-right: 10px;
+}
+</style>
