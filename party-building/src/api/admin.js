@@ -205,7 +205,11 @@ export const adminApi = {
   // 从当前批次移除用户
   removeUsersFromBatch(data) {
     return request.delete(`/admin/batch/${data.batchId}/users`, data.params);
+  },
+
+  // 获取文件类型列表
+  getFileTypeList() {
+    return request.get(`/admin/file/fileTypeList`);
   }
 
-  
 }

@@ -8,8 +8,8 @@ export const generalApi = {
   },
 
   // 文件上传
-  uploadFile: (data) => {
-    return request.post('/general/file/upload', data)
+  uploadFile(data) {
+    return request.post(`/general/file/upload`, data);
   },
 
   // 根据id删除文件
