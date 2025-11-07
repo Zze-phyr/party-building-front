@@ -9,9 +9,24 @@
           <span>党建后台管理系统</span>
         </div>
         <div class="right">
-          <div class="item message">消息</div>
-          <div class="item personal-center">管理员</div>
-          <div class="item log-out">退出</div>
+          <el-badge :value="12" class="item">
+            <el-button link type="primary">
+              <Bell style="width: 1em; height: 1em; margin-right: 8px; color: #bc0000;" />
+            </el-button>
+          </el-badge>
+          <el-dropdown>
+            <el-avatar
+              :src="userInfoStore.userInfo.avatar || ''"
+            >
+              {{ userInfoStore.userInfo.avatar ? '' : userInfoStore.userInfo.name }}
+            </el-avatar>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item icon="el-icon-user-solid">用户信息</el-dropdown-item>
+                <el-dropdown-item icon="el-icon-logout">退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </div>
       </el-col>
     </el-row>
@@ -30,12 +45,12 @@
             <el-sub-menu v-if="route.children && route.children.length > 0 && !route.meta?.hiddenChildren" :index="route.path">
               <template #title>
                 <i class="iconfont" v-html="route.meta.icon"></i>
-                <el-tooltip 
-                  :content="route.meta.title" 
+                <el-tooltip
+                  :content="route.meta.title"
                   placement="right"
                   :disabled="!isTextOverflow(`parent-${index}`)"
                 >
-                  <el-text 
+                  <el-text
                     :ref="el => setTextRef(`parent-${index}`, el)"
                     truncated
                   >
@@ -50,12 +65,12 @@
                 @click="navigateTo(`/admin/${route.path}/${child.path}`)"
               >
                 <i class="iconfont" v-html="child.meta.icon"></i>
-                <el-tooltip 
-                  :content="child.meta.title" 
+                <el-tooltip
+                  :content="child.meta.title"
                   placement="right"
                   :disabled="!isTextOverflow(`child-${index}-${childIndex}`)"
                 >
-                  <el-text 
+                  <el-text
                     :ref="el => setTextRef(`child-${index}-${childIndex}`, el)"
                     truncated
                   >
@@ -65,18 +80,18 @@
               </el-menu-item>
             </el-sub-menu>
             <!-- 一级菜单项 - 修复这里 -->
-            <el-menu-item 
-              v-else 
+            <el-menu-item
+              v-else
               :index="getMenuItemIndex(route)"
               @click="navigateTo(getMenuItemPath(route))"
             >
               <i class="iconfont" v-html="route.meta.icon"></i>
-              <el-tooltip 
-                :content="route.meta.title" 
+              <el-tooltip
+                :content="route.meta.title"
                 placement="right"
                 :disabled="!isTextOverflow(`single-${index}`)"
               >
-                <el-text 
+                <el-text
                   :ref="el => setTextRef(`single-${index}`, el)"
                   truncated
                 >
@@ -95,11 +110,12 @@
 
 <script setup>
 import { computed, ref, onMounted, nextTick } from 'vue'
-import { useUserStore } from '@/stores'
+import { useUserStore, useInfoStore } from '@/stores'
 import { useRouter, useRoute } from 'vue-router'
 
 //动态路由
 const userStore = useUserStore()
+const userInfoStore = useInfoStore()
 const router = useRouter()
 const route = useRoute()
 
@@ -169,13 +185,13 @@ const dynamicRoutes = computed(() => {
 // 计算当前激活的菜单项
 const activeMenu = computed(() => {
   const path = route.path
-  
+
   // 移除 /admin 前缀
   const cleanPath = path.replace('/admin/', '')
-  
+
   // 分割路径
   const pathSegments = cleanPath.split('/').filter(Boolean)
-  
+
   if (pathSegments.length === 0) {
     return ''
   } else if (pathSegments.length === 1) {
@@ -195,9 +211,9 @@ const activeMenu = computed(() => {
 // 监听窗口大小变化，重新检查溢出
 onMounted(() => {
   checkTextOverflow()
-  
+
   window.addEventListener('resize', checkTextOverflow)
-  
+
   // 组件卸载时移除监听
   return () => {
     window.removeEventListener('resize', checkTextOverflow)
@@ -247,6 +263,14 @@ onMounted(() => {
     // 右边
     .right {
       display: flex;
+      align-items: center;
+      gap: 40px;
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-left: 20px;
+      }
       .item {
         /* 新增图标字体定义 */
         font-family: 'iconfont';
