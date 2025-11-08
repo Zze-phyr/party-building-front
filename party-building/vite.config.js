@@ -1,4 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
+import path from 'path'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -31,6 +32,7 @@ export default defineConfig({
           prefix: 'Icon',
         }),
       ],
+      dts: 'src/auto-imports.d.ts',
     }),
 
     Components({
@@ -44,10 +46,13 @@ export default defineConfig({
         // 自动导入 Element Plus 组件
         ElementPlusResolver(),
       ],
+      dts: 'src/components.d.ts',
     }),
 
     Icons({
       autoInstall: true,
+      // ✅ 编译器选择
+      compiler: 'vue3',
     }),
 
   ],
