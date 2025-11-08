@@ -10,8 +10,8 @@
         </div>
         <div class="right">
           <el-badge :value="12" class="item">
-            <el-button link type="primary">
-              <Bell style="width: 1em; height: 1em; margin-right: 8px; color: #bc0000;" />
+            <el-button text circle>
+              <i-ep-bell />
             </el-button>
           </el-badge>
           <el-dropdown>
@@ -22,8 +22,8 @@
             </el-avatar>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item icon="el-icon-user-solid">用户信息</el-dropdown-item>
-                <el-dropdown-item icon="el-icon-logout">退出登录</el-dropdown-item>
+                <el-dropdown-item><i-ep-user style="margin-right: 5px;" />用户信息</el-dropdown-item>
+                <el-dropdown-item><i-ep-switch-button style="margin-right: 5px;" />退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -303,7 +303,7 @@ onMounted(() => {
       box-sizing: border-box;
       .aside-menu {
         padding: 10px 15px;
-        height: 100%;
+        min-height: 100%;
         .iconfont {
           padding-right: 10px;
         }
