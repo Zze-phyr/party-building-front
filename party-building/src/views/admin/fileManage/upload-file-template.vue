@@ -61,7 +61,7 @@
                     :on-exceed="handleExceed"
                     :before-upload="beforeFileUpload"
                     :on-remove="handleFileRemove"
-                    accept=".docx"
+                    accept=".pdf"
                     :file-list="fileList"
                   >
                     <el-button size="default">
@@ -357,11 +357,11 @@ const handleExceed = () => {
  * 上传前文件验证
  */
 const beforeFileUpload = (file) => {
-  const isDocx = file.name.toLowerCase().endsWith('.docx')
+  const isPdf = file.name.toLowerCase().endsWith('.pdf')
   const isLt10M = file.size / 1024 / 1024 < 10
 
-  if (!isDocx) {
-    ElMessage.error('只能上传 .docx 格式的文件!')
+  if (!isPdf) {
+    ElMessage.error('只能上传 .pdf 格式的文件!')
     return false
   }
   if (!isLt10M) {

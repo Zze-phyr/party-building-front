@@ -274,8 +274,7 @@ const fetchData = async () => {
       ...searchFilters.value  // 合并搜索条件
     }
 
-    // TODO: 调用实际的API接口
-    const res = await adminApi.getUserList(params)
+    const res = await adminApi.checkAllUserInfo(params)
 
     if (res.code === 1) {
       tableData.value = res.data.list || []
