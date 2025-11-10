@@ -24,6 +24,7 @@ export const adminBaseRoutes = [
       title: '学生入党',
       roles: ['Administrator', 'Organizers', 'BranchSecretary', 'BranchCommittee'],
     },
+    redirect: '/admin/joinParty/reviewUpload',
     children: [
       {
         name: 'ReviewUpload',
