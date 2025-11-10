@@ -23,7 +23,7 @@
 
       <!-- 右侧：年级党委党支部班级 -->
       <div class="tree-section">
-        <DictionaryTree
+        <!-- <DictionaryTree
           ref="partyTreeRef"
           title="年级党委党支部班级"
           tree-type="party"
@@ -31,7 +31,7 @@
           @add="handleAdd"
           @delete="handleDelete"
           @refresh="handleRefresh"
-        />
+        /> -->
       </div>
     </div>
   </ContentCard>
@@ -50,10 +50,10 @@ const partyTreeRef = ref(null)
 // 学院体系配置
 const academicConfig = reactive({
   levels: [
-    { type: 'grade', label: '年级', icon: 'Calendar', loadMethod: 'loadGradeCollege' },
-    { type: 'college', label: '学院', icon: 'School', loadMethod: 'loadCollegeMajor' },
-    { type: 'major', label: '专业', icon: 'Reading', loadMethod: 'loadMajorClass' },
-    { type: 'class', label: '班级', icon: 'User', loadMethod: null }
+    { type: 'grade', label: '年级', icon: 'Calendar', loadMethod: 'loadGrades' },
+    { type: 'college', label: '学院', icon: 'School', loadMethod: 'loadGradeCollege' },
+    { type: 'major', label: '专业', icon: 'Reading', loadMethod: 'loadCollegeMajor' },
+    { type: 'class', label: '班级', icon: 'User', loadMethod: 'loadMajorClass' }
   ],
   loader: createAcademicLoader()
 })

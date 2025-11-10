@@ -75,6 +75,7 @@ const handleSearch = debounce((value) => {
 
 <style scoped lang="scss">
 .tree-operations {
+  --el-color-primary: #bc0000;
   padding: 16px;
   border-bottom: 1px solid #EBEEF5;
   background: #fff;
@@ -120,7 +121,7 @@ const handleSearch = debounce((value) => {
     }
 
     :deep(.el-input__wrapper.is-focus) {
-      box-shadow: 0 0 0 1px #409EFF inset !important;
+      box-shadow: 0 0 0 1px var(--el-color-primary) inset !important;
     }
   }
 }

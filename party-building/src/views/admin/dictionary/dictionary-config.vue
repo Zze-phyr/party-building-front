@@ -106,6 +106,7 @@
             <!-- 党委选择 -->
             <el-form-item label="党委：" required>
               <el-select
+                :disabled="!formData.gradeId"
                 v-model="formData.partyCommitteeId"
                 placeholder="请选择党委"
                 @change="handlePartyChange"
@@ -126,6 +127,7 @@
             <!-- 党支部选择 -->
             <el-form-item label="党支部：" required>
               <el-select
+                :disabled="!formData.partyCommitteeId"
                 v-model="formData.partyBranchId"
                 placeholder="请选择党支部"
                 @change="handleBranchChange"
@@ -143,15 +145,31 @@
               </el-select>
             </el-form-item>
 
+            <!-- 专业多选 - 使用组件，支持分页 -->
+            <el-form-item label="专业：">
+              <ScrollableSelect
+                :modelValue="formData.majorIds"
+                :list="majorList"
+                :loading="loading.major"
+                :has-more="pagination.major.hasMore"
+                :load-more="handleLoadMoreMajor"
+                placeholder="请选择专业"
+                @change="handleMajorClassChange"
+                class="full-width"
+                clearable
+                :disabled="!formData.partyBranchId"
+              >
+              </ScrollableSelect>
+            </el-form-item>
+
             <!-- 班级多选 - 使用组件 -->
-            <el-form-item label="班级：" v-if="formData.partyBranchId">
+            <el-form-item label="班级：" required>
               <CheckboxList
-                v-model="formData.classIds"
-                :list="classList"
-                :loading="loading.class"
-                :has-more="pagination.class.hasMore"
+                v-model="formData.majorClassIds"
+                :list="majorClassList"
+                :loading="loading.majorClass"
+                :has-more="pagination.majorClass.hasMore"
                 title="可选班级"
-                @load-more="handleLoadMoreClass"
               />
             </el-form-item>
           </template>
@@ -168,7 +186,7 @@
           >
             组成配置
           </el-button>
-          <el-button @click="resetDialogVisible = true">
+          <el-button @click="handleOpenResetDialog(formData)">
             重置
           </el-button>
         </div>
@@ -184,8 +202,8 @@
     <span>确定要重置所有配置吗？</span>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="resetDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="handleReset">
+        <el-button @click="handleResetDialogCancel">取消</el-button>
+        <el-button type="primary" @click="handleResetDialogConfirm">
           确认
         </el-button>
       </div>
@@ -195,12 +213,13 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import CheckboxList from './components/checkbox-list.vue'
 import { adminApi } from '@/api/admin'
 import { useRouter } from 'vue-router'
 import ScrollableSelect from '@/components/admin/ScrollableSelect.vue'
 import { treeManager } from './utils/treeDataManager'
+import { partyTreeManager } from './utils/partyTreeDataManager'
 
 // ==================== 响应式数据定义 ====================
 const router = useRouter()
@@ -212,8 +231,9 @@ const formData = reactive({
   collegeId: null,
   partyCommitteeId: null,
   partyBranchId: null,
-  majorIds: [],
-  classIds: []
+  majorIds: [] | null,
+  classIds: [],
+  majorClassIds: []
 })
 
 // 数据列表
@@ -223,6 +243,7 @@ const partyList = ref([])
 const branchList = ref([])
 const majorList = ref([])
 const classList = ref([])
+const majorClassList = ref([])
 
 // 分页信息
 const pagination = reactive({
@@ -239,6 +260,12 @@ const pagination = reactive({
     hasMore: false
   },
   class: {
+    page: 1,
+    pageSize: 20,
+    total: 0,
+    hasMore: false
+  },
+  majorClass: {
     page: 1,
     pageSize: 20,
     total: 0,
@@ -264,6 +291,7 @@ const formRef = ref(null)
 
 // 重置确认弹窗
 const resetDialogVisible = ref(false)
+const resetOlderValue = ref(null)
 
 // 数据缓存
 const dataCache = new Map()
@@ -334,7 +362,7 @@ const loadList = async (type, page = 1, append = false) => {
         break
 
       case 'partyCommittee':
-        res = await adminApi.getPartyCommitteeDictionaryList(data)
+        res = await adminApi.getPartyDictionaryList(data)
         if (res?.data?.data) {
           records = res.data.data
           total = records.length
@@ -362,6 +390,14 @@ const loadList = async (type, page = 1, append = false) => {
         if (res?.data?.data) {
           records = res.data.data
           total = records.length
+        }
+        break
+
+      case 'majorClass':
+        res = await adminApi.getMajorClassDictionaryList(data)
+        if (res?.data?.data?.records) {
+          records = res.data.data.records
+          total = res.data.data.total || records.length
         }
         break
     }
@@ -474,14 +510,37 @@ const handleLoadMoreClass = async () => {
 
 // ==================== 表单变更处理 ====================
 
+
+// 打开重置对话框
+const handleOpenResetDialog = (value) => {
+  resetDialogVisible.value = true
+  resetOlderValue.value = value
+}
+
+// 确认重置
+const handleResetDialogConfirm = async () => {
+  resetFormData(false)
+  resetDialogVisible.value = false
+  resetOlderValue.value = null
+}
+
+// 取消重置
+const handleResetDialogCancel = () => {
+  formData.configType = formData.configType === '年级学院专业班级' ? '年级党委党支部班级' : '年级学院专业班级'
+  resetDialogVisible.value = false
+  resetOlderValue.value = null
+}
+
 // 配置类型变更
 const handleConfigTypeChange = async (value) => {
   if (!value) return
+  console.log('配置类型变更:', value)
+  console.log('当前表单数据:', formData)
 
   // 如果有已选数据，提示确认
   if (formData.gradeId || formData.collegeId || formData.partyCommitteeId) {
     try {
-      resetDialogVisible.value = true
+      handleOpenResetDialog(formData)
     } catch {
       // 用户取消，恢复原值
       const oldValue = value === '年级学院专业班级'
@@ -560,6 +619,7 @@ const handleBranchChange = async (value) => {
 
   if (!value) return
 
+  await loadList('major', 1, false)
   await loadList('class', 1, false)
 }
 
@@ -576,20 +636,20 @@ const handleMajorChange = async (value) => {
   await loadList('class', 1, false)
 }
 
+const handleMajorClassChange = (value) => {
+  formData.majorClassIds = [],
+  majorClassList.value = []
+
+  resetPagination('majorClass')
+
+  if (!value || !value.length) return
+
+  loadList('majorClass', 1, false)
+}
+
 // 查看配置结果
 const handleViewResult = () => {
   router.push({ name: 'DictionaryResult' })
-}
-
-// 重置表单
-const handleReset = async () => {
-  try {
-    resetDialogVisible.value = false
-    resetFormData(true)
-    ElMessage.success('已重置')
-  } catch {
-    // 用户取消
-  }
 }
 
 // 提交配置
@@ -800,34 +860,34 @@ const handleGradeCollegeMajorClassSubmit = async (submitData) => {
 
       // 3. 添加新的专业-班级关联
       if (newClassIds.length > 0) {
-        const addMajorClassRes = await adminApi.addMajorClass({
-          collegeMajorId: collegeMajorId,
-          classIds: newClassIds
-        })
-        console.log(`添加专业-班级关联 (collegeMajorId: ${collegeMajorId}):`, addMajorClassRes)
+        for (const classId of newClassIds) {
+          const addMajorClassRes = await adminApi.addMajorClass({
+            collegeMajorId: collegeMajorId,
+            classId: classId
+          })
+          console.log(`添加专业-班级关联 (majorId: ${majorId}, classId: ${classId}):`, addMajorClassRes)
 
-        if (addMajorClassRes.data.code === 1) {
-          totalNewClassRelations += newClassIds.length
-          hasNewRelation = true
+          if (addMajorClassRes.data.code === 1) {
+            totalNewClassRelations++
+            hasNewRelation = true
 
-          // 同步到本地树
-          const classInfoList = newClassIds.map(classId => {
+            // 同步到本地树
             const classInfo = classList.value.find(c => c.id === classId)
-            return {
+            treeManager.add('class', {
               id: `${collegeMajorId}_${classId}`, // 临时ID
               classId: classId,
               className: classInfo?.name || '',
               status: 1
-            }
-          })
+            }, {
+              gradeId: submitData.gradeId,
+              collegeId: submitData.collegeId,
+              majorId: majorId
+            })
 
-          treeManager.add('class', classInfoList, {
-            gradeId: submitData.gradeId,
-            collegeId: submitData.collegeId,
-            majorId: majorId
-          })
-
-          console.log(`✅ 成功添加 ${newClassIds.length} 个专业-班级关联`)
+            console.log(`✅ 成功添加专业-班级关联 (majorId: ${majorId}, classId: ${classId})`)
+          } else {
+            console.error(`❌ 添加专业-班级关联失败 (majorId: ${majorId}, classId: ${classId})`)
+          }
         }
       }
     }
@@ -841,7 +901,7 @@ const handleGradeCollegeMajorClassSubmit = async (submitData) => {
   if (hasNewRelation) {
     ElMessage.success('配置提交成功！')
     // 可选：重置表单或跳转到结果页面
-    // resetFormData(false)
+    resetFormData(false)
     // router.push({ name: 'DictionaryResult' })
   } else {
     ElMessage.warning('当前配置均已关联，无需重复关联')
@@ -852,9 +912,173 @@ const handleGradeCollegeMajorClassSubmit = async (submitData) => {
  * 处理年级党委党支部班级配置提交
  */
 const handleGradePartyBranchClassSubmit = async (submitData) => {
-  // TODO: 实现年级党委党支部班级的提交逻辑
-  // 逻辑类似，根据实际API调整
-  ElMessage.info('年级党委党支部班级配置功能待实现')
+  let gradeCommitteeId = null
+  let hasNewRelation = false // 标记是否有新的关联被添加
+
+  if (submitData.gradeId && submitData.partyCommitteeId) {
+    // 1. 先从本地树中查找
+    const existsInTree = partyTreeManager.findByBusinessIdInParent(
+      'committee',
+      submitData.partyCommitteeId,
+      { gradeId: submitData.gradeId }
+    )
+
+    if (existsInTree) {
+      console.log(`党委 ${submitData.partyCommitteeId} 已存在关联`)
+      gradeCommitteeId = existsInTree.data.id
+    } else {
+      const getGradeCommitteeRes = await adminApi.getGradeCommitteesByGradeId(submitData.gradeId)
+      console.log(`查询年级党委 ${submitData.partyCommitteeId} 关联结果:`, getGradeCommitteeRes)
+
+      if (getGradeCommitteeRes.data.code === 1 && getGradeCommitteeRes.data.data.length > 0) {
+        partyTreeManager.add('committee', getGradeCommitteeRes.data.data, { gradeId: submitData.gradeId })
+
+        const serverCommittee = getGradeCommitteeRes.data.data.find(item => item.committeeId === submitData.partyCommitteeId)
+        if (serverCommittee) {
+          console.log('服务器已存在年级-党委关联')
+          gradeCommitteeId = serverCommittee.id
+        }
+      }
+
+      if (!gradeCommitteeId) {
+        const addGradeCommitteeRes = await adminApi.addGradeCommittee({
+          gradeId: submitData.gradeId,
+          committeeId: submitData.partyCommitteeId
+        })
+        console.log(`添加年级-党委关联 (gradeId: ${submitData.gradeId}, committeeId: ${submitData.partyCommitteeId}):`, addGradeCommitteeRes)
+
+        if (addGradeCommitteeRes.data.code === 1) {
+          gradeCommitteeId = addGradeCommitteeRes.data.data
+          hasNewRelation = true
+          partyTreeManager.add('committee', {
+            id: gradeCommitteeId,
+            committeeId: submitData.partyCommitteeId,
+            committeeName: submitData.partyCommitteeName,
+            status: 1
+          }, { gradeId: submitData.gradeId })
+          console.log('✅ 成功添加年级-党委关联')
+        } else {
+          throw new Error('添加年级-党委关联失败')
+        }
+      }
+    }
+  }
+  console.log('gradeCommitteeId', gradeCommitteeId)
+
+  let committeeBranchId = null
+  if (gradeCommitteeId && submitData.partyBranchId) {
+    const existsInTree = partyTreeManager.findByBusinessIdInParent(
+      'branch',
+      submitData.partyBranchId,
+      { gradeId: submitData.gradeId, committeeId: submitData.partyCommitteeId }
+    )
+    if (existsInTree) {
+      committeeBranchId = existsInTree.data.id
+    } else {
+      const getCommitteeBranchRes = await adminApi.getCommitteeBranchesByGradeCommitteeId(gradeCommitteeId)
+      console.log(`查询年级-党委党支部关联结果:`, getCommitteeBranchRes)
+
+      if (getCommitteeBranchRes.data.code === 1 && getCommitteeBranchRes.data.data.length > 0) {
+        partyTreeManager.add('branch', getCommitteeBranchRes.data.data, { gradeId: submitData.gradeId, committeeId: submitData.partyCommitteeId })
+
+        const serverBranch = getCommitteeBranchRes.data.data.find(item => item.branchId === submitData.partyBranchId)
+        if (serverBranch) {
+          console.log('服务器已存在年级-党委党支部关联')
+          committeeBranchId = serverBranch.id
+        }
+      }
+
+      if (!committeeBranchId) {
+        const addCommitteeBranchRes = await adminApi.addCommitteeBranch({
+          gradeCommitteeId: gradeCommitteeId,
+          branchId: submitData.partyBranchId
+        })
+        console.log(`添加年级-党委党支部关联 (gradeCommitteeId: ${gradeCommitteeId}, branchId: ${submitData.partyBranchId}):`, addCommitteeBranchRes)
+
+        if (addCommitteeBranchRes.data.code === 1) {
+          committeeBranchId = addCommitteeBranchRes.data.data
+          hasNewRelation = true
+          partyTreeManager.add('branch', {
+            id: committeeBranchId,
+            branchId: submitData.partyBranchId,
+            branchName: submitData.partyBranchName,
+            status: 1
+          }, { gradeId: submitData.gradeId, committeeId: submitData.partyCommitteeId })
+          console.log('✅ 成功添加年级-党委党支部关联')
+        } else {
+          throw new Error('添加年级-党委党支部关联失败')
+        }
+      }
+    }
+  }
+  console.log('committeeBranchId', committeeBranchId)
+
+  if (committeeBranchId && submitData.classIds && submitData.classIds.length > 0) {
+    let totalNewClassRelations = 0
+
+    for (const classId of submitData.classIds) {
+      const getBranchClassesRes = await adminApi.getBranchClassesByCommitteeBranchId(committeeBranchId)
+      console.log(`查询年级-党委党支部班级关联结果:`, getBranchClassesRes)
+
+      if (getBranchClassesRes.data.code === 1 && getBranchClassesRes.data.data.length > 0) {
+        partyTreeManager.add('class', getBranchClassesRes.data.data, { gradeId: submitData.gradeId, committeeId: submitData.partyCommitteeId, branchId: submitData.partyBranchId })
+      }
+
+      const newClassIds = []
+      for (const classId of submitData.classIds) {
+        const existsInTree = partyTreeManager.findByBusinessIdInParent(
+          'class',
+          classId,
+          {
+            gradeId: submitData.gradeId,
+            committeeId: submitData.partyCommitteeId,
+            branchId: submitData.partyBranchId
+          }
+        )
+
+        if (!existsInTree) {
+          newClassIds.push(classId)
+        }
+      }
+
+      if (newClassIds.length > 0) {
+        for (const classId of newClassIds) {
+          const addBranchClassRes = await adminApi.addBranchClass({
+            committeeBranchId: committeeBranchId,
+            classId: classId
+          })
+          console.log(`添加年级-党委党支部班级关联 (committeeBranchId: ${committeeBranchId}, classId: ${classId}):`, addBranchClassRes)
+
+          if (addBranchClassRes.data.code === 1) {
+            hasNewRelation = true
+            totalNewClassRelations++
+
+            partyTreeManager.add('class', {
+              id: addBranchClassRes.data.data,
+              classId: classId,
+              className: classList.value.find(item => item.id === classId)?.name || null,
+              status: 1
+            }, { gradeId: submitData.gradeId, committeeId: submitData.partyCommitteeId, branchId: submitData.partyBranchId })
+            console.log('✅ 成功添加年级-党委党支部班级关联')
+          } else {
+            throw new Error('添加年级-党委党支部班级关联失败')
+          }
+        }
+      }
+    }
+    if (totalNewClassRelations > 0) {
+      console.log(`✅ 总共添加了 ${totalNewClassRelations} 个专业-班级关联`)
+    }
+  }
+
+  if (hasNewRelation) {
+    ElMessage.success('配置提交成功！')
+    // 可选：重置表单或跳转到结果页面
+    resetFormData(false)
+    // router.push({ name: 'DictionaryResult' })
+  } else {
+    ElMessage.warning('当前配置均已关联，无需重复关联')
+  }
 }
 
 // ==================== 工具方法 ====================
@@ -881,8 +1105,8 @@ const formatSubmitData = () => {
   if (formData.configType === '年级党委党支部班级') {
     return {
       ...baseData,
-      partyCommittee: partyList.value.find(item => item.id === formData.partyCommitteeId)?.id || null,
-      partyBranch: branchList.value.find(item => item.id === formData.partyBranchId)?.id || null,
+      partyCommitteeId: partyList.value.find(item => item.id === formData.partyCommitteeId)?.id || null,
+      partyBranchId: branchList.value.find(item => item.id === formData.partyBranchId)?.id || null,
       classIds: classList.value.filter(item => formData.classIds.includes(item.id)).map(item => item.id),
       classCount: formData.classIds.length
     }

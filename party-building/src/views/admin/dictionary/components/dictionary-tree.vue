@@ -17,10 +17,9 @@
           ref="treeRef"
           :data="treeData"
           :props="treeProps"
+          show-checkbox
           node-key="id"
-          :default-expanded-keys="defaultExpandedKeys"
           highlight-current
-          @node-expand="handleNodeExpand"
         >
           <template #default="{ node, data }">
             <div class="tree-node">
@@ -84,7 +83,7 @@ const emit = defineEmits(['add', 'delete', 'refresh'])
 const treeRef = ref(null)
 const loading = ref(false)
 const treeData = ref([])
-const defaultExpandedKeys = ref([])
+// const defaultExpandedKeys = ref([])
 
 // 树配置
 const treeProps = {
@@ -124,20 +123,19 @@ const loadGrades = async () => {
     const data = await props.treeConfig.loader.loadGrades()
     console.log(`[${props.treeType}] 年级数据:`, data)
 
-    // 为每个年级节点添加空的 children 数组（重要！）
-    const processedData = data.map(grade => ({
-      ...grade,
-      children: [] // 初始化为空数组，表示可以展开但还未加载
+    // ✅ 使用懒加载模式，不需要预设 children
+    treeData.value = data.map(item => ({
+      ...item,
+      children: [{
+        ...item,
+        level: 1,
+        isLeaf: item.children ? item.children.length === 0 : true
+      }],
+      childCount: item.children ? item.children.length : 1
     }))
+    console.log(`[${props.treeType}] 年级数据初始化完成`)
 
-    treeData.value = processedData
-    console.log(`[${props.treeType}] 处理后的数据:`, processedData)
-
-    // 设置默认展开第一个年级
-    if (processedData.length > 0) {
-      defaultExpandedKeys.value = [processedData[0].id]
-      console.log('设置默认展开:', defaultExpandedKeys.value)
-    }
+    console.log(`[${props.treeType}] 树初始化完成`)
 
     if (data.length === 0) {
       ElMessage.warning('暂无年级数据')
@@ -148,70 +146,6 @@ const loadGrades = async () => {
     treeData.value = []
   } finally {
     loading.value = false
-  }
-}
-
-// 查找节点
-const findNode = (nodes, id) => {
-  for (const node of nodes) {
-    if (node.id === id) {
-      return node
-    }
-    if (node.children && node.children.length > 0) {
-      const found = findNode(node.children, id)
-      if (found) return found
-    }
-  }
-  return null
-}
-
-// 节点展开事件 - 懒加载子节点
-const handleNodeExpand = async (data, node) => {
-  console.log(`[${props.treeType}] 节点展开:`, data.label, data)
-
-  // 如果是叶子节点，不需要加载
-  if (data.isLeaf) {
-    console.log('叶子节点，无需加载')
-    return
-  }
-
-  // 如果已经有子节点数据，不重复加载
-  if (data.children && data.children.length > 0) {
-    console.log('已有子节点数据，跳过加载')
-    return
-  }
-
-  // 获取当前节点的配置
-  const config = props.treeConfig.levels[data.level]
-  console.log(`节点配置:`, config)
-
-  if (!config?.loadMethod) {
-    console.log('没有加载方法')
-    return
-  }
-
-  try {
-    console.log(`调用加载方法: ${config.loadMethod}`)
-    const children = await props.treeConfig.loader[config.loadMethod](data)
-    console.log(`加载到 ${children.length} 个子节点:`, children)
-
-    // 为子节点添加空的 children 数组（除了叶子节点）
-    const processedChildren = children.map(child => ({
-      ...child,
-      children: child.isLeaf ? undefined : []
-    }))
-
-    // 更新节点数据
-    data.children = processedChildren
-    data.childCount = children.length
-
-    // 强制更新视图
-    treeData.value = [...treeData.value]
-
-    console.log('子节点加载完成，数据已更新')
-  } catch (error) {
-    console.error('加载子节点失败:', error)
-    ElMessage.error('加载失败：' + (error.message || '未知错误'))
   }
 }
 
@@ -237,25 +171,53 @@ const handleRefresh = () => {
 // 展开所有
 const handleExpandAll = () => {
   // 获取所有节点ID
-  const expandAll = (nodes) => {
+  const getAllNodeKeys = (nodes) => {
     const keys = []
-    nodes.forEach(node => {
-      if (!node.isLeaf) {
-        keys.push(node.id)
-        if (node.children && node.children.length > 0) {
-          keys.push(...expandAll(node.children))
+    const traverse = (items) => {
+      items.forEach(item => {
+        if (!item.isLeaf) {
+          keys.push(item.id)
         }
-      }
-    })
+        if (item.children && item.children.length > 0) {
+          traverse(item.children)
+        }
+      })
+    }
+    traverse(nodes)
     return keys
   }
 
-  defaultExpandedKeys.value = expandAll(treeData.value)
-  console.log('展开所有节点:', defaultExpandedKeys.value)
+  const keys = getAllNodeKeys(treeData.value)
+  defaultExpandedKeys.value = keys
+  console.log('展开所有节点:', keys)
+
+  // 强制展开
+  nextTick(() => {
+    keys.forEach(key => {
+      const node = treeRef.value?.getNode(key)
+      if (node && !node.expanded) {
+        node.expand()
+      }
+    })
+  })
 }
 
 // 折叠所有
 const handleCollapseAll = () => {
+  // 获取所有已展开的节点并折叠
+  const collapseAll = (nodes) => {
+    nodes.forEach(node => {
+      const treeNode = treeRef.value?.getNode(node.id)
+      if (treeNode && treeNode.expanded) {
+        treeNode.collapse()
+      }
+      if (node.children && node.children.length > 0) {
+        collapseAll(node.children)
+      }
+    })
+  }
+
+  collapseAll(treeData.value)
   defaultExpandedKeys.value = []
   console.log('折叠所有节点')
 }
@@ -273,13 +235,16 @@ const handleDelete = (params) => {
 // 刷新当前树
 const refresh = () => {
   defaultExpandedKeys.value = []
-  loadGrades()
+  // 重置树的状态
+  treeData.value = []
+  nextTick(() => {
+    loadGrades()
+  })
 }
 
 // 组件挂载
 onMounted(() => {
   console.log(`=== [${props.treeType}] 组件挂载 ===`)
-
   nextTick(() => {
     loadGrades()
   })
@@ -308,7 +273,7 @@ defineExpose({
   .tree-content {
     flex: 1;
     overflow: hidden;
-    padding: 16px;
+    padding: 4px 8px;
 
     :deep(.el-scrollbar) {
       height: 100%;
@@ -321,10 +286,7 @@ defineExpose({
 
         &.is-current {
           > .el-tree-node__content {
-            background-color: transparent !important;
-            .tree-node {
-              background: var(--el-color-primary-light-11);
-            }
+            background: var(--el-color-primary-light-11);
             :deep(.el-tree-node__content):hover {
               background: transparent !important;
             }
@@ -338,7 +300,7 @@ defineExpose({
         background: transparent;
 
         &:hover {
-          background: transparent !important;
+          background: var(--el-color-primary-light-11);
         }
       }
     }
@@ -360,7 +322,7 @@ defineExpose({
 
         .node-icon {
           font-size: 16px;
-          color: var(--el-color-primary);
+          // color: var(--el-color-primary);
         }
 
         .node-label {
@@ -377,8 +339,8 @@ defineExpose({
     }
   }
 
-  :deep(.el-empty) {
-    padding: 60px 0;
-  }
+  // :deep(.el-empty) {
+  //   padding: 60px 0;
+  // }
 }
 </style>

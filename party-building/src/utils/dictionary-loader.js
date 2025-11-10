@@ -9,21 +9,33 @@ export function createAcademicLoader() {
     // 加载年级数据
     async loadGrades() {
       try {
-        const response = await adminApi.getGradeDictionaryList()
+        // 携带分页和状态参数进行查询
+        const response = await adminApi.getGradeDictionaryList({
+          page: 1,
+          pageSize: 20,
+          statusEnum: 'ENABLE',
+          name: ''
+        })
         console.log('年级数据原始响应:', response)
-        
+
         // 根据接口格式，数据在 response.data.data.records 中
         const records = response?.data?.data?.records || response?.data?.records || response?.data?.data || []
-        
+
         if (!Array.isArray(records)) {
           console.error('年级数据不是数组:', records)
           return []
         }
-        
+
         console.log('年级数据records:', records)
-        
+
         const result = records
-          .filter(grade => grade.status === 1) // 只显示启用的年级
+          .filter(grade => grade.status === 1)
+          .sort((a, b) => {
+            // 提取name中的数字部分进行比较
+            const aNum = parseInt(a.name.replace(/\D/g, ''))
+            const bNum = parseInt(b.name.replace(/\D/g, ''))
+            return aNum - bNum
+          })
           .map(grade => buildTreeNode({
             id: `grade-${grade.id}`,
             label: grade.name || `${grade.grade}级`,
@@ -34,7 +46,7 @@ export function createAcademicLoader() {
             isLeaf: false,
             childCount: 0 // 初始为0，会在加载子节点后更新
           }))
-        
+
         console.log('年级数据处理结果:', result)
         return result
       } catch (error) {
@@ -48,20 +60,20 @@ export function createAcademicLoader() {
       try {
         console.log('加载学院数据，年级节点:', gradeNode)
         console.log('年级originId:', gradeNode.originId)
-        
+
         const response = await adminApi.getGradeCollege(gradeNode.originId)
         console.log('学院数据原始响应:', response)
-        
+
         // 数据在 response.data.data 中，是数组
         const colleges = response?.data?.data || response?.data || []
-        
+
         if (!Array.isArray(colleges)) {
           console.error('学院数据不是数组:', colleges)
           return []
         }
-        
+
         console.log('学院原始数据:', colleges)
-        
+
         // 过滤启用的学院
         const result = colleges
           .filter(item => item.status === 1)
@@ -77,10 +89,10 @@ export function createAcademicLoader() {
             isLeaf: false,
             childCount: 0
           }))
-        
+
         console.log('学院数据处理结果:', result)
         return result
-        
+
       } catch (error) {
         console.error('加载学院数据失败:', error)
         throw error
@@ -92,19 +104,19 @@ export function createAcademicLoader() {
       try {
         console.log('加载专业数据，学院节点:', collegeNode)
         console.log('学院relationId:', collegeNode.relationId)
-        
+
         const response = await adminApi.getCollegeMajor(collegeNode.relationId)
         console.log('专业数据原始响应:', response)
-        
+
         const majors = response?.data?.data || response?.data || []
-        
+
         if (!Array.isArray(majors)) {
           console.error('专业数据不是数组:', majors)
           return []
         }
-        
+
         console.log('专业原始数据:', majors)
-        
+
         const result = majors
           .filter(item => item.status === 1)
           .map(item => buildTreeNode({
@@ -119,10 +131,10 @@ export function createAcademicLoader() {
             isLeaf: false,
             childCount: 0
           }))
-        
+
         console.log('专业数据处理结果:', result)
         return result
-        
+
       } catch (error) {
         console.error('加载专业数据失败:', error)
         throw error
@@ -134,19 +146,19 @@ export function createAcademicLoader() {
       try {
         console.log('加载班级数据，专业节点:', majorNode)
         console.log('专业relationId:', majorNode.relationId)
-        
+
         const response = await adminApi.getMajorClassByCollegeMajorId(majorNode.relationId)
         console.log('班级数据原始响应:', response)
-        
+
         const classes = response?.data?.data || response?.data || []
-        
+
         if (!Array.isArray(classes)) {
           console.error('班级数据不是数组:', classes)
           return []
         }
-        
+
         console.log('班级原始数据:', classes)
-        
+
         const result = classes
           .filter(item => item.status === 1)
           .map(item => buildTreeNode({
@@ -161,10 +173,10 @@ export function createAcademicLoader() {
             isLeaf: true,
             childCount: 0
           }))
-        
+
         console.log('班级数据处理结果:', result)
         return result
-        
+
       } catch (error) {
         console.error('加载班级数据失败:', error)
         throw error
@@ -179,36 +191,49 @@ export function createAcademicLoader() {
 export function createPartyLoader() {
   return {
     // 加载年级数据
+    // 加载年级数据
     async loadGrades() {
       try {
-        const response = await adminApi.getGradeDictionaryList()
-        console.log('党组织-年级数据原始响应:', response)
-        
+        // 携带分页和状态参数进行查询
+        const response = await adminApi.getGradeDictionaryList({
+          page: 1,
+          pageSize: 20,
+          statusEnum: 'ENABLE',
+          name: ''
+        })
+        console.log('年级数据原始响应:', response)
+
+        // 根据接口格式，数据在 response.data.data.records 中
         const records = response?.data?.data?.records || response?.data?.records || response?.data?.data || []
-        
+
         if (!Array.isArray(records)) {
           console.error('年级数据不是数组:', records)
           return []
         }
-        
-        console.log('党组织-年级原始数据:', records)
-        
+
+        console.log('年级数据records:', records)
+
         const result = records
-          .filter(grade => grade.status === 1) // 只显示启用的年级
+          .filter(grade => grade.status === 1)
+          .sort((a, b) => {
+            // 提取name中的数字部分进行比较
+            const aNum = parseInt(a.name.replace(/\D/g, ''))
+            const bNum = parseInt(b.name.replace(/\D/g, ''))
+            return aNum - bNum
+          })
           .map(grade => buildTreeNode({
-            id: `grade-party-${grade.id}`,
+            id: `grade-${grade.id}`,
             label: grade.name || `${grade.grade}级`,
             level: 0,
             type: 'grade',
             originId: grade.id,
             status: grade.status,
             isLeaf: false,
-            childCount: 0
+            childCount: 0 // 初始为0，会在加载子节点后更新
           }))
-        
-        console.log('党组织-年级数据处理结果:', result)
+
+        console.log('年级数据处理结果:', result)
         return result
-          
       } catch (error) {
         console.error('加载年级数据失败:', error)
         throw error
