@@ -19,13 +19,22 @@ export const uploadSingleFiles = async (file, fileData, fileType) => {
     ElMessage.error('请选择需要上传的文件')
     return
   }
+  // const fileRequestData = {
+  //   fileType: fileType,
+  //   userId: userStore.userId,
+  //   attachTime: fileData.attachTime,
+  //   attachText: fileData.attachText,
+  //   file: file,
+  //   fileName: file.name
+  // }
   // 构造表单数据
   let formdata = new FormData()
+  // formdata.append('uploadDTO', fileRequestData)
   formdata.append('fileType', fileType)
   formdata.append('userId', userStore.userId)
   formdata.append('attachTime', fileData.attachTime)
   formdata.append('attachText', fileData.attachText)
-  formdata.append('file', file.raw)
+  formdata.append('file', file)
   formdata.append('fileName', file.name)
   for (let pair of formdata.entries()) {
     console.log(pair[0] + ', ' + pair[1]);

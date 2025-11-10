@@ -157,6 +157,11 @@ export const adminApi = {
     return request.patch(`/admin/dictionary/relations/major-class/update`, params);
   },
 
+  // 查看年级党委关联数据
+  getGradeCommitteesByGradeId(gradeId) {
+    return request.get(`/admin/dictionary/grade-committee/get/${gradeId}`);
+  },
+
   // 添加年级党委关联数据
   addGradeCommittee(params) {
     return request.post(`/admin/dictionary/grade-committee/add`, params);
@@ -167,14 +172,24 @@ export const adminApi = {
     return request.patch(`/admin/dictionary/grade-committee/update`, params);
   },
 
-  // 添加班级党支部关联数据
+  // 查看党委党支部关联数据
+  getCommitteeBranchesByGradeCommitteeId(gradeCommitteeId) {
+    return request.get(`/admin/dictionary/committee-branch/get/${gradeCommitteeId}`);
+  },
+
+  // 添加党委党支部关联数据
   addCommitteeBranch(params) {
     return request.post(`/admin/dictionary/committee-branch/add`, params);
   },
 
-  // 修改班级党支部关联数据
+  // 修改党委党支部关联数据
   updateCommitteeBranch(params) {
     return request.post(`/admin/dictionary/committee-branch/update`, params);
+  },
+
+  // 查看党支部班级关联数据
+  getBranchClassesByCommitteeBranchId(committeeBranchId) {
+    return request.get(`/admin/dictionary/branch-class/get/${committeeBranchId}`);
   },
 
   // 添加党支部班级关联数据
@@ -210,6 +225,20 @@ export const adminApi = {
   // 获取文件类型列表
   getFileTypeList() {
     return request.get(`/admin/file/fileTypeList`);
-  }
+  },
 
+  // 获取用户加入党状态信息
+  checkStudentJoinPartyStatusInfo(data) {
+    return request.post(`/admin/user/checkStudentJoinPartyStatusInfo?page=${data.page}&pageSize=${data.pageSize}`, data);
+  },
+
+  // 修改用户状态
+  modifyStatus(params) {
+    return request.patch(`/admin/user/modifyStatus`, params);
+  },
+
+  // 获取所有用户信息
+  checkAllUserInfo(params) {
+    return request.post(`/admin/user/checkAllUserInfo?page=${params.page}&pageSize=${params.pageSize}`, params);
+  },
 }
