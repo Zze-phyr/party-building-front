@@ -1,0 +1,7 @@
+# 依赖构建脚本白名单（pnpm 11 默认 strictDepBuilds，未审核的构建脚本会让 install 以
+# ERR_PNPM_IGNORED_BUILDS 退出）。以下两个包的 install 脚本是本项目正常运行所必需的：
+#   esbuild  —— 安装/校验平台原生二进制，Vite 依赖它
+#   vue-demi —— postinstall 按 Vue 版本切换入口文件，pinia 依赖它
+allowBuilds:
+  esbuild: true
+  vue-demi: true
